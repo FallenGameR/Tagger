@@ -1,5 +1,9 @@
+
 # Files ignored by Git
 *.sdf
 *.user
 *.opensdf
 *.suo
+ipch/
+Debug/
+Release/
