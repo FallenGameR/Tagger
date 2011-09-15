@@ -6,30 +6,31 @@
 
 bool insertDll(DWORD procID, std::string dll);
 
-void main()
+void main( int argc, char* argv[] )
 {
-    insertDll(0,"test");
+    insertDll( 4624, "d:\\Code\\Tagger\\bin\\Debug\\Hook.dll" );
 }
 
 bool insertDll(DWORD procID, std::string dll)
 {
-    //Find the address of the LoadLibrary api, luckily for us, it is loaded in the same address for every process
-    HMODULE hLocKernel32 = GetModuleHandle(L"Kernel32");
-    FARPROC hLocLoadLibrary = GetProcAddress(hLocKernel32, "LoadLibraryW");
+    // Find LoadLibrary address (it is loaded on the same address for every process)
+    HMODULE hKernel32 = GetModuleHandle( L"Kernel32" );
+    FARPROC hLoadLibrary = GetProcAddress( hKernel32, "LoadLibraryW" );
     
-    //Adjust token privileges to open system processes
+    // Add debug privilege to current process
     HANDLE hToken;
     TOKEN_PRIVILEGES tkp;
-    if(OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken))
+    if( OpenProcessToken( GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken ) )
     {
-        LookupPrivilegeValue(NULL, SE_DEBUG_NAME, &tkp.Privileges[0].Luid);
+        LookupPrivilegeValue( NULL, SE_DEBUG_NAME, &tkp.Privileges[0].Luid );
         tkp.PrivilegeCount = 1;
         tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
-        AdjustTokenPrivileges(hToken, 0, &tkp, sizeof(tkp), NULL, NULL);
+        bool success = AdjustTokenPrivileges( hToken, 0, &tkp, sizeof(tkp), NULL, NULL );
+        std::cout << "Token adjusted: " << success << std::endl;
     }
 
-    //Open the process with all access
-    HANDLE hProc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, procID);
+    // Open the process with all access
+    HANDLE hProc = OpenProcess( PROCESS_ALL_ACCESS, FALSE, procID );
 
     //Allocate memory to hold the path to the Dll File in the process's memory
     dll += '\0';
@@ -40,7 +41,7 @@ bool insertDll(DWORD procID, std::string dll)
     WriteProcessMemory(hProc, hRemoteMem, dll.c_str(), dll.size(), &numBytesWritten);
 
     //Create a remote thread that starts begins at the LoadLibrary function and is passed are memory pointer
-    HANDLE hRemoteThread = CreateRemoteThread(hProc, NULL, 0, (LPTHREAD_START_ROUTINE)hLocLoadLibrary, hRemoteMem, 0, NULL);
+    HANDLE hRemoteThread = CreateRemoteThread(hProc, NULL, 0, (LPTHREAD_START_ROUTINE)hLoadLibrary, hRemoteMem, 0, NULL);
 
     std::cout << hRemoteThread << std::endl;
 
