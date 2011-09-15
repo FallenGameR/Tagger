@@ -12,9 +12,11 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F61663D8-B2B6-4D63-A69D-E5302AB833E7}</ProjectGuid>
-    <RootNamespace>Hook</RootNamespace>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <RootNamespace>Hook</RootNamespace>
     <CharacterSet>Unicode</CharacterSet>
+    <OutDir>$(SolutionDir)..\bin\$(Configuration)</OutDir>
+    <IntDir>$(SolutionDir)..\bin\$(Configuration)\$(MSBuildProjectName)</IntDir>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
