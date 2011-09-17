@@ -5,56 +5,113 @@
 #define MAXWAIT 10000
 
 bool insertDll(DWORD procID, std::string dll);
+BOOL InjectDLL(DWORD dwProcessId, LPCSTR lpszDLLPath);
+bool InjectDll(char *dllName, DWORD ProcessID);
 
 void main( int argc, char* argv[] )
 {
-    insertDll( 4624, "d:\\Code\\Tagger\\bin\\Debug\\Hook.dll" );
+    //InjectDLL( 6968, "c:\\Program Files (x86)\\totalcmd\\FRERES32.DLL" );
+    //InjectDll( "c:\\Program Files (x86)\\totalcmd\\CABRK.DLL", 6968 );
 }
 
-bool insertDll(DWORD procID, std::string dll)
+bool GimmePrivileges(){ 
+    HANDLE Token;  
+    TOKEN_PRIVILEGES tp;      
+    if(OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &Token)    )
+    { 
+        LookupPrivilegeValue(NULL, SE_DEBUG_NAME, &tp.Privileges[0].Luid);     
+        tp.PrivilegeCount = 1;
+        tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED; 
+        AdjustTokenPrivileges(Token, 0, &tp, sizeof(tp), NULL, NULL);    
+        return true;
+    }      
+    return false;
+}   
+
+BOOL InjectDLL(DWORD dwProcessId, LPCSTR lpszDLLPath)
 {
-    // Find LoadLibrary address (it is loaded on the same address for every process)
-    HMODULE hKernel32 = GetModuleHandle( L"Kernel32" );
-    FARPROC hLoadLibrary = GetProcAddress( hKernel32, "LoadLibraryW" );
-    
-    // Add debug privilege to current process
-    HANDLE hToken;
-    TOKEN_PRIVILEGES tkp;
-    if( OpenProcessToken( GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken ) )
+
+    HANDLE  hProcess, hThread;
+    LPVOID  lpBaseAddr, lpFuncAddr;
+    DWORD   dwMemSize, dwExitCode;
+    BOOL    bSuccess = FALSE;
+    HMODULE hUserDLL;
+
+    GimmePrivileges();
+
+    if((hProcess = OpenProcess(PROCESS_CREATE_THREAD|PROCESS_QUERY_INFORMATION|PROCESS_VM_OPERATION
+        |PROCESS_VM_WRITE|PROCESS_VM_READ, FALSE, dwProcessId)))
     {
-        LookupPrivilegeValue( NULL, SE_DEBUG_NAME, &tkp.Privileges[0].Luid );
-        tkp.PrivilegeCount = 1;
-        tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
-        bool success = AdjustTokenPrivileges( hToken, 0, &tkp, sizeof(tkp), NULL, NULL );
-        std::cout << "Token adjusted: " << success << std::endl;
+        dwMemSize = lstrlenA(lpszDLLPath) + 1;
+        if(lpBaseAddr = VirtualAllocEx(hProcess, NULL, dwMemSize, MEM_COMMIT, PAGE_READWRITE))
+        {
+            if(WriteProcessMemory(hProcess, lpBaseAddr, lpszDLLPath, dwMemSize, NULL))
+            {
+                if(hUserDLL = LoadLibrary(TEXT("kernel32.dll")))
+                {
+                    if(lpFuncAddr = GetProcAddress(hUserDLL, "LoadLibraryA"))
+                    {
+                        if(hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)lpFuncAddr, lpBaseAddr, 0, NULL))
+                        {
+                            WaitForSingleObject(hThread, INFINITE);
+                            if(GetExitCodeThread(hThread, &dwExitCode)) {
+                                bSuccess = (dwExitCode != 0) ? TRUE : FALSE;
+                            }
+                            CloseHandle(hThread);
+                        }
+                    }
+                    FreeLibrary(hUserDLL);
+                }
+            }
+            VirtualFreeEx(hProcess, lpBaseAddr, 0, MEM_RELEASE);
+        }
+        CloseHandle(hProcess);
     }
 
-    // Open the process with all access
-    HANDLE hProc = OpenProcess( PROCESS_ALL_ACCESS, FALSE, procID );
+    return bSuccess;
+}
 
-    //Allocate memory to hold the path to the Dll File in the process's memory
-    dll += '\0';
-    LPVOID hRemoteMem = VirtualAllocEx(hProc, NULL, dll.size(), MEM_COMMIT, PAGE_READWRITE);
+bool InjectDll(char *dllName, DWORD ProcessID)
+{
+    if (!GimmePrivileges ())
+    {
+        printf ("Error elivating privileges \n");
+        return false;
+    }
+    else
+        printf ("Privileges elivated \n");
+    //DWORD ProcessID = GetTargetProcessIdFromProcname (procName); //i didnt include this function because i know for a fact it works
+    HANDLE Proc;
+    HANDLE RemoteThread;
+    char buf[50]={0};
+    LPVOID RemoteString, LoadLibAddy;
 
-    //Write the path to the Dll File in the location just created
-    DWORD numBytesWritten;
-    WriteProcessMemory(hProc, hRemoteMem, dll.c_str(), dll.size(), &numBytesWritten);
+    if(!ProcessID)
+        return false;
 
-    //Create a remote thread that starts begins at the LoadLibrary function and is passed are memory pointer
-    HANDLE hRemoteThread = CreateRemoteThread(hProc, NULL, 0, (LPTHREAD_START_ROUTINE)hLoadLibrary, hRemoteMem, 0, NULL);
+    Proc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, ProcessID);
 
-    std::cout << hRemoteThread << std::endl;
+    if(!Proc)
+    {
+        printf("OpenProcess() failed: %d \n", GetLastError());
+        return false;
+    }
 
-    //Wait for the thread to finish
-    bool res = false;
-    if (hRemoteThread)
-        res = (bool)WaitForSingleObject(hRemoteThread, MAXWAIT) != WAIT_TIMEOUT;
+    LoadLibAddy = (LPVOID)GetProcAddress(GetModuleHandle(L"kernel32.dll"), "LoadLibraryA");
 
-    //Free the memory created on the other process
-    VirtualFreeEx(hProc, hRemoteMem, dll.size(), MEM_RELEASE);
+    RemoteString = (LPVOID)VirtualAllocEx(Proc, NULL, strlen(dllName), MEM_RESERVE|MEM_COMMIT, PAGE_READWRITE);
+    if (!WriteProcessMemory(Proc, (LPVOID)RemoteString, dllName,strlen(dllName), NULL))
+    {
+        printf ("writeProcMem error: %d \n", GetLastError ());
+        return false;
+    }
+    RemoteThread = CreateRemoteThread(Proc, NULL, NULL, (LPTHREAD_START_ROUTINE)LoadLibAddy, (LPVOID)RemoteString, NULL, NULL);  
+    if (RemoteThread == NULL)
+    {
+        printf ("CreateRemoteThread error: %d \n", GetLastError());
+        return false;
+    }
+    CloseHandle(Proc);
 
-    //Release the handle to the other process
-    CloseHandle(hProc);
-
-    return res;
+    return true;
 }
