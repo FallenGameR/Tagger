@@ -1,12 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HookSpy", "HookSpy\HookSpy.vcxproj", "{9E7046E7-161C-89D6-ABE6-9409FF9731E3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HookSpy", "HookSpy\HookSpy.vcxproj", "{79A298E6-8546-4DF2-E24D-3EA0459D7985}"
 	ProjectSection(ProjectDependencies) = postProject
-		{9985D033-EA4F-096F-F3CC-1A80382BB7CB} = {9985D033-EA4F-096F-F3CC-1A80382BB7CB}
+		{82B5C795-A23F-DF56-B285-395A5AD2E5CD} = {82B5C795-A23F-DF56-B285-395A5AD2E5CD}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HookSpyDll", "HookSpyDll\HookSpyDll.vcxproj", "{9985D033-EA4F-096F-F3CC-1A80382BB7CB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HookSpyDll", "HookSpyDll\HookSpyDll.vcxproj", "{82B5C795-A23F-DF56-B285-395A5AD2E5CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,18 +15,18 @@ Global
 		Template|Win32 = Template|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9E7046E7-161C-89D6-ABE6-9409FF9731E3}.Debug|Win32.ActiveCfg = Debug|Win32
-		{9E7046E7-161C-89D6-ABE6-9409FF9731E3}.Debug|Win32.Build.0 = Debug|Win32
-		{9E7046E7-161C-89D6-ABE6-9409FF9731E3}.Release|Win32.ActiveCfg = Release|Win32
-		{9E7046E7-161C-89D6-ABE6-9409FF9731E3}.Release|Win32.Build.0 = Release|Win32
-		{9E7046E7-161C-89D6-ABE6-9409FF9731E3}.Template|Win32.ActiveCfg = Release|Win32
-		{9E7046E7-161C-89D6-ABE6-9409FF9731E3}.Template|Win32.Build.0 = Release|Win32
-		{9985D033-EA4F-096F-F3CC-1A80382BB7CB}.Debug|Win32.ActiveCfg = Debug|Win32
-		{9985D033-EA4F-096F-F3CC-1A80382BB7CB}.Debug|Win32.Build.0 = Debug|Win32
-		{9985D033-EA4F-096F-F3CC-1A80382BB7CB}.Release|Win32.ActiveCfg = Release|Win32
-		{9985D033-EA4F-096F-F3CC-1A80382BB7CB}.Release|Win32.Build.0 = Release|Win32
-		{9985D033-EA4F-096F-F3CC-1A80382BB7CB}.Template|Win32.ActiveCfg = Template|Win32
-		{9985D033-EA4F-096F-F3CC-1A80382BB7CB}.Template|Win32.Build.0 = Template|Win32
+		{79A298E6-8546-4DF2-E24D-3EA0459D7985}.Debug|Win32.ActiveCfg = Debug|Win32
+		{79A298E6-8546-4DF2-E24D-3EA0459D7985}.Debug|Win32.Build.0 = Debug|Win32
+		{79A298E6-8546-4DF2-E24D-3EA0459D7985}.Release|Win32.ActiveCfg = Release|Win32
+		{79A298E6-8546-4DF2-E24D-3EA0459D7985}.Release|Win32.Build.0 = Release|Win32
+		{79A298E6-8546-4DF2-E24D-3EA0459D7985}.Template|Win32.ActiveCfg = Release|Win32
+		{79A298E6-8546-4DF2-E24D-3EA0459D7985}.Template|Win32.Build.0 = Release|Win32
+		{82B5C795-A23F-DF56-B285-395A5AD2E5CD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{82B5C795-A23F-DF56-B285-395A5AD2E5CD}.Debug|Win32.Build.0 = Debug|Win32
+		{82B5C795-A23F-DF56-B285-395A5AD2E5CD}.Release|Win32.ActiveCfg = Release|Win32
+		{82B5C795-A23F-DF56-B285-395A5AD2E5CD}.Release|Win32.Build.0 = Release|Win32
+		{82B5C795-A23F-DF56-B285-395A5AD2E5CD}.Template|Win32.ActiveCfg = Template|Win32
+		{82B5C795-A23F-DF56-B285-395A5AD2E5CD}.Template|Win32.Build.0 = Template|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -10,7 +10,7 @@ bool InjectDll(char *dllName, DWORD ProcessID);
 
 void main( int argc, char* argv[] )
 {
-    //InjectDLL( 6968, "c:\\Program Files (x86)\\totalcmd\\FRERES32.DLL" );
+    InjectDLL( 6968, "c:\\src\\github\\Tagger\\playground\\HookSpy\\Debug\\HookSpyDll.dll" );
     //InjectDll( "c:\\Program Files (x86)\\totalcmd\\CABRK.DLL", 6968 );
 }
 
