@@ -1,0 +1,170 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+#include "resource.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Slovenian resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_SLV)
+#ifdef _WIN32
+LANGUAGE LANG_SLOVENIAN, SUBLANG_DEFAULT
+#pragma code_page(1250)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_WININFO DIALOGEX 0, 0, 177, 174
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOPMOST | WS_EX_TOOLWINDOW
+CAPTION "   HookSpy - By Robert Kuster"
+FONT 7, "MS Sans Serif"
+BEGIN
+    EDITTEXT        IDC_EDIT1,47,14,89,11,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT2,47,26,89,11,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT3,47,38,122,11,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT4,47,50,122,11,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT5,47,62,122,11,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT6,47,74,122,11,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT7,47,86,122,11,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT8,47,98,122,11,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT9,47,129,122,11,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT10,47,141,122,11,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT11,47,153,122,11,ES_AUTOHSCROLL
+    LTEXT           "Handle:",IDC_STATIC,9,15,26,10
+    LTEXT           "Text:",IDC_STATIC,9,39,26,10
+    LTEXT           "Class:",IDC_STATIC,9,51,26,10
+    LTEXT           "Style:",IDC_STATIC,9,63,26,10
+    LTEXT           "Handle:",IDC_STATIC,9,130,26,10
+    LTEXT           "Text:",IDC_STATIC,9,142,26,10
+    LTEXT           "Class:",IDC_STATIC,9,154,26,10
+    LTEXT           "Process ID:",IDC_STATIC,9,99,37,10
+    LTEXT           "Thread ID:",IDC_STATIC,9,87,35,10
+    GROUPBOX        "Window",IDC_STATIC,4,3,169,111
+    GROUPBOX        "Parent Window",IDC_STATIC,4,118,169,51
+    LTEXT           "Control ID:",IDC_STATIC,9,27,35,10
+    CONTROL         158,IDC_CAPTURE,"Static",SS_BITMAP,144,16,21,17
+    LTEXT           "Rect:",IDC_STATIC,9,75,26,10
+END
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_WININFO, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 164
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_CROSS0              CURSOR  DISCARDABLE     "cursor.cur"
+IDC_CROSS1              CURSOR  DISCARDABLE     "cursor_hot.cur"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_CROSS               BITMAP  DISCARDABLE     "cross.bmp"
+IDB_BLANK               BITMAP  DISCARDABLE     "blank.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_MYICON              ICON    DISCARDABLE     "HookSpy.ico"
+#endif    // Slovenian resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""resource.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
