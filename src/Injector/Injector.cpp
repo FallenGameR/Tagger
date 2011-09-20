@@ -1,117 +1,131 @@
 #include <string>
 #include <iostream>
 #include <windows.h>
+#include <conio.h>
 
-#define MAXWAIT 10000
+using namespace std;
 
-bool insertDll(DWORD procID, std::string dll);
-BOOL InjectDLL(DWORD dwProcessId, LPCSTR lpszDLLPath);
-bool InjectDll(char *dllName, DWORD ProcessID);
+void AddDebugPrivilege();
+void InjectDll( DWORD dwProcessId, LPCSTR lpszDLLPath );
 
 void main( int argc, char* argv[] )
 {
-    InjectDLL( 6968, "c:\\src\\github\\Tagger\\playground\\HookSpy\\Debug\\HookSpyDll.dll" );
-    //InjectDll( "c:\\Program Files (x86)\\totalcmd\\CABRK.DLL", 6968 );
+    cout << "Adding debug privilege to current process..." << endl;
+    AddDebugPrivilege();
+
+    int process = atoi( argv[1] );
+    LPCSTR injectedDll = argv[2];
+    cout << "Injecting dll: " << injectedDll << endl;
+    cout << "To process ID: " << process << endl;
+    InjectDll( process, injectedDll );
+
+    cout << "Dll was successfully injected." << endl;
+    _getch();
 }
 
-bool GimmePrivileges(){ 
-    HANDLE Token;  
-    TOKEN_PRIVILEGES tp;      
-    if(OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &Token)    )
-    { 
-        LookupPrivilegeValue(NULL, SE_DEBUG_NAME, &tp.Privileges[0].Luid);     
-        tp.PrivilegeCount = 1;
-        tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED; 
-        AdjustTokenPrivileges(Token, 0, &tp, sizeof(tp), NULL, NULL);    
-        return true;
-    }      
-    return false;
+void AddDebugPrivilege()
+{ 
+    HANDLE token;
+    HANDLE injector = GetCurrentProcess();
+    TOKEN_PRIVILEGES privileges;
+
+    if( 0 == OpenProcessToken( injector, TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token ) )
+    {
+        cout << "OpenProcessToken failed with code: " << GetLastError() << endl;
+        exit( 1 );
+    }
+
+    if( 0 == LookupPrivilegeValue( NULL, SE_DEBUG_NAME, &privileges.Privileges[0].Luid ) )
+    {
+        cout << "LookupPrivilegeValue failed with code: " << GetLastError() << endl;
+        exit( 1 );
+    }
+
+    privileges.PrivilegeCount = 1;
+    privileges.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED; 
+
+    if( 0 == AdjustTokenPrivileges( token, 0, &privileges, sizeof(privileges), NULL, NULL ) )
+    {
+        cout << "AdjustTokenPrivileges failed with code: " << GetLastError() << endl;
+        exit( 1 );
+    }
 }   
 
-BOOL InjectDLL(DWORD dwProcessId, LPCSTR lpszDLLPath)
+void InjectDll( DWORD processId, LPCSTR dllPath )
 {
-
-    HANDLE  hProcess, hThread;
-    LPVOID  lpBaseAddr, lpFuncAddr;
-    DWORD   dwMemSize, dwExitCode;
-    BOOL    bSuccess = FALSE;
-    HMODULE hUserDLL;
-
-    GimmePrivileges();
-
-    if((hProcess = OpenProcess(PROCESS_CREATE_THREAD|PROCESS_QUERY_INFORMATION|PROCESS_VM_OPERATION
-        |PROCESS_VM_WRITE|PROCESS_VM_READ, FALSE, dwProcessId)))
+    HANDLE hProcess = OpenProcess(
+        PROCESS_CREATE_THREAD|
+        PROCESS_QUERY_INFORMATION|
+        PROCESS_VM_OPERATION|
+        PROCESS_VM_WRITE|
+        PROCESS_VM_READ, 
+        FALSE, 
+        processId);
+    if( NULL == hProcess )
     {
-        dwMemSize = lstrlenA(lpszDLLPath) + 1;
-        if(lpBaseAddr = VirtualAllocEx(hProcess, NULL, dwMemSize, MEM_COMMIT, PAGE_READWRITE))
-        {
-            if(WriteProcessMemory(hProcess, lpBaseAddr, lpszDLLPath, dwMemSize, NULL))
-            {
-                if(hUserDLL = LoadLibrary(TEXT("kernel32.dll")))
-                {
-                    if(lpFuncAddr = GetProcAddress(hUserDLL, "LoadLibraryA"))
-                    {
-                        if(hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)lpFuncAddr, lpBaseAddr, 0, NULL))
-                        {
-                            WaitForSingleObject(hThread, INFINITE);
-                            if(GetExitCodeThread(hThread, &dwExitCode)) {
-                                bSuccess = (dwExitCode != 0) ? TRUE : FALSE;
-                            }
-                            CloseHandle(hThread);
-                        }
-                    }
-                    FreeLibrary(hUserDLL);
-                }
-            }
-            VirtualFreeEx(hProcess, lpBaseAddr, 0, MEM_RELEASE);
-        }
-        CloseHandle(hProcess);
+        cout << "OpenProcess failed with code: " << GetLastError() << endl;
+        exit(1);
     }
 
-    return bSuccess;
-}
-
-bool InjectDll(char *dllName, DWORD ProcessID)
-{
-    if (!GimmePrivileges ())
+    DWORD dwMemSize = lstrlenA(dllPath) + 1;
+    LPVOID lpBaseAddr = VirtualAllocEx( hProcess, NULL, dwMemSize, MEM_COMMIT, PAGE_READWRITE );
+    if( NULL == lpBaseAddr )
     {
-        printf ("Error elivating privileges \n");
-        return false;
-    }
-    else
-        printf ("Privileges elivated \n");
-    //DWORD ProcessID = GetTargetProcessIdFromProcname (procName); //i didnt include this function because i know for a fact it works
-    HANDLE Proc;
-    HANDLE RemoteThread;
-    char buf[50]={0};
-    LPVOID RemoteString, LoadLibAddy;
-
-    if(!ProcessID)
-        return false;
-
-    Proc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, ProcessID);
-
-    if(!Proc)
-    {
-        printf("OpenProcess() failed: %d \n", GetLastError());
-        return false;
+        cout << "VirtualAllocEx failed with code: " << GetLastError() << endl;
+        exit(1);
     }
 
-    LoadLibAddy = (LPVOID)GetProcAddress(GetModuleHandle(L"kernel32.dll"), "LoadLibraryA");
-
-    RemoteString = (LPVOID)VirtualAllocEx(Proc, NULL, strlen(dllName), MEM_RESERVE|MEM_COMMIT, PAGE_READWRITE);
-    if (!WriteProcessMemory(Proc, (LPVOID)RemoteString, dllName,strlen(dllName), NULL))
+    BOOL memoryWriteSuccess = WriteProcessMemory( hProcess, lpBaseAddr, dllPath, dwMemSize, NULL );
+    if( 0 == memoryWriteSuccess )
     {
-        printf ("writeProcMem error: %d \n", GetLastError ());
-        return false;
+        cout << "WriteProcessMemory failed with code: " << GetLastError() << endl;
+        exit(1);
     }
-    RemoteThread = CreateRemoteThread(Proc, NULL, NULL, (LPTHREAD_START_ROUTINE)LoadLibAddy, (LPVOID)RemoteString, NULL, NULL);  
-    if (RemoteThread == NULL)
-    {
-        printf ("CreateRemoteThread error: %d \n", GetLastError());
-        return false;
-    }
-    CloseHandle(Proc);
 
-    return true;
+    HMODULE hUserDLL = LoadLibrary( TEXT("kernel32.dll") );
+    if( NULL == hUserDLL )
+    {
+        cout << "LoadLibrary failed with code: " << GetLastError() << endl;
+        exit(1);
+    }
+
+    LPVOID lpFuncAddr = GetProcAddress( hUserDLL, "LoadLibraryA" );
+    if( NULL == lpFuncAddr )
+    {
+        cout << "GetProcAddress failed with code: " << GetLastError() << endl;
+        exit(1);
+    }
+
+    HANDLE hThread = CreateRemoteThread( hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)lpFuncAddr, lpBaseAddr, 0, NULL );
+    if( NULL == hThread )
+    {
+        cout << "CreateRemoteThread failed with code: " << GetLastError() << endl;
+        exit(1);
+    }
+
+    DWORD waitResult = WaitForSingleObject( hThread, INFINITE );
+    if( WAIT_OBJECT_0 != waitResult )
+    {
+        cout << "WaitForSingleObject failed. Status: " << waitResult << ". Last error: " << GetLastError() << endl;
+        exit(1);
+    }
+
+    DWORD dwExitCode;
+    BOOL exitThreadResult = GetExitCodeThread( hThread, &dwExitCode );
+    if( 0 == exitThreadResult )
+    {
+        cout << "GetExitCodeThread failed with code: " << GetLastError() << endl;
+        exit(1);
+    }
+
+    if( 0 == dwExitCode )
+    {
+        cout << "Remote LoadLibrary failed with code: " << GetLastError() << endl;
+        exit(1);
+    }
+
+    CloseHandle( hThread );
+    FreeLibrary( hUserDLL );
+    VirtualFreeEx( hProcess, lpBaseAddr, 0, MEM_RELEASE );
+    CloseHandle( hProcess );
 }
