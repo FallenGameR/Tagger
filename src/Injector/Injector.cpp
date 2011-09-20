@@ -20,6 +20,41 @@ void main( int argc, char* argv[] )
     InjectDll( process, injectedDll );
 
     cout << "Dll was successfully injected." << endl;
+    if( 1 == argc )
+    {
+        cout << 
+            "SYNOPSIS" << endl <<
+            "   Inject DLL into a process. Remote thread technique is used." << endl <<
+            "" << endl <<
+            "SYNTAX" << endl <<
+            "   Injector.exe <PID> <DLL path>" << endl <<
+            "   <PID>       - Process ID. Process that is to be injected with DLL." << endl <<
+            "   <DLL Path>  - Path to injected DLL." << endl <<
+            "" << endl <<
+            "EXAMPLE" << endl << 
+            "   Injector 123 MyHook.dll" << endl;
+        return 1;
+    }
+
+    try
+    {
+        AddDebugPrivilege();
+        cout << "Added debug privilege to current process." << endl;
+
+        int process = atoi( argv[1] );
+        LPCSTR injectedDll = argv[2];
+        cout << "Injected: " << injectedDll << endl;
+        cout << "Process: " << process << endl;
+        InjectDll( process, injectedDll );
+
+        cout << "Dll was successfully injected." << endl;
+    }
+    catch( ... )
+    {
+        cout << "Unknown error. Run without parameters to see help." << endl;
+        return 1;
+    }
+    
     _getch();
 }
 
