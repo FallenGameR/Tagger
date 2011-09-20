@@ -1,6 +1,6 @@
 $root = $myInvocation.MyCommand.Path -replace "(?<=Tagger).+"
 $injector = Join-Path $root "bin\Debug\Injector.exe"
-$hook = Join-Path $root "playground\HookSpy\Debug\HookSpyDll.dll"
+$hook = Join-Path $root "bin\Debug\Hook.dll"
 
 Describe "Injector" {
 

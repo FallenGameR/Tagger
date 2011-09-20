@@ -55,5 +55,8 @@
   <ItemGroup>
     <ClCompile Include="Hook.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Hook.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
