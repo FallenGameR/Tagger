@@ -14,9 +14,12 @@ Describe "Injector" {
 	
 	It "should inject test hook dll into cmd" {
 		$cmd = Start-Process cmd -WindowStyle Hidden -PassThru
-		(& $injector $cmd.Id $hook).should.match( "Dll was successfully injected" )
+		$injector_output = & $injector $cmd.Id $hook
+		$injector_output.should.match( "Dll was successfully injected" )
 		
 		$cmd.Refresh()
-		($cmd.Modules | where{$_.FileName -eq $hook}).should.have_count_of( 1 )
+		$present_modules = $cmd.Modules | where{$_.FileName -eq $hook}
+		$present_modules.should.have_count_of( 1 )
+		$cmd.Kill()
 	}
 }
