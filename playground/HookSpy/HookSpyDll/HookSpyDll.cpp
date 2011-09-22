@@ -22,6 +22,7 @@ Notice:	If this code works, it was written by Robert Kuster.
 HWND	g_hWnd	= 0;		// control containing the password
 HHOOK	g_hHook = 0;
 UINT	WM_HOOKSPY = 0;
+UINT    g_test = 0;
 char	g_szPassword [128] = { '\0' };
 #pragma data_seg ()
 
@@ -64,6 +65,8 @@ LRESULT HookProc (
         ::SendMessage( g_hWnd,WM_GETTEXT,128,(LPARAM)g_szPassword );
         ::UnhookWindowsHookEx( g_hHook );
     }
+
+    g_test = 5;
 
     return ::CallNextHookEx(g_hHook, code, wParam, lParam);
 }

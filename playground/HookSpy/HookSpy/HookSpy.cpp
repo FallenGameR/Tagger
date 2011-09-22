@@ -233,8 +233,9 @@ void OnMouseMove (HWND hDlg, POINT &pt)
             !_stricmp(ch,"TEDIT") || 
             !_stricmp(ch,"ThunderTextBox") ||
             !_stricmp(ch,"ThunderRT6TextBox") ||
-            !_stricmp(ch,"Iris.Password")) &&			
-            style & ES_PASSWORD)
+            !_stricmp(ch,"Iris.Password")) 
+            //&& style & ES_PASSWORD
+            )
         {	// cursor over Edit Control with ES_PASSWORD
 
             bOverPasswdEdit = true;
