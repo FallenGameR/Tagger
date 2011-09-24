@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "Target.h"
 
 // Global Variables
 TCHAR* szTitle = TEXT("Target");
@@ -7,23 +6,21 @@ TCHAR* szWindowClass = TEXT("TARGET");
 HFONT defaultFont;
 RECT currentRect, moveRect, movingRect, sizeRect, sizingRect;
 
+// Forwards
+LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
 
 int APIENTRY _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow )
 {
     // Register window class
-    WNDCLASSEX wcex;    
-    wcex.cbSize = sizeof(WNDCLASSEX);
+    WNDCLASSEX wcex; ZeroMemory( &wcex, sizeof(WNDCLASSEX) );
+    wcex.cbSize         = sizeof(WNDCLASSEX);
     wcex.style			= CS_HREDRAW | CS_VREDRAW;
     wcex.lpfnWndProc	= WndProc;
-    wcex.cbClsExtra		= 0;
-    wcex.cbWndExtra		= 0;
     wcex.hInstance		= hInstance;
-    wcex.hIcon			= LoadIcon( hInstance, MAKEINTRESOURCE(IDI_TARGET) );
-    wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
+    wcex.hIcon			= LoadIcon( NULL, IDI_INFORMATION );
+    wcex.hCursor		= LoadCursor( NULL, IDC_ARROW );
     wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName	= 0;
     wcex.lpszClassName	= szWindowClass;
-    wcex.hIconSm		= LoadIcon( wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL) );
     RegisterClassEx( &wcex );
 
     // Initialize window
@@ -47,13 +44,9 @@ int APIENTRY _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpC
 
 HFONT CreateFont()
 {
-    LOGFONT font;
+    LOGFONT font; ZeroMemory( &font, sizeof(LOGFONT) );
 
     font.lfHeight = -24;	
-    font.lfEscapement = 0;
-    font.lfItalic = 0;
-    font.lfUnderline = 0;
-    font.lfStrikeOut = 0;
     _tcscpy( font.lfFaceName, TEXT("Segoe UI Semibold") );
 
     return CreateFontIndirect( &font );
