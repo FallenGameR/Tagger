@@ -5,6 +5,8 @@
 TCHAR* szTitle = TEXT("Target");
 TCHAR* szWindowClass = TEXT("TARGET");
 HFONT defaultFont;
+RECT currentRect, moveRect, movingRect, sizeRect, sizingRect;
+
 
 int APIENTRY _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow )
 {
@@ -43,8 +45,6 @@ int APIENTRY _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpC
     return (int) msg.wParam;
 }
 
-
-
 HFONT CreateFont()
 {
     LOGFONT font;
@@ -59,7 +59,7 @@ HFONT CreateFont()
     return CreateFontIndirect( &font );
 }
 
-void RenderRect( TCHAR* buffer, RECT rect )
+void RenderRect( TCHAR buffer[256], RECT rect )
 {
     LONG x = rect.left;
     LONG y = rect.top;
@@ -69,35 +69,34 @@ void RenderRect( TCHAR* buffer, RECT rect )
     _stprintf( buffer, TEXT( "x %d y %d w %d h %d" ), x, y, width, height );
 }
 
+void RenderReport( TCHAR text[4096] )
+{
+    TCHAR current[256], move[256], moving[256], size[256], sizing[256];
+
+    RenderRect( current, currentRect );
+    RenderRect( move, moveRect );
+    RenderRect( moving, movingRect );
+    RenderRect( size, sizeRect );
+    RenderRect( sizing, sizingRect );
+
+    _stprintf( text, TEXT( "Current\t%s\nMove\t%s\nMoving\t%s\nSize\t%s\nSizing\t%s" ), current, move, moving, size, sizing );
+}
 
 LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
+    TCHAR text[ 4096 ];
+    size_t textLength;
     PAINTSTRUCT paint;
-    HDC hdc;
-    int xPos, yPos, width, height;
-    RECT position;
-    LPCTSTR str = TEXT("Hello World");
-
-
-    
-
-    RECT defaultRect;
-    RECT currentRect;
-    GetWindowRect( hWnd, &currentRect ); 
-
-    TCHAR current[256], move[256], moving[256], size[256], sizing[256], result[ 4096 ];
-    RenderRect( current, currentRect );
-
-    _stprintf( result, TEXT( "Current\t%s\nMove\t%s\nMoving\t%s\nSize\t%s\nSizing\t%s" ), current, move, moving, size, sizing );
-    str = result;	
-    int len = (int)_tcslen(str);
-
-
+    HDC hdc;  
 
     switch( message )
     {
     case WM_CREATE:
         defaultFont = CreateFont();
+        SetWindowPos( hWnd, NULL, 400, 600, 900, 400, 0 );
+
+        GetWindowRect( hWnd, &currentRect );
+        moveRect = movingRect = sizeRect = sizingRect = currentRect;
         break;
 
     case WM_DESTROY:
@@ -108,26 +107,33 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
     case WM_PAINT:
         hdc = BeginPaint( hWnd, &paint );
         SelectObject( hdc, defaultFont );
-        DrawText( paint.hdc, str, len, &paint.rcPaint, DT_EXPANDTABS );
+
+        GetWindowRect( hWnd, &currentRect );
+        RenderReport( text );
+        textLength = _tcslen( text );
+        DrawText( paint.hdc, text, (int) textLength, &paint.rcPaint, DT_EXPANDTABS );
+
         EndPaint( hWnd, &paint );
         break;
 
     case WM_MOVE:
-        xPos = (int)(short) LOWORD(lParam);
-        yPos = (int)(short) HIWORD(lParam);
+        moveRect.left = LOWORD(lParam);
+        moveRect.top = HIWORD(lParam);
+        InvalidateRect( hWnd, NULL, FALSE );
         break;
 
     case WM_SIZE:
-        width = (int)(short) LOWORD(lParam);
-        height = (int)(short) HIWORD(lParam);
+        sizeRect.right = sizeRect.left + LOWORD(lParam);
+        sizeRect.bottom = sizeRect.top + HIWORD(lParam);
         break;
 
     case WM_MOVING:
-        position = * (RECT*) lParam;
+        movingRect = * (RECT*) lParam;
+        InvalidateRect( hWnd, NULL, FALSE );
         break;
 
     case WM_SIZING:
-        position = * (RECT*) lParam;
+        sizingRect = * (RECT*) lParam;
         break;
     }
 
