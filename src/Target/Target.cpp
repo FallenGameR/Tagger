@@ -4,6 +4,7 @@
 // Global Variables
 TCHAR* szTitle = TEXT("Target");
 TCHAR* szWindowClass = TEXT("TARGET");
+HFONT defaultFont;
 
 int APIENTRY _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow )
 {
@@ -42,6 +43,22 @@ int APIENTRY _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpC
     return (int) msg.wParam;
 }
 
+
+
+HFONT CreateFont()
+{
+    LOGFONT font;
+
+    font.lfHeight = -24;	
+    font.lfEscapement = 0;
+    font.lfItalic = 0;
+    font.lfUnderline = 0;
+    font.lfStrikeOut = 0;
+    _tcscpy( font.lfFaceName, TEXT("Segoe UI Semibold") );
+
+    return CreateFontIndirect( &font );
+}
+
 LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
     PAINTSTRUCT ps;
@@ -50,7 +67,6 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
     RECT position;
     LPCTSTR str = TEXT("Hello World");
     int len = (int)_tcslen(str);
-    LOGFONT font;
     
     font.lfHeight = -24;	
     font.lfEscapement = 0;
@@ -60,19 +76,23 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
     font.lfStrikeOut = 0;
     _tcscpy(font.lfFaceName, TEXT("Segoe UI Semibold"));
 
-    HFONT newFont = CreateFontIndirect(&font);
 
     switch( message )
     {
+    case WM_CREATE:
+        defaultFont = CreateFont();
+        break;
+
+    case WM_DESTROY:
+        DeleteObject( defaultFont );
+        PostQuitMessage( 0 );
+        break;
+
     case WM_PAINT:
-        hdc = BeginPaint( hWnd, &ps );
-
-        SelectObject( hdc, newFont );
-
-        TextOut( ps.hdc, 5, 5, str, len );
-
-        // TODO: Add any drawing code here...
-        EndPaint( hWnd, &ps );
+        hdc = BeginPaint( hWnd, &paint );
+        SelectObject( hdc, defaultFont );
+        DrawText( paint.hdc, str, len, &paint.rcPaint, DT_EXPANDTABS );
+        EndPaint( hWnd, &paint );
         break;
 
     case WM_MOVE:
