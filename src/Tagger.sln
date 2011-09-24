@@ -8,6 +8,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Injector", "Injector\Inject
 		{F61663D8-B2B6-4D63-A69D-E5302AB833E7} = {F61663D8-B2B6-4D63-A69D-E5302AB833E7}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Target", "Target\Target.vcxproj", "{62A4105B-1758-4646-95F4-16E05826C2CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -22,6 +24,10 @@ Global
 		{0E204256-B0B8-47A0-AF7D-4C56E84FC76B}.Debug|Win32.Build.0 = Debug|Win32
 		{0E204256-B0B8-47A0-AF7D-4C56E84FC76B}.Release|Win32.ActiveCfg = Release|Win32
 		{0E204256-B0B8-47A0-AF7D-4C56E84FC76B}.Release|Win32.Build.0 = Release|Win32
+		{62A4105B-1758-4646-95F4-16E05826C2CE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{62A4105B-1758-4646-95F4-16E05826C2CE}.Debug|Win32.Build.0 = Debug|Win32
+		{62A4105B-1758-4646-95F4-16E05826C2CE}.Release|Win32.ActiveCfg = Release|Win32
+		{62A4105B-1758-4646-95F4-16E05826C2CE}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
