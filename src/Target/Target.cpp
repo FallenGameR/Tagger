@@ -59,22 +59,39 @@ HFONT CreateFont()
     return CreateFontIndirect( &font );
 }
 
+void RenderRect( TCHAR* buffer, RECT rect )
+{
+    LONG x = rect.left;
+    LONG y = rect.top;
+    LONG width = rect.right - rect.left;
+    LONG height = rect.bottom - rect.top;
+    
+    _stprintf( buffer, TEXT( "x %d y %d w %d h %d" ), x, y, width, height );
+}
+
+
 LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
-    PAINTSTRUCT ps;
+    PAINTSTRUCT paint;
     HDC hdc;
     int xPos, yPos, width, height;
     RECT position;
     LPCTSTR str = TEXT("Hello World");
-    int len = (int)_tcslen(str);
-    
-    font.lfHeight = -24;	
-    font.lfEscapement = 0;
 
-    font.lfItalic = 0;
-    font.lfUnderline = 0;
-    font.lfStrikeOut = 0;
-    _tcscpy(font.lfFaceName, TEXT("Segoe UI Semibold"));
+
+    
+
+    RECT defaultRect;
+    RECT currentRect;
+    GetWindowRect( hWnd, &currentRect ); 
+
+    TCHAR current[256], move[256], moving[256], size[256], sizing[256], result[ 4096 ];
+    RenderRect( current, currentRect );
+
+    _stprintf( result, TEXT( "Current\t%s\nMove\t%s\nMoving\t%s\nSize\t%s\nSizing\t%s" ), current, move, moving, size, sizing );
+    str = result;	
+    int len = (int)_tcslen(str);
+
 
 
     switch( message )
@@ -96,21 +113,21 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
         break;
 
     case WM_MOVE:
-        xPos = (int)(short) LOWORD(lParam);   // horizontal position 
-        yPos = (int)(short) HIWORD(lParam);   // vertical position 
+        xPos = (int)(short) LOWORD(lParam);
+        yPos = (int)(short) HIWORD(lParam);
+        break;
+
+    case WM_SIZE:
+        width = (int)(short) LOWORD(lParam);
+        height = (int)(short) HIWORD(lParam);
         break;
 
     case WM_MOVING:
         position = * (RECT*) lParam;
         break;
 
-    case WM_SIZE:
-        width = (int)(short) LOWORD(lParam);   // horizontal position 
-        height = (int)(short) HIWORD(lParam);   // vertical position 
-        break;
-
-    case WM_DESTROY:
-        PostQuitMessage( 0 );
+    case WM_SIZING:
+        position = * (RECT*) lParam;
         break;
     }
 
