@@ -9,7 +9,6 @@
 
 // Windows Header Files:
 #define WIN32_LEAN_AND_MEAN
-#include <SDKDDKVer.h>
 #include <windows.h>
 
 // C RunTime Header Files
@@ -17,6 +16,5 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
-
 
 // TODO: reference additional headers your program requires here
