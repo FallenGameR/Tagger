@@ -117,23 +117,20 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
         break;
 
     case WM_MOVE:
-        moveRect.left = LOWORD(lParam);
-        moveRect.top = HIWORD(lParam);
+        GetWindowRect( hWnd, &moveRect );
         InvalidateRect( hWnd, NULL, FALSE );
-        break;
-
-    case WM_SIZE:
-        sizeRect.right = sizeRect.left + LOWORD(lParam);
-        sizeRect.bottom = sizeRect.top + HIWORD(lParam);
         break;
 
     case WM_MOVING:
-        movingRect = * (RECT*) lParam;
-        InvalidateRect( hWnd, NULL, FALSE );
+        GetWindowRect( hWnd, &movingRect );
+        break;
+
+    case WM_SIZE:
+        GetWindowRect( hWnd, &sizeRect );
         break;
 
     case WM_SIZING:
-        sizingRect = * (RECT*) lParam;
+        GetWindowRect( hWnd, &sizingRect );
         break;
     }
 
