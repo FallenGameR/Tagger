@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <conio.h>
 #include <sys/stat.h>
+#include "Hook.h"
 
 using namespace std;
 
@@ -63,6 +64,12 @@ int main( int argc, char* argv[] )
         cout << "Process: " << process << endl;
         InjectDll( process, injectedDll );
         cout << "DLL was successfully injected." << endl;
+
+        // Try hook call
+        HWND handle = GetForegroundWindow();
+        DWORD code = GetLastError();
+        char buffer[128];
+        GetWindowTextRemote( handle, buffer );
     }
     catch( error &er )
     {
