@@ -67,9 +67,10 @@ int main( int argc, char* argv[] )
 
         // Try hook call
         HWND handle = GetForegroundWindow();
-        DWORD code = GetLastError();
+        if( NULL == handle ) { throw error("GetForegroundWindow"); }
+
         char buffer[128];
-        GetWindowTextRemote( handle, buffer );
+        HookMessageQueue( handle, buffer );
     }
     catch( error &er )
     {

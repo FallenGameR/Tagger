@@ -10,6 +10,15 @@
 #include "Hook.h"
 
 
+struct error
+{
+    char* Message;
+    DWORD ErrorCode;
+
+    error( char* message ): Message(message), ErrorCode(GetLastError()) {}
+    error( char* message, DWORD lastError): Message(message), ErrorCode(lastError) {}
+};
+
 
 //-------------------------------------------------------
 // shared data 
@@ -17,14 +26,15 @@
 //			into the remote process as well as by the instance
 //			of "HookSpy.dll" mapped into our "HookSpy.exe"
 #pragma data_seg (".shared")
-HWND    g_hWnd	= 0;		// control containing the password
-HHOOK   g_hHook = 0;
+HWND    shared_wnd_handle	= 0;		// control containing the password
+HHOOK   shared_hook = 0;
 UINT    g_test = 0;
-UINT    WM_HOOKSPY = 0;
-char    g_szPassword [128] = { '\0' };
+UINT    WM_USERMESSAGE = 0;
+char    shared_string [128] = { '\0' };
 #pragma data_seg ()
 
 #pragma comment(linker,"/SECTION:.shared,RWS") 
+
 
 
 //-------------------------------------------------------
@@ -58,59 +68,41 @@ BOOL APIENTRY DllMain( HANDLE hModule, DWORD  ul_reason_for_call,  LPVOID lpRese
 //
 #define pCW ((CWPSTRUCT*)lParam)
 
-LRESULT HookProc( int code, WPARAM wParam, LPARAM lParam )
+LRESULT MyHookProcedure( int code, WPARAM wParam, LPARAM lParam )
 {	
-    if( pCW->message == WM_HOOKSPY ) 
+    if( pCW->message == WM_USERMESSAGE ) 
     {
-        ::MessageBeep( MB_OK );
-        ::SendMessage( g_hWnd,WM_GETTEXT,128,(LPARAM)g_szPassword );
-        ::UnhookWindowsHookEx( g_hHook );
+        MessageBeep( MB_OK );
+        SendMessage( shared_wnd_handle, WM_GETTEXT, 128, (LPARAM) shared_string );
+        UnhookWindowsHookEx( shared_hook );
     }
 
     g_test = 42;
 
-    return ::CallNextHookEx( g_hHook, code, wParam, lParam );
+    return CallNextHookEx( shared_hook, code, wParam, lParam );
 }
 
 
-//-------------------------------------------------------
-// GetWindowTextRemote
-// Notice: - injects "HookSpy.dll" into the remote process 
-//			 (via SetWindowsHookEx);
-//		   - gets the password from the remote edit control;
-//
-//	Return value: - number of characters retrieved 
-//					by remote WM_GETTEXT;
-//
-int GetWindowTextRemote( HWND hWnd, LPSTR lpString )
+int HookMessageQueue( HWND handle, LPSTR outString )
 {	
-    g_hWnd = hWnd;
+    shared_wnd_handle = handle;
 
-    // Hook the thread, that "owns" our PWD control
-    DWORD processThreadId = GetWindowThreadProcessId( hWnd, NULL );
-    g_hHook = SetWindowsHookEx( WH_GETMESSAGE, (HOOKPROC)HookProc, hDll, processThreadId );
+    DWORD processThreadId = GetWindowThreadProcessId( handle, NULL );
+
+    shared_hook = SetWindowsHookEx( WH_CALLWNDPROC, (HOOKPROC) MyHookProcedure, hDll, processThreadId );
+    if( NULL == shared_hook ) { throw error("SetWindowsHookEx"); }
     
+    ULONG originalWindowProcedure = GetWindowLong( handle, GWL_WNDPROC );
+    if( 0 == originalWindowProcedure ) { throw error("GetWindowLong"); }
+   
+    WM_USERMESSAGE = RegisterWindowMessage( TEXT("WM_USERMESSAGE") );
+    if( 0 == WM_USERMESSAGE ) { throw error("RegisterWindowMessage"); }
 
+    SendMessage( handle, WM_USERMESSAGE, 0, 0 );
+    //SendMessage( handle, WM_CLOSE, 0, 0 );
 
-    ULONG oldProc = GetWindowLong( hWnd, GWL_WNDPROC );
+    if( 42 != g_test ) { throw error("MyHookProcedure didn't executed"); }
 
-
-    if( NULL == g_hHook ) 
-    {
-        lpString[0] = '\0';
-        return 0;
-    }
-    
-    if( NULL == WM_HOOKSPY )
-    {
-        WM_HOOKSPY = ::RegisterWindowMessageA( "WM_HOOKSPY_RK" );
-    }
-
-    // By the time SendMessage returns, 
-    // g_szPassword already contains the password	
-    SendMessage( hWnd, WM_HOOKSPY, 0, 0 );
-    //SendMessage( hWnd, WM_CLOSE, 0, 0 );
-    strcpy( lpString, g_szPassword );
-
-    return strlen(lpString);
+    strcpy( outString, shared_string );
+    return strlen(outString);
 }
