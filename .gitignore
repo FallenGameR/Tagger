@@ -1,11 +1,10 @@
 
 # Files ignored by Git
 *.sdf
-*.user
 *.opensdf
 *.suo
+*.aps
 ipch/
 Debug/
 Release/
 
-*.aps

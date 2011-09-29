@@ -2,6 +2,7 @@
 #include <iostream>
 #include <windows.h>
 #include <conio.h>
+#include <sys/stat.h>
 
 using namespace std;
 
@@ -27,7 +28,7 @@ int main( int argc, char* argv[] )
             "" << endl <<
             "SYNTAX" << endl <<
             "   Injector.exe <PID> <DLL path>" << endl <<
-            "   <PID>       - Process ID. Process that is to be injected with DLL." << endl <<
+            "   <PID>       - Process ID. Process that is to be injected with DLL. Use 0 to attach Injector to itself." << endl <<
             "   <DLL Path>  - Path to injected DLL." << endl <<
             "" << endl <<
             "EXAMPLE" << endl << 
@@ -37,28 +38,46 @@ int main( int argc, char* argv[] )
 
     try
     {
+        // Add debug privilege
         AddDebugPrivilege();
         cout << "Added debug privilege to current process." << endl;
 
+        // Parse parameters
         int process = atoi( argv[1] );
         LPCSTR injectedDll = argv[2];
+
+        // Validate parameters
+        if( 0 == process )
+        {
+            process = GetCurrentProcessId();
+        }
+
+        struct stat file_stat;
+        if( 0 != stat( injectedDll, &file_stat ) )
+        {
+            throw error("Injected DLL file doesn't exist");
+        }
+
+        // Inject DLL
         cout << "Injected: " << injectedDll << endl;
         cout << "Process: " << process << endl;
         InjectDll( process, injectedDll );
-
-        cout << "Dll was successfully injected." << endl;
+        cout << "DLL was successfully injected." << endl;
     }
     catch( error &er )
     {
         cout << "ERROR. " << er.Message << ": " << er.ErrorCode << endl;
+        system("pause");
         return 1;
     }
     catch( ... )
     {
         cout << "Unknown error. Run without parameters to see help." << endl;
+        system("pause");
         return 1;
     }
     
+    system("pause");
     return 0;
 }
 
