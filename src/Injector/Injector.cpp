@@ -41,6 +41,7 @@ int main( int argc, char* argv[] )
     {
         // Add debug privilege
         // TODO: Verify that adjusting privileges is needed. Check running without studio and hooking admin-run process.
+        // TODO: Verify that console window can be hooked as well.
         AddDebugPrivilege();
         cout << "Added debug privilege to current process." << endl;
 

@@ -8,7 +8,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Injector", "Injector\Inject
 		{F61663D8-B2B6-4D63-A69D-E5302AB833E7} = {F61663D8-B2B6-4D63-A69D-E5302AB833E7}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Target", "Target\Target.vcxproj", "{62A4105B-1758-4646-95F4-16E05826C2CE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WinTarget", "WinTarget\WinTarget.vcxproj", "{62A4105B-1758-4646-95F4-16E05826C2CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
