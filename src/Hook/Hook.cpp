@@ -167,3 +167,4 @@ void InjectDll_CreateRemoteThread( DWORD processId, LPCSTR dllPath )
     if( NULL != lpBaseAddr ) { VirtualFreeEx( hProcess, lpBaseAddr, 0, MEM_RELEASE ); }
     if( NULL != hProcess ) { CloseHandle( hProcess ); }
 }
+

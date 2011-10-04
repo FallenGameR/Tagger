@@ -53,6 +53,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ConsoleHook.cpp" />
     <ClCompile Include="Hook.cpp" />
   </ItemGroup>
   <ItemGroup>
