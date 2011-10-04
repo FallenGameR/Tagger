@@ -16,8 +16,6 @@
 //    When the WinEvent EVENT_OBJECT_CREATE is triggered, track the event to determine when a console is created.
 //    When the WinEvent EVENT_OBJECT_FOCUS is triggered, you can determine when a console has focus or not.
 
-
-
 #include <stdio.h>
 #include <tchar.h>
 #include <windows.h>
@@ -37,11 +35,9 @@ void createConsoles(void);
 // Main entry point (the function arguments are ignored).
 int _tmain1(int argc, _TCHAR* argv[])
 {
-
     createConsoles();
     return 0;
 }
-
 
 void createConsoles(void)
 {
@@ -76,15 +72,10 @@ void createConsoles(void)
     StringCbCopy(lpstrMyprompt, cb, L"Console #1");
 
     // First, we have to create two consoles
-    if (FALSE == CreateProcess(lpstrEditcmd, NULL, NULL, NULL, FALSE,
-        CREATE_NEW_CONSOLE | NORMAL_PRIORITY_CLASS, NULL, 
-        NULL, &hStartUp, &hConsole1))
+    if (FALSE == CreateProcess(lpstrEditcmd, NULL, NULL, NULL, FALSE, CREATE_NEW_CONSOLE | NORMAL_PRIORITY_CLASS, NULL, NULL, &hStartUp, &hConsole1))
     {
-        StringCbPrintf(lpstrMyprompt, cb, L"Error, couldn't create a new console: %d.", 
-            GetLastError());
-        MessageBox(NULL, lpstrMyprompt, L"Track and Find Consoles", 
-            MB_OK | MB_SYSTEMMODAL);
-
+        StringCbPrintf(lpstrMyprompt, cb, L"Error, couldn't create a new console: %d.", GetLastError());
+        MessageBox(NULL, lpstrMyprompt, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
         return;
     }
 
@@ -96,17 +87,14 @@ void createConsoles(void)
     {
         HANDLE hStdOut = GetStdHandle( STD_OUTPUT_HANDLE );
 
-        if (FALSE == WriteConsole( hStdOut, lpstrEditcmd, lstrlen(lpstrMyprompt),
-            &cWritten, NULL))
+        if (FALSE == WriteConsole( hStdOut, lpstrEditcmd, lstrlen(lpstrMyprompt), &cWritten, NULL))
         {
-            StringCbPrintf(lpstrMyprompt, cb, L"Error, couldn't attach to the console: %d.", 
-                GetLastError()); 
+            StringCbPrintf(lpstrMyprompt, cb, L"Error, couldn't attach to the console: %d.", GetLastError()); 
             MessageBox(NULL,lpstrMyprompt, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
         }
 
         SetConsoleTitle (lpstrMyprompt);
-        MessageBox (NULL, L"Successfully attached to console #1", 
-            L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
+        MessageBox (NULL, L"Successfully attached to console #1", L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
         HWND hWnd = fpGetConsoleWindow();
         GetWindowRect(hWnd,&rcConsole2);
 
@@ -119,10 +107,8 @@ void createConsoles(void)
     }
     else
     {
-        StringCbPrintf(lpstrMyprompt, cb, L"Error, couldn't attach to the console: %d.", 
-            GetLastError()); 
-        MessageBox(NULL,lpstrMyprompt, L"Track and Find Consoles", 
-            MB_OK | MB_SYSTEMMODAL);
+        StringCbPrintf(lpstrMyprompt, cb, L"Error, couldn't attach to the console: %d.", GetLastError()); 
+        MessageBox(NULL,lpstrMyprompt, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
     }
 
     FreeConsole();
@@ -131,14 +117,10 @@ void createConsoles(void)
     StringCbCopy(lpstrMyprompt, cb, L"Console #2");
 
     // First, we have to create two consoles
-    if (FALSE == CreateProcess(lpstrEditcmd, NULL, NULL, NULL, FALSE,
-        CREATE_NEW_CONSOLE | NORMAL_PRIORITY_CLASS,
-        NULL, NULL, &hStartUp, &hConsole2))
+    if (FALSE == CreateProcess(lpstrEditcmd, NULL, NULL, NULL, FALSE, CREATE_NEW_CONSOLE | NORMAL_PRIORITY_CLASS, NULL, NULL, &hStartUp, &hConsole2))
     {
-        StringCbPrintf(lpstrMyprompt, cb, L"Error, couldn't create a new console: %d.", 
-            GetLastError()); 
-        MessageBox(NULL,lpstrMyprompt, L"Track and Find Consoles", 
-            MB_OK | MB_SYSTEMMODAL);
+        StringCbPrintf(lpstrMyprompt, cb, L"Error, couldn't create a new console: %d.", GetLastError()); 
+        MessageBox(NULL,lpstrMyprompt, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
         return;
     }
 
@@ -146,10 +128,8 @@ void createConsoles(void)
     bRet = fpAttachConsole(hConsole2.dwProcessId);
     if (FALSE == bRet)
     {
-        StringCbPrintf(buffer, cb, L"Error, couldn't attach to the console: %d.", 
-            GetLastError()); 
-        MessageBox(NULL,buffer, L"Track and Find Consoles", 
-            MB_OK | MB_SYSTEMMODAL);
+        StringCbPrintf(buffer, cb, L"Error, couldn't attach to the console: %d.", GetLastError()); 
+        MessageBox(NULL,buffer, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
         return;
     }
 
@@ -158,10 +138,6 @@ void createConsoles(void)
     FreeConsole();
 
 }
-
-
-
-
 
 HWINEVENTHOOK   hEventHook;
 
@@ -178,10 +154,7 @@ HWINEVENTHOOK   hEventHook;
 /*******************************************************************
 WinEventProc() - Callback function handles events
 *******************************************************************/
-WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK 
-    hWinEventHook, DWORD event, HWND hwnd, 
-    LONG idObject, LONG idChild, 
-    DWORD dwEventThread, DWORD dwmsEventTime )
+WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime )
 {
 
     DWORD dwProcessId;
@@ -209,17 +182,13 @@ WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK
             else if( 2 == idObject ) //CONSOLE_CARET_VISIBLE
                 StringCbCopy(Buf, cb, L"idObject: CONSOLE CARET VISIBLE - ");
             else
-                StringCbPrintf(Buf, cb, L" idObject: %d - INVALID VALUE!! - ", 
-                idObject );
+                StringCbPrintf(Buf, cb, L" idObject: %d - INVALID VALUE!! - ", idObject );
 
-            StringCbPrintf(Buf, cb, L"\r\nEvent Console CARET!\r\nX: \
-                                     %d - Y: %d \r\n\r\n", 
-                                     LOWORD(idChild), HIWORD(idChild) );
+            StringCbPrintf(Buf, cb, L"\r\nEvent Console CARET!\r\nX: \ %d - Y: %d \r\n\r\n", LOWORD(idChild), HIWORD(idChild) );
             StringCbLength(Buf, cb, &len); 
             if (FALSE == WriteConsole(hStdOut, Buf, len, &cWritten, NULL))
             {
-                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", 
-                    GetLastError());
+                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", GetLastError());
                 MessageBox(NULL, Buf, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
             }
         }
@@ -228,15 +197,11 @@ WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK
 
     case EVENT_CONSOLE_UPDATE_REGION:
         {
-            StringCbPrintf(Buf, cb, L"Event Console UPDATE REGION!\r\n \
-                                     Left: %d - Top: %d - Right: %d - Bottom:%d \r\n\r\n", 
-                                     LOWORD(idObject), HIWORD(idObject), LOWORD(idChild), 
-                                     HIWORD(idChild) );
+            StringCbPrintf(Buf, cb, L"Event Console UPDATE REGION!\r\n \ Left: %d - Top: %d - Right: %d - Bottom:%d \r\n\r\n", LOWORD(idObject), HIWORD(idObject), LOWORD(idChild), HIWORD(idChild) );
             StringCbLength(Buf, cb, &len); 
             if (FALSE == WriteConsole(hStdOut, Buf, len, &cWritten, NULL))
             {
-                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", 
-                    GetLastError());
+                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", GetLastError());
                 MessageBox(NULL,Buf, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
             }
 
@@ -246,15 +211,11 @@ WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK
 
     case EVENT_CONSOLE_UPDATE_SIMPLE:
         {
-            StringCbPrintf(Buf, cb, L"\r\nEvent Console UPDATE SIMPLE!\r\n \
-                                     X: %d - Y: %d\t Char: %d Attr: %d\r\n\r\n", 
-                                     LOWORD(idObject), HIWORD(idObject), 
-                                     LOWORD(idChild), HIWORD(idChild) );
+            StringCbPrintf(Buf, cb, L"\r\nEvent Console UPDATE SIMPLE!\r\n \ X: %d - Y: %d\t Char: %d Attr: %d\r\n\r\n", LOWORD(idObject), HIWORD(idObject), LOWORD(idChild), HIWORD(idChild) );
             StringCbLength(Buf, cb, &len); 
             if (FALSE == WriteConsole( hStdOut, Buf, len, &cWritten, NULL))
             {
-                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", 
-                    GetLastError());
+                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", GetLastError());
                 MessageBox(NULL, Buf, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
             }
 
@@ -264,13 +225,11 @@ WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK
 
     case EVENT_CONSOLE_UPDATE_SCROLL:
         {
-            StringCbPrintf(Buf, cb, L"Event Console UPDATE SCROLL!\r\ndx: \
-                                     %d  -  dy: %d\r\n\r\n", idObject, idChild );
+            StringCbPrintf(Buf, cb, L"Event Console UPDATE SCROLL!\r\ndx: \ %d  -  dy: %d\r\n\r\n", idObject, idChild );
             StringCbLength(Buf, cb, &len);                     
             if (FALSE == WriteConsole( hStdOut, Buf, len, &cWritten, NULL))
             {
-                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", 
-                    GetLastError());
+                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", GetLastError());
                 MessageBox(NULL, Buf, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
             }
         }
@@ -283,8 +242,7 @@ WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK
             StringCbLength(Buf, cb, &len);                     
             if (FALSE == WriteConsole( hStdOut, Buf, len, &cWritten, NULL))
             {
-                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", 
-                    GetLastError());
+                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", GetLastError());
                 MessageBox(NULL, Buf, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
             }
 
@@ -294,14 +252,10 @@ WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK
 
     case EVENT_CONSOLE_START_APPLICATION:
         {
-            StringCbPrintf(Buf, cb, L"Event Console START APPLICATION!\r\n \
-                                     Process ID: %d - Child ID: %d\r\n\r\n", 
-                                     idObject, idChild );
-            StringCbLength(Buf, cb, &len);                     
+            StringCbPrintf(Buf, cb, L"Event Console START APPLICATION!\r\n \ Process ID: %d - Child ID: %d\r\n\r\n", idObject, idChild ); StringCbLength(Buf, cb, &len);                     
             if (FALSE == WriteConsole(hStdOut, Buf, len, &cWritten, NULL))
             {
-                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", 
-                    GetLastError());
+                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", GetLastError());
                 MessageBox(NULL, Buf, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
             }
         }
@@ -310,14 +264,11 @@ WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK
 
     case EVENT_CONSOLE_END_APPLICATION:
         {
-            StringCbPrintf(Buf, cb, L"Event Console END APPLICATION!\r\n \
-                                     Process ID: %d - Child ID: %d\r\n\r\n", 
-                                     idObject, idChild );
+            StringCbPrintf(Buf, cb, L"Event Console END APPLICATION!\r\n \ Process ID: %d - Child ID: %d\r\n\r\n", idObject, idChild );
             StringCbLength(Buf, cb, &len);                     
             if (FALSE == WriteConsole(hStdOut, Buf, len, &cWritten, NULL ))
             {
-                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", 
-                    GetLastError());
+                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", GetLastError());
                 MessageBox(NULL, Buf, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
             }
 
@@ -363,13 +314,11 @@ WINEVENTDLL_API BOOL InstallWinEventsHook()
             HANDLE hStdout = GetStdHandle( STD_OUTPUT_HANDLE );
             DWORD cWritten;
 
-            StringCbPrintf(buffer, cb, 
-                L"\nPlease start typing to see event information\n");
+            StringCbPrintf(buffer, cb, L"\nPlease start typing to see event information\n");
             StringCbLength(buffer, cb, &len);                     
             if (FALSE == WriteConsole(hStdout, buffer, len, &cWritten, NULL))
             {
-                StringCbPrintf(buffer, cb, L"Error, couldn't write to the console: %d.", 
-                    GetLastError());
+                StringCbPrintf(buffer, cb, L"Error, couldn't write to the console: %d.", GetLastError());
                 MessageBox(NULL, buffer, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
             }
 
@@ -379,10 +328,8 @@ WINEVENTDLL_API BOOL InstallWinEventsHook()
     }
 
     // Did not install properly - fail
-    StringCbPrintf(buffer, cb, L"Error, couldn't set windows hook: %d.", 
-        GetLastError());
-    MessageBox(NULL, lpstrMyprompt, L"Track and Find Consoles", 
-        MB_OK | MB_SYSTEMMODAL);
+    StringCbPrintf(buffer, cb, L"Error, couldn't set windows hook: %d.", GetLastError());
+    MessageBox(NULL, lpstrMyprompt, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
     return FALSE;
 }
 
