@@ -8,7 +8,7 @@
 using namespace std;
 
 void AddDebugPrivilege();
-void InjectDll( DWORD dwProcessId, LPCSTR lpszDLLPath );
+void InjectDll_CreateRemoteThread( DWORD dwProcessId, LPCSTR lpszDLLPath );
 
 struct error
 {
@@ -40,6 +40,7 @@ int main( int argc, char* argv[] )
     try
     {
         // Add debug privilege
+        // TODO: Verify that adjusting privileges is needed. Check running without studio and hooking admin-run process.
         AddDebugPrivilege();
         cout << "Added debug privilege to current process." << endl;
 
@@ -59,18 +60,18 @@ int main( int argc, char* argv[] )
             throw error("Injected DLL file doesn't exist");
         }
 
-        // Inject DLL
+        // Inject DLL       
         cout << "Injected: " << injectedDll << endl;
         cout << "Process: " << process << endl;
-        InjectDll( process, injectedDll );
+        InjectDll_CreateRemoteThread( process, injectedDll );
         cout << "DLL was successfully injected." << endl;
 
         // Try hook call
-        HWND handle = GetForegroundWindow();
+        HWND handle = FindWindow( TEXT("TARGET"), TEXT("TARGET") );
         if( NULL == handle ) { throw error("GetForegroundWindow"); }
 
         char buffer[128];
-        HookMessageQueue( handle, buffer );
+        InjectDll_HookMessageQueue( handle, buffer );
     }
     catch( error &er )
     {
@@ -104,11 +105,14 @@ void AddDebugPrivilege()
     if( 0 == AdjustTokenPrivileges( token, 0, &privileges, sizeof(privileges), NULL, NULL ) ) { throw error("AdjustTokenPrivileges"); }
 }   
 
-void InjectDll( DWORD processId, LPCSTR dllPath )
+void InjectDll_CreateRemoteThread( DWORD processId, LPCSTR dllPath )
 {
+    // TODO: This hook doesn't unload injected DLL itself. But it should.
+    // TODO: Check what OpenProcess flags are really required.
+
     HANDLE hProcess = NULL;
     LPVOID lpBaseAddr = NULL;
-    HMODULE hUserDLL = NULL;
+    HMODULE hKernel32Dll = NULL;
     HANDLE hThread = NULL;
 
     try
@@ -123,10 +127,10 @@ void InjectDll( DWORD processId, LPCSTR dllPath )
         BOOL memoryWriteSuccess = WriteProcessMemory( hProcess, lpBaseAddr, dllPath, dwMemSize, NULL );
         if( 0 == memoryWriteSuccess ) { throw error("WriteProcessMemory"); }
 
-        hUserDLL = LoadLibrary( TEXT("kernel32.dll") );
-        if( NULL == hUserDLL ) { throw error("LoadLibrary"); }
+        hKernel32Dll = LoadLibrary( TEXT("kernel32.dll") );
+        if( NULL == hKernel32Dll ) { throw error("LoadLibrary"); }
 
-        LPVOID lpFuncAddr = GetProcAddress( hUserDLL, "LoadLibraryA" );
+        LPVOID lpFuncAddr = GetProcAddress( hKernel32Dll, "LoadLibraryA" );
         if( NULL == lpFuncAddr ) { throw error("GetProcAddress"); }
 
         hThread = CreateRemoteThread( hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)lpFuncAddr, lpBaseAddr, 0, NULL );
@@ -144,7 +148,7 @@ void InjectDll( DWORD processId, LPCSTR dllPath )
     catch( error & )
     {
         if( NULL != hThread )  { CloseHandle( hThread ); }
-        if( NULL != hUserDLL ) { FreeLibrary( hUserDLL ); }
+        if( NULL != hKernel32Dll ) { FreeLibrary( hKernel32Dll ); }
         if( NULL != lpBaseAddr ) { VirtualFreeEx( hProcess, lpBaseAddr, 0, MEM_RELEASE ); }
         if( NULL != hProcess ) { CloseHandle( hProcess ); }
 
@@ -152,7 +156,7 @@ void InjectDll( DWORD processId, LPCSTR dllPath )
     }
 
     if( NULL != hThread )  { CloseHandle( hThread ); }
-    if( NULL != hUserDLL ) { FreeLibrary( hUserDLL ); }
+    if( NULL != hKernel32Dll ) { FreeLibrary( hKernel32Dll ); }
     if( NULL != lpBaseAddr ) { VirtualFreeEx( hProcess, lpBaseAddr, 0, MEM_RELEASE ); }
     if( NULL != hProcess ) { CloseHandle( hProcess ); }
 }

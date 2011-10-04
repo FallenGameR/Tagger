@@ -83,7 +83,7 @@ LRESULT MyHookProcedure( int code, WPARAM wParam, LPARAM lParam )
 }
 
 
-int HookMessageQueue( HWND handle, LPSTR outString )
+int InjectDll_HookMessageQueue( HWND handle, LPSTR outString )
 {	
     shared_wnd_handle = handle;
 
@@ -92,8 +92,8 @@ int HookMessageQueue( HWND handle, LPSTR outString )
     shared_hook = SetWindowsHookEx( WH_CALLWNDPROC, (HOOKPROC) MyHookProcedure, hDll, processThreadId );
     if( NULL == shared_hook ) { throw error("SetWindowsHookEx"); }
     
-    ULONG originalWindowProcedure = GetWindowLong( handle, GWL_WNDPROC );
-    if( 0 == originalWindowProcedure ) { throw error("GetWindowLong"); }
+    //ULONG originalWindowProcedure = GetWindowLong( handle, GWL_WNDPROC );
+    //if( 0 == originalWindowProcedure ) { throw error("GetWindowLong"); }
    
     WM_USERMESSAGE = RegisterWindowMessage( TEXT("WM_USERMESSAGE") );
     if( 0 == WM_USERMESSAGE ) { throw error("RegisterWindowMessage"); }

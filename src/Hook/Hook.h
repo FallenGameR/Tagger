@@ -9,7 +9,7 @@
 #endif
 
 
-HOOKDLL_API int HookMessageQueue(HWND hWnd, LPSTR lpString);
+HOOKDLL_API int InjectDll_HookMessageQueue(HWND hWnd, LPSTR lpString);
 
 
 #endif // !defined(HOOKSPY_DLL_H)
