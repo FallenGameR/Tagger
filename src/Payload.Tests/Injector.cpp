@@ -21,6 +21,13 @@ int main( int argc, char* argv[] )
     // TODO: Add precompiled header to tests
     // TODO: Write test that covers console scenario
 
+    /* TODO:
+
+    /W warning level for all projects.
+    /Analyse works without any warnings. On Library code. Tests are fine unanalysed.
+
+    */
+
     try
     {
         Process process( TEXT("Host.Windows.exe") );
