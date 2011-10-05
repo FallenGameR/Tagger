@@ -1,64 +1,25 @@
+// Standard headers
 #include <string>
 #include <iostream>
 #include <windows.h>
 #include <conio.h>
 #include <tchar.h>
 #include <memory>
-#include "Hook.h"
 
 using namespace std;
 
+// Dependencies
+#include "Hook.h"
 
-
-class Process
-{
-public:
-    Process( LPTSTR path )
-    {
-
-    }
-
-    ~Process()
-    {
-
-    }
-
-private:
-
-};
-
-HANDLE g_process = NULL;
-HANDLE g_thread = NULL;
-
-
-void MyCreateProcess( LPTSTR path )
-{
-    size_t length = _tcslen( path ) + 1;
-    auto_ptr<TCHAR> path_copy( new TCHAR[ length ] );
-    _tcscpy_s( path_copy.get(), length, path );
-
-    STARTUPINFO si;
-    PROCESS_INFORMATION pi;
-
-    ZeroMemory( &si, sizeof(si) );
-    ZeroMemory( &pi, sizeof(pi) );
-
-    si.cb = sizeof(si);
-
-    BOOL success = CreateProcess( NULL, path_copy.get(), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi );
-    if( !success ) { throw error("CreateProcess"); }
-
-    g_process = pi.hProcess;
-    g_thread = pi.hThread;
-}
-
+// Current project
+#include "Process.hpp"
 
 int main( int argc, char* argv[] )
 {
     try
     {
         // TODO: Verify that console window can be hooked as well.
-        MyCreateProcess( TEXT("Host.Windows.exe") );
+        Process process( TEXT("Host.Windows.exe") );
 
         // Parse parameters
         LPCSTR injectedDll = "Hook.dll";
@@ -76,14 +37,6 @@ int main( int argc, char* argv[] )
         InjectDll_HookMessageQueue( handle, buffer );
         cout << "Hook successfully deployed." << endl;
 
-        BOOL success = TerminateProcess( g_process, 0 );
-        if( !success ) { throw error("TerminateProcess"); }
-
-        success = CloseHandle( g_process );
-        if( !success ) { throw error("CloseHandle - process"); }
-
-        success = CloseHandle( g_thread );
-        if( !success ) { throw error("CloseHandle - thread"); }
     }
     catch( error &er )
     {
