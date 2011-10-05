@@ -16,9 +16,13 @@ using namespace std;
 
 int main( int argc, char* argv[] )
 {
+    // TODO: Use unit test library to test for injection
+    // TODO: Remove ps1 tests if not needed
+    // TODO: Add precompiled header to tests
+    // TODO: Write test that covers console scenario
+
     try
     {
-        // TODO: Verify that console window can be hooked as well.
         Process process( TEXT("Host.Windows.exe") );
 
         // Parse parameters
