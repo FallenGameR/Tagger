@@ -75,6 +75,8 @@ LRESULT MyHookProcedure( int code, WPARAM wParam, LPARAM lParam )
 
 int InjectDll_HookMessageQueue( HWND handle, LPSTR outString )
 {	
+    AddDebugPrivilege();
+
     shared_wnd_handle = handle;
 
     DWORD processThreadId = GetWindowThreadProcessId( handle, NULL );
