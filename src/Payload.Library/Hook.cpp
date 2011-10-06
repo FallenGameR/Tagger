@@ -1,13 +1,4 @@
-#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
-
-// Including SDKDDKVer.h defines the highest available Windows platform.
-#include <SDKDDKVer.h>
-
-// Windows Header Files:
-#include <windows.h>
-
-// Project files:
-#include "Hook.h"
+#include "stdafx.h"
 
 
 //-------------------------------------------------------

@@ -33,6 +33,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PreprocessorDefinitions Condition="'$(Configuration)'=='Debug'">WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>      
       <PreprocessorDefinitions Condition="'$(Configuration)'=='Release'">WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>      
       <Optimization Condition="'$(Configuration)'=='Debug'">Disabled</Optimization>
@@ -49,6 +50,10 @@
 
   <!-- Files -->
   <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClInclude Include="stdafx.h" />
     <ClCompile Include="ConsoleHook.cpp" />
     <ClCompile Include="Hook.cpp" />
     <ClInclude Include="Hook.h" />

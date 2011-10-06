@@ -7,10 +7,7 @@
 
 // C RunTime Header Files
 #include <tchar.h>
-#include <memory>
-
-// Other libraries
-#include <UnitTest++.h>
+#include <strsafe.h> 
 
 // Dependant projects
 #include "Hook.h"

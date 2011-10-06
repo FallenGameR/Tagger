@@ -1,3 +1,5 @@
+#include "stdafx.h"
+
 // Track and Find Consoles
 // http://msdn.microsoft.com/en-us/library/ms971319.aspx#console
 
@@ -16,10 +18,6 @@
 //    When the WinEvent EVENT_OBJECT_CREATE is triggered, track the event to determine when a console is created.
 //    When the WinEvent EVENT_OBJECT_FOCUS is triggered, you can determine when a console has focus or not.
 
-#include <stdio.h>
-#include <tchar.h>
-#include <windows.h>
-#include <Strsafe.h> 
 
 #define BUFFSIZE  128
 
