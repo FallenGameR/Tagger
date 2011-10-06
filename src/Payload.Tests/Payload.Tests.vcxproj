@@ -13,11 +13,12 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ItemDefinitionGroup>
     <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <AdditionalIncludeDirectories>$(SolutionDir)Payload.Library;$(SolutionDir)..\libs\UnitTest++\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>        
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)..\bin\$(Configuration)\;$(SolutionDir)..\libs\UnitTest++\bin\$(Configuration)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>Payload.Library.lib;UnitTest++.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -62,9 +63,13 @@
   </ItemDefinitionGroup>
   <!-- Files-->
   <ItemGroup>
+    <ClInclude Include="Process.h" />
+    <ClCompile Include="Hook_win32_window_Test.cpp" />
     <ClCompile Include="Main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Process.hpp" />
+    <ClCompile Include="Process.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
 </Project>
