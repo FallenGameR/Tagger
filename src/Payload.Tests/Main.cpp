@@ -16,9 +16,21 @@ using namespace std;
 // Current project
 #include "Process.hpp"
 
-TEST(FailSpectacularly)
+TEST( Hook_win32_window )
 {
-    CHECK(false);
+    Process process( TEXT("Host.Windows.exe") );
+
+    // Try hook call
+    HWND handle = NULL;
+    while( NULL == handle )
+    {
+        handle = FindWindow( TEXT("TARGET"), TEXT("TARGET") );
+        Sleep(10);
+    }        
+    if( NULL == handle ) { throw error("FindWindow"); }
+
+    char buffer[128];
+    InjectDll_HookMessageQueue( handle, buffer );
 }
 
 int main( int argc, char* argv[] )
@@ -27,52 +39,11 @@ int main( int argc, char* argv[] )
     // TODO: Remove ps1 tests if not needed
     // TODO: Add precompiled header to tests
     // TODO: Write test that covers console scenario
+    // TODO: Use separate library for exceptions
+    // TODO: /W warning level for all projects.
+    // TODO: /Analyse works without any warnings. On Library code. Tests are fine unanalysed.
+    // TODO: Use incremental build. See default project settings.
 
-    /* TODO:
-
-    /W warning level for all projects.
-    /Analyse works without any warnings. On Library code. Tests are fine unanalysed.
-
-    */
-
-    int failed = UnitTest::RunAllTests();
-    return failed;
-
-    try
-    {
-        Process process( TEXT("Host.Windows.exe") );
-
-        // Parse parameters
-        LPCSTR injectedDll = "Hook.dll";
-
-        // Try hook call
-        HWND handle = NULL;
-        while( NULL == handle )
-        {
-            handle = FindWindow( TEXT("TARGET"), TEXT("TARGET") );
-            Sleep(10);
-        }        
-        if( NULL == handle ) { throw error("FindWindow"); }
-
-        char buffer[128];
-        InjectDll_HookMessageQueue( handle, buffer );
-        cout << "Hook successfully deployed." << endl;
-
-    }
-    catch( error &er )
-    {
-        cout << "ERROR. " << er.Message << ": " << er.ErrorCode << endl;
-        system("pause");
-        return 1;
-    }
-    catch( ... )
-    {
-        cout << "Unknown error. Run without parameters to see help." << endl;
-        system("pause");
-        return 1;
-    }
-    
-    system("pause");
-    return 0;
+    return UnitTest::RunAllTests();
 }
 

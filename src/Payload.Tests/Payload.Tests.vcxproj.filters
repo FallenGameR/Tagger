@@ -4,6 +4,9 @@
     <Filter Include="Utils">
       <UniqueIdentifier>{9efde4ff-b857-42d1-8dbb-e19f4d8ecce6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{a206b164-b497-4835-93f7-7f79fba6f463}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Process.hpp">
