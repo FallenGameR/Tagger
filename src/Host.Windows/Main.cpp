@@ -14,7 +14,7 @@ int APIENTRY _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpC
     // Register window class
     WNDCLASSEX wcex; ZeroMemory( &wcex, sizeof(WNDCLASSEX) );
     wcex.cbSize         = sizeof(WNDCLASSEX);
-    wcex.style			= CS_HREDRAW | CS_VREDRAW;
+    wcex.style		    = CS_HREDRAW | CS_VREDRAW;
     wcex.lpfnWndProc	= WndProc;
     wcex.hInstance		= hInstance;
     wcex.hIcon			= LoadIcon( NULL, IDI_INFORMATION );
