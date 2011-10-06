@@ -14,12 +14,12 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>$(SolutionDir)Payload.Library</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Payload.Library;$(SolutionDir)..\libs\UnitTest++\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\bin\$(Configuration)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Payload.Library.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\bin\$(Configuration)\;$(SolutionDir)..\libs\UnitTest++\bin\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Payload.Library.lib;UnitTest++.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <!-- Debug -->
@@ -61,7 +61,7 @@
   </ItemDefinitionGroup>
   <!-- Files-->
   <ItemGroup>
-    <ClCompile Include="Injector.cpp" />
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Process.hpp" />

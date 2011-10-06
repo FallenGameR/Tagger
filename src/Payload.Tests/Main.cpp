@@ -6,6 +6,8 @@
 #include <tchar.h>
 #include <memory>
 
+#include <UnitTest++.h>
+
 using namespace std;
 
 // Dependencies
@@ -13,6 +15,11 @@ using namespace std;
 
 // Current project
 #include "Process.hpp"
+
+TEST(FailSpectacularly)
+{
+    CHECK(false);
+}
 
 int main( int argc, char* argv[] )
 {
@@ -27,6 +34,9 @@ int main( int argc, char* argv[] )
     /Analyse works without any warnings. On Library code. Tests are fine unanalysed.
 
     */
+
+    int failed = UnitTest::RunAllTests();
+    return failed;
 
     try
     {
