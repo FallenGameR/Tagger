@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 // Global Variables
-TCHAR* szTitle = TEXT("Target");
+TCHAR* szTitle = TEXT("Windows Target x86");
 TCHAR* szWindowClass = TEXT("TARGET");
 HFONT defaultFont;
 RECT currentRect, moveRect, movingRect, sizeRect, sizingRect;

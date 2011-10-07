@@ -4,7 +4,7 @@
     <LocalDebuggerCommandArguments>
     </LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutputDir)</LocalDebuggerCommand>
-    <LocalDebuggerCommand Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutputDir)</LocalDebuggerCommand>
+    <LocalDebuggerWorkingDirectory Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutputPath)</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerWorkingDirectory Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutputPath)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
 </Project>

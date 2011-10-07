@@ -2,7 +2,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-    cout << "Console application." << endl;
+    SetConsoleTitle( TEXT("Console Target x86") );
+    cout << "Console Target x86" << endl;
     _getch();
     return 0;
 }

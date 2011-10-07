@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Process.h"
+#include "Shellapi.h"
 
 Process::Process( LPTSTR processPath )
 {
@@ -14,7 +15,7 @@ Process::Process( LPTSTR processPath )
     _tcscpy_s( path_copy.get(), length, processPath );
 
     // Create the process
-    BOOL success = CreateProcess( NULL, path_copy.get(), NULL, NULL, FALSE, 0, NULL, NULL, &m_StartupInfo, &m_ProcessInformation );
+    BOOL success = CreateProcess( path_copy.get(), NULL, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &m_StartupInfo, &m_ProcessInformation );
     if( !success ) { throw error("CreateProcess"); }
 }
 
