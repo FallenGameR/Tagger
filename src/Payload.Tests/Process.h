@@ -6,6 +6,7 @@ class Process
 public:
     Process( LPTSTR processPath );
     ~Process();
+    HWND FindMainWindow( LPTSTR className, LPTSTR title );
 
 private:
     STARTUPINFO m_StartupInfo;

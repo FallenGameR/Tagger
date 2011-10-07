@@ -24,3 +24,19 @@ Process::~Process()
     CloseHandle( m_ProcessInformation.hProcess );
     CloseHandle( m_ProcessInformation.hThread );
 }
+
+HWND Process::FindMainWindow( LPTSTR className, LPTSTR title )
+{
+    // Probe constants are taken in milliseconds
+    int probeLength = 10 * 1000;    // 10 seconds of trying
+    int probeInterval = 100;        // probe each 100 ms
+
+    for( int i = 0; i < probeLength; i += probeInterval )
+    {
+        HWND handle = FindWindow( className, title );
+        if( NULL != handle ) { return handle; }
+        Sleep( probeInterval );
+    }
+
+    throw error("FindWindow");
+}
