@@ -8,6 +8,8 @@
 // C RunTime Header Files
 #include <tchar.h>
 #include <strsafe.h> 
+#include <stdexcept> 
+#include <sstream> 
 
 // Dependant projects
 #include "Hook.h"

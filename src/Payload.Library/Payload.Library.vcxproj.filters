@@ -23,6 +23,9 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Precompiled</Filter>
     </ClCompile>
+    <ClCompile Include="ProgramException.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hook.h">
@@ -30,6 +33,9 @@
     </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Precompiled</Filter>
+    </ClInclude>
+    <ClInclude Include="ProgramException.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
