@@ -30,5 +30,8 @@
     <ClCompile Include="Hook_win32_window_Test.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="Hook_console_window_Test.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
