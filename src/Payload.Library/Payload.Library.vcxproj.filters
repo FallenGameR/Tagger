@@ -12,6 +12,9 @@
     <Filter Include="Precompiled">
       <UniqueIdentifier>{ae079539-d514-4f32-8ca7-db5bbbd3aceb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utilities">
+      <UniqueIdentifier>{1f015825-7dd7-49d0-b730-532d71df5af5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Hook.cpp">
@@ -23,8 +26,8 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Precompiled</Filter>
     </ClCompile>
-    <ClCompile Include="ProgramException.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="WinApiException.cpp">
+      <Filter>Utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -34,8 +37,8 @@
     <ClInclude Include="stdafx.h">
       <Filter>Precompiled</Filter>
     </ClInclude>
-    <ClInclude Include="ProgramException.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="WinApiException.h">
+      <Filter>Utilities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

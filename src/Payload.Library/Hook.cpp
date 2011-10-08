@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include "Hook.h"
+#include "WinApiException.h"
 
 
 //-------------------------------------------------------
@@ -73,18 +75,18 @@ int InjectDll_HookMessageQueue( HWND handle, LPSTR outString )
     DWORD processThreadId = GetWindowThreadProcessId( handle, NULL );
 
     shared_hook = SetWindowsHookEx( WH_CALLWNDPROC, (HOOKPROC) MyHookProcedure, hDll, processThreadId );
-    if( NULL == shared_hook ) { throw error("SetWindowsHookEx"); }
+    if( NULL == shared_hook ) { throw WinApiException("SetWindowsHookEx"); }
     
     //ULONG originalWindowProcedure = GetWindowLong( handle, GWL_WNDPROC );
-    //if( 0 == originalWindowProcedure ) { throw error("GetWindowLong"); }
+    //if( 0 == originalWindowProcedure ) { throw WinApiException("GetWindowLong"); }
    
     WM_USERMESSAGE = RegisterWindowMessage( TEXT("WM_USERMESSAGE") );
-    if( 0 == WM_USERMESSAGE ) { throw error("RegisterWindowMessage"); }
+    if( 0 == WM_USERMESSAGE ) { throw WinApiException("RegisterWindowMessage"); }
 
     SendMessage( handle, WM_USERMESSAGE, 0, 0 );
     //SendMessage( handle, WM_CLOSE, 0, 0 );
 
-    if( 42 != g_test ) { throw error("MyHookProcedure didn't executed"); }
+    if( 42 != g_test ) { throw WinApiException("MyHookProcedure didn't executed"); }
 
     strcpy( outString, shared_string );
     return strlen(outString);
@@ -96,13 +98,13 @@ void AddDebugPrivilege()
     HANDLE injector = GetCurrentProcess();
     TOKEN_PRIVILEGES privileges;
 
-    if( 0 == OpenProcessToken( injector, TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token ) ) { throw error("OpenProcessToken"); }
-    if( 0 == LookupPrivilegeValue( NULL, SE_DEBUG_NAME, &privileges.Privileges[0].Luid ) ) { throw error("LookupPrivilegeValue"); }
+    if( 0 == OpenProcessToken( injector, TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token ) ) { throw WinApiException("OpenProcessToken"); }
+    if( 0 == LookupPrivilegeValue( NULL, SE_DEBUG_NAME, &privileges.Privileges[0].Luid ) ) { throw WinApiException("LookupPrivilegeValue"); }
 
     privileges.PrivilegeCount = 1;
     privileges.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED; 
 
-    if( 0 == AdjustTokenPrivileges( token, 0, &privileges, sizeof(privileges), NULL, NULL ) ) { throw error("AdjustTokenPrivileges"); }
+    if( 0 == AdjustTokenPrivileges( token, 0, &privileges, sizeof(privileges), NULL, NULL ) ) { throw WinApiException("AdjustTokenPrivileges"); }
 }   
 
 void InjectDll_CreateRemoteThread( DWORD processId, LPCSTR dllPath )
@@ -118,34 +120,34 @@ void InjectDll_CreateRemoteThread( DWORD processId, LPCSTR dllPath )
     try
     {
         hProcess = OpenProcess( PROCESS_CREATE_THREAD|PROCESS_QUERY_INFORMATION|PROCESS_VM_OPERATION|PROCESS_VM_WRITE|PROCESS_VM_READ, FALSE, processId );
-        if( NULL == hProcess ) { throw error("OpenProcess"); }
+        if( NULL == hProcess ) { throw WinApiException("OpenProcess"); }
 
         DWORD dwMemSize = lstrlenA(dllPath) + 1;
         lpBaseAddr = VirtualAllocEx( hProcess, NULL, dwMemSize, MEM_COMMIT, PAGE_READWRITE );
-        if( NULL == lpBaseAddr ) { throw error("VirtualAllocEx"); }
+        if( NULL == lpBaseAddr ) { throw WinApiException("VirtualAllocEx"); }
 
         BOOL memoryWriteSuccess = WriteProcessMemory( hProcess, lpBaseAddr, dllPath, dwMemSize, NULL );
-        if( 0 == memoryWriteSuccess ) { throw error("WriteProcessMemory"); }
+        if( 0 == memoryWriteSuccess ) { throw WinApiException("WriteProcessMemory"); }
 
         hKernel32Dll = LoadLibrary( TEXT("kernel32.dll") );
-        if( NULL == hKernel32Dll ) { throw error("LoadLibrary"); }
+        if( NULL == hKernel32Dll ) { throw WinApiException("LoadLibrary"); }
 
         LPVOID lpFuncAddr = GetProcAddress( hKernel32Dll, "LoadLibraryA" );
-        if( NULL == lpFuncAddr ) { throw error("GetProcAddress"); }
+        if( NULL == lpFuncAddr ) { throw WinApiException("GetProcAddress"); }
 
         hThread = CreateRemoteThread( hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)lpFuncAddr, lpBaseAddr, 0, NULL );
-        if( NULL == hThread ) { throw error("CreateRemoteThread"); }
+        if( NULL == hThread ) { throw WinApiException("CreateRemoteThread"); }
 
         DWORD waitResult = WaitForSingleObject( hThread, INFINITE );
-        if( WAIT_FAILED == waitResult ) { throw error("WaitForSingleObject"); }
-        if( WAIT_OBJECT_0 != waitResult ) { throw error("WaitForSingleObject returned", waitResult ); }
+        if( WAIT_FAILED == waitResult ) { throw WinApiException("WaitForSingleObject"); }
+        if( WAIT_OBJECT_0 != waitResult ) { throw WinApiException("WaitForSingleObject returned", waitResult ); }
 
         DWORD dwExitCode;
         BOOL exitThreadResult = GetExitCodeThread( hThread, &dwExitCode );
-        if( 0 == exitThreadResult ) { throw error("GetExitCodeThread"); }
-        if( 0 == dwExitCode ) { throw error("Remote LoadLibrary returned", GetLastError()); }
+        if( 0 == exitThreadResult ) { throw WinApiException("GetExitCodeThread"); }
+        if( 0 == dwExitCode ) { throw WinApiException("Remote LoadLibrary returned", GetLastError()); }
     }
-    catch( error & )
+    catch( WinApiException & )
     {
         if( NULL != hThread )  { CloseHandle( hThread ); }
         if( NULL != hKernel32Dll ) { FreeLibrary( hKernel32Dll ); }

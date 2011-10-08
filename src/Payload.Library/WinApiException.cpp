@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "ProgramException.h"
+#include "WinApiException.h"
 
-const char* ProgramException::what() const
+const char* WinApiException::what() const
 {
     // Convert error code to string
     stringstream errorCode;

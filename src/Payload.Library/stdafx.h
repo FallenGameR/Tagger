@@ -11,8 +11,5 @@
 #include <stdexcept> 
 #include <sstream> 
 
-// Dependant projects
-#include "Hook.h"
-
 // Using std namespace
 using namespace std;

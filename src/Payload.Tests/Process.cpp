@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Process.h"
-#include "Shellapi.h"
+#include "WinApiException.h"
 
 Process::Process( LPTSTR processPath )
 {
@@ -16,7 +16,7 @@ Process::Process( LPTSTR processPath )
 
     // Create the process
     BOOL success = CreateProcess( path_copy.get(), NULL, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &m_StartupInfo, &m_ProcessInformation );
-    if( !success ) { throw error("CreateProcess"); }
+    if( !success ) { throw WinApiException("CreateProcess"); }
 }
 
 Process::~Process()
@@ -39,5 +39,5 @@ HWND Process::FindMainWindow( LPTSTR className, LPTSTR title )
         Sleep( probeInterval );
     }
 
-    throw error("FindWindow");
+    throw WinApiException("FindWindow");
 }
