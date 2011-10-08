@@ -50,14 +50,14 @@
   </ItemDefinitionGroup>
   <!-- Files-->
   <ItemGroup>
-    <ClCompile Include="Hook_console_window_Test.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Process.h" />
-    <ClCompile Include="Hook_win32_window_Test.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Process.cpp" />
+    <ClInclude Include="Process.h" />
+    <ClCompile Include="Hook_console_window_Test.cpp" />
+    <ClCompile Include="Hook_win32_window_Test.cpp" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Hook.h"
+#include "Payload.Dll.h"
 #include "WinApiException.h"
 
 
@@ -38,7 +38,7 @@ BOOL APIENTRY DllMain( HANDLE hModule, DWORD  ul_reason_for_call,  LPVOID lpRese
     case DLL_PROCESS_DETACH:
         break;
     }
-
+    
     hDll = (HINSTANCE) hModule;
     return TRUE;
 }
@@ -66,7 +66,7 @@ LRESULT MyHookProcedure( int code, WPARAM wParam, LPARAM lParam )
 }
 
 
-int InjectDll_HookMessageQueue( HWND handle, LPSTR outString )
+int APIENTRY InjectDll_HookMessageQueue( HWND handle, LPSTR outString )
 {	
     AddDebugPrivilege();
 
@@ -74,6 +74,7 @@ int InjectDll_HookMessageQueue( HWND handle, LPSTR outString )
 
     DWORD processThreadId = GetWindowThreadProcessId( handle, NULL );
 
+    //HMODULE test = GetCurrentModule();
     shared_hook = SetWindowsHookEx( WH_CALLWNDPROC, (HOOKPROC) MyHookProcedure, hDll, processThreadId );
     if( NULL == shared_hook ) { throw WinApiException("SetWindowsHookEx"); }
     
@@ -92,7 +93,7 @@ int InjectDll_HookMessageQueue( HWND handle, LPSTR outString )
     return strlen(outString);
 }
 
-void AddDebugPrivilege()
+void APIENTRY AddDebugPrivilege()
 { 
     HANDLE token;
     HANDLE injector = GetCurrentProcess();
@@ -107,7 +108,7 @@ void AddDebugPrivilege()
     if( 0 == AdjustTokenPrivileges( token, 0, &privileges, sizeof(privileges), NULL, NULL ) ) { throw WinApiException("AdjustTokenPrivileges"); }
 }   
 
-void InjectDll_CreateRemoteThread( DWORD processId, LPCSTR dllPath )
+void APIENTRY InjectDll_CreateRemoteThread( DWORD processId, LPCSTR dllPath )
 {
     // TODO: This hook doesn't unload injected DLL itself. But it should.
     // TODO: Check what OpenProcess flags are really required.

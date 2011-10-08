@@ -13,7 +13,7 @@
 #include <UnitTest++.h>
 
 // Dependant projects
-#include "Hook.h"
+#include "Payload.Dll.h"
 
 // Using std namespace
 using namespace std;

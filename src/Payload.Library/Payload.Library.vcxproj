@@ -45,14 +45,14 @@
   </ItemDefinitionGroup>
   <!-- Files -->
   <ItemGroup>
-    <ClCompile Include="WinApiException.cpp" />
+    <ClCompile Include="Payload.Dll.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClInclude Include="Payload.Dll.h" />
     <ClInclude Include="WinApiException.h" />
     <ClInclude Include="stdafx.h" />
     <ClCompile Include="ConsoleHook.cpp" />
     <ClCompile Include="Hook.cpp" />
-    <ClInclude Include="Hook.h" />
   </ItemGroup>
 </Project>
