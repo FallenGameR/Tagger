@@ -8,15 +8,15 @@
 
 // Console Specific Events
 //
-//    The console triggers several WinEvents to provide more comprehensive information about the interactions between the user and console applications. Following are scenarios for each event:
+// The console triggers several WinEvents to provide more comprehensive information about the interactions between the user and console applications. Following are scenarios for each event:
 //
-// When the WinEvent EVENT_CONSOLE_CARET is triggered, inform the user that the caret position has changed and whether the caret is selecting text or is visible.
-//    When the WinEvent EVENT_CONSOLE_UPDATE_SIMPLE is triggered, inform the user that this event was received and then display the character that was just entered.
-//    When the WinEvent EVENT_CONSOLE_LAYOUT is triggered, inform the user that this event was received.
-//    When the WinEvent EVENT_CONSOLE_START_ APPLICATION is triggered, inform the user that this event was received. This event determines when an application is started from within a DOS box.
-//    When the WinEvent EVENT_CONSOLE_END_ APPLICATION is triggered, inform the user that this event was received.
-//    When the WinEvent EVENT_OBJECT_CREATE is triggered, track the event to determine when a console is created.
-//    When the WinEvent EVENT_OBJECT_FOCUS is triggered, you can determine when a console has focus or not.
+// EVENT_CONSOLE_CARET is triggered, inform the user that the caret position has changed and whether the caret is selecting text or is visible.
+// EVENT_CONSOLE_UPDATE_SIMPLE is triggered, inform the user that this event was received and then display the character that was just entered.
+// EVENT_CONSOLE_LAYOUT is triggered, inform the user that this event was received.
+// EVENT_CONSOLE_START_ APPLICATION is triggered, inform the user that this event was received. This event determines when an application is started from within a DOS box.
+// EVENT_CONSOLE_END_ APPLICATION is triggered, inform the user that this event was received.
+// EVENT_OBJECT_CREATE is triggered, track the event to determine when a console is created.
+// EVENT_OBJECT_FOCUS is triggered, you can determine when a console has focus or not.
 
 
 #define BUFFSIZE  128
