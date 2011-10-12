@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx;h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\LeoHelpers">
+      <UniqueIdentifier>{2b22f0eb-43de-4c96-a895-214a668c5141}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="small.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="NoBarTab.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NoBarTab.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonDefs.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tabitha.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\LeoHelpers_Debug.h">
+      <Filter>Source Files\LeoHelpers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\LeoHelpers_File.h">
+      <Filter>Source Files\LeoHelpers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\LeoHelpers_Misc.h">
+      <Filter>Source Files\LeoHelpers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\LeoHelpers_Reg_Read.h">
+      <Filter>Source Files\LeoHelpers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\LeoHelpers_Reg_Write.h">
+      <Filter>Source Files\LeoHelpers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\LeoHelpers_Scope.h">
+      <Filter>Source Files\LeoHelpers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\LeoHelpers_String.h">
+      <Filter>Source Files\LeoHelpers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\LeoHelpers_Thread.h">
+      <Filter>Source Files\LeoHelpers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NoBarTab.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonDefs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tabitha.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\LeoHelpers_Debug.cpp">
+      <Filter>Source Files\LeoHelpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\LeoHelpers_File.cpp">
+      <Filter>Source Files\LeoHelpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\LeoHelpers_Misc.cpp">
+      <Filter>Source Files\LeoHelpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\LeoHelpers_Reg_Read.cpp">
+      <Filter>Source Files\LeoHelpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\LeoHelpers_Reg_Write.cpp">
+      <Filter>Source Files\LeoHelpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\LeoHelpers_String.cpp">
+      <Filter>Source Files\LeoHelpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\LeoHelpers_Thread.cpp">
+      <Filter>Source Files\LeoHelpers</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NoBarTab.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
