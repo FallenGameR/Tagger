@@ -1,10 +1,15 @@
-
 # Files ignored by Git
 *.sdf
 *.opensdf
 *.suo
 *.aps
+
+# Folders ignored by git
 ipch/
 Debug/
 Release/
+
+# Exceptions
+!/libs/UnitTest++/bin/Debug/
+!/libs/UnitTest++/bin/Release/
 
