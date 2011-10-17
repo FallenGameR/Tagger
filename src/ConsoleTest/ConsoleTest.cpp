@@ -16,19 +16,10 @@ PFN_GetConsoleWindow fpGetConsoleWindow;
 DWORD g_dwCurrentProc;
 void createConsoles(void);
 
+
 // Main entry point (the function arguments are ignored).
-int _tmain(int argc, _TCHAR* argv[])
+void _tmain(int argc, _TCHAR* argv[])
 {
-
-    createConsoles();
-    return 0;
-}
-
-
-void createConsoles(void)
-{
-    int iResponse;
-    iResponse = IDOK;
     LPTSTR lpstrMyprompt;
     LPTSTR lpstrEditcmd;
     LPTSTR lpstrSysDir;
@@ -54,41 +45,37 @@ void createConsoles(void)
     GetSystemDirectory(lpstrSysDir,BUFFSIZE);
 
     size_t cb = sizeof(TCHAR) * BUFFSIZE;
-    StringCbPrintf(lpstrEditcmd, cb, L"%s\\edit.com", lpstrSysDir);
+    StringCbPrintf(lpstrEditcmd, cb, L"%s\\cmd.exe", lpstrSysDir);
     StringCbCopy(lpstrMyprompt, cb, L"Console #1");
 
     // First, we have to create two consoles
-    if (FALSE == CreateProcess(lpstrEditcmd, NULL, NULL, NULL, FALSE,
-        CREATE_NEW_CONSOLE | NORMAL_PRIORITY_CLASS, NULL, 
-        NULL, &hStartUp, &hConsole1))
+    if (FALSE == CreateProcess(lpstrEditcmd, NULL, NULL, NULL, FALSE, CREATE_NEW_CONSOLE | NORMAL_PRIORITY_CLASS, NULL, NULL, &hStartUp, &hConsole1))
     {
-        StringCbPrintf(lpstrMyprompt, cb, L"Error, couldn't create a new console: %d.", 
-            GetLastError());
-        MessageBox(NULL, lpstrMyprompt, L"Track and Find Consoles", 
-            MB_OK | MB_SYSTEMMODAL);
-
+        StringCbPrintf(lpstrMyprompt, cb, L"Error, couldn't create a new console: %d.", GetLastError());
+        MessageBox(NULL, lpstrMyprompt, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
         return;
     }
 
     StringCbPrintf(lpstrEditcmd, cb, L"\nAttached\n"); 
 
-    Sleep(5000);
+    // Need to detach from current console to attach to another one.
+    BOOL success = FreeConsole();
+    if( !success ) { throw "Failed to detach from current console"; }
+
+    Sleep(1000);
     BOOL bRet = fpAttachConsole(hConsole1.dwProcessId);
     if (bRet)
     {
         HANDLE hStdOut = GetStdHandle( STD_OUTPUT_HANDLE );
 
-        if (FALSE == WriteConsole( hStdOut, lpstrEditcmd, lstrlen(lpstrMyprompt),
-            &cWritten, NULL))
+        if (FALSE == WriteConsole( hStdOut, lpstrEditcmd, lstrlen(lpstrMyprompt), &cWritten, NULL))
         {
-            StringCbPrintf(lpstrMyprompt, cb, L"Error, couldn't attach to the console: %d.", 
-                GetLastError()); 
+            StringCbPrintf(lpstrMyprompt, cb, L"Error, couldn't attach to the console: %d.", GetLastError()); 
             MessageBox(NULL,lpstrMyprompt, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
         }
 
         SetConsoleTitle (lpstrMyprompt);
-        MessageBox (NULL, L"Successfully attached to console #1", 
-            L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
+        MessageBox (NULL, L"Successfully attached to console #1", L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
         HWND hWnd = fpGetConsoleWindow();
         GetWindowRect(hWnd,&rcConsole2);
 
@@ -101,10 +88,8 @@ void createConsoles(void)
     }
     else
     {
-        StringCbPrintf(lpstrMyprompt, cb, L"Error, couldn't attach to the console: %d.", 
-            GetLastError()); 
-        MessageBox(NULL,lpstrMyprompt, L"Track and Find Consoles", 
-            MB_OK | MB_SYSTEMMODAL);
+        StringCbPrintf(lpstrMyprompt, cb, L"Error, couldn't attach to the console: %d.", GetLastError()); 
+        MessageBox(NULL,lpstrMyprompt, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
     }
 
     FreeConsole();
@@ -113,14 +98,10 @@ void createConsoles(void)
     StringCbCopy(lpstrMyprompt, cb, L"Console #2");
 
     // First, we have to create two consoles
-    if (FALSE == CreateProcess(lpstrEditcmd, NULL, NULL, NULL, FALSE,
-        CREATE_NEW_CONSOLE | NORMAL_PRIORITY_CLASS,
-        NULL, NULL, &hStartUp, &hConsole2))
+    if (FALSE == CreateProcess(lpstrEditcmd, NULL, NULL, NULL, FALSE, CREATE_NEW_CONSOLE | NORMAL_PRIORITY_CLASS, NULL, NULL, &hStartUp, &hConsole2))
     {
-        StringCbPrintf(lpstrMyprompt, cb, L"Error, couldn't create a new console: %d.", 
-            GetLastError()); 
-        MessageBox(NULL,lpstrMyprompt, L"Track and Find Consoles", 
-            MB_OK | MB_SYSTEMMODAL);
+        StringCbPrintf(lpstrMyprompt, cb, L"Error, couldn't create a new console: %d.", GetLastError()); 
+        MessageBox(NULL,lpstrMyprompt, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
         return;
     }
 
@@ -128,10 +109,8 @@ void createConsoles(void)
     bRet = fpAttachConsole(hConsole2.dwProcessId);
     if (FALSE == bRet)
     {
-        StringCbPrintf(buffer, cb, L"Error, couldn't attach to the console: %d.", 
-            GetLastError()); 
-        MessageBox(NULL,buffer, L"Track and Find Consoles", 
-            MB_OK | MB_SYSTEMMODAL);
+        StringCbPrintf(buffer, cb, L"Error, couldn't attach to the console: %d.", GetLastError()); 
+        MessageBox(NULL,buffer, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
         return;
     }
 
@@ -166,10 +145,8 @@ void DisplayRegion()
     BOOL bRet = fpAttachConsole(hConsole1.dwProcessId);
     if (FALSE == bRet)
     {
-        StringCbPrintf(buffer, cb, L"Error, couldn't attach to the console: %d.", 
-            GetLastError());
-        MessageBox(NULL, buffer, L"Track and Find Consoles", 
-            MB_OK | MB_SYSTEMMODAL);
+        StringCbPrintf(buffer, cb, L"Error, couldn't attach to the console: %d.", GetLastError());
+        MessageBox(NULL, buffer, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
         return;
     }
 
@@ -179,13 +156,7 @@ void DisplayRegion()
     {
 
         StringCbPrintf(buffer, cb, L"\nLine %d to copy over...\n", i);
-        WriteConsole(
-            hStdout,
-            buffer,
-            lstrlen(buffer),
-            &cWritten,
-            NULL
-            );
+        WriteConsole( hStdout, buffer, lstrlen(buffer), &cWritten, NULL);
     }
     srctReadRect.Top=0;
     srctReadRect.Left=0;
@@ -198,13 +169,7 @@ void DisplayRegion()
     coordBufCoord.X=0;
     coordBufCoord.Y=0;
 
-    ReadConsoleOutput(
-        hStdout,
-        chiBuffer,
-        coordBufSize,
-        coordBufCoord,
-        &srctReadRect
-        );
+    ReadConsoleOutput( hStdout, chiBuffer, coordBufSize, coordBufCoord, &srctReadRect);
 
     srctWriteRect.Left=0;
     srctWriteRect.Top=0;
@@ -216,22 +181,14 @@ void DisplayRegion()
     bRet = fpAttachConsole(hConsole2.dwProcessId);
     if (FALSE == bRet)
     {
-        StringCbPrintf(buffer, cb, L"Error, couldn't attach to the console: %d.", 
-            GetLastError());
-        MessageBox(NULL,buffer, L"Track and Find Consoles", 
-            MB_OK | MB_SYSTEMMODAL);
+        StringCbPrintf(buffer, cb, L"Error, couldn't attach to the console: %d.", GetLastError());
+        MessageBox(NULL,buffer, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
         return;
     }
 
     hStdout = GetStdHandle(STD_OUTPUT_HANDLE); 
 
-    WriteConsoleOutput(
-        hStdout,
-        chiBuffer,
-        coordBufSize,
-        coordBufCoord,
-        &srctWriteRect
-        );
+    WriteConsoleOutput( hStdout, chiBuffer, coordBufSize, coordBufCoord, &srctWriteRect);
 
     FreeConsole();
 
@@ -264,10 +221,8 @@ void CopyDisplayedText(void)
    BOOL bRet = fpAttachConsole(hConsole1.dwProcessId);
    if (FALSE == bRet)
    {
-      StringCbPrintf(buffer, cb, L"Error, couldn't attach to the console: %d.", 
-          GetLastError());
-      MessageBox(NULL,buffer, L"Track and Find Consoles", 
-            MB_OK | MB_SYSTEMMODAL);
+      StringCbPrintf(buffer, cb, L"Error, couldn't attach to the console: %d.", GetLastError());
+      MessageBox(NULL,buffer, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
       return;
    }
    
@@ -276,46 +231,26 @@ void CopyDisplayedText(void)
    for (i = 1; i < 30; i++)
    {
       StringCbPrintf(buffer, cb, L"CopyDisplayedText: Line to ignore %d\n", i);
-      WriteConsole(
-         hStdout,
-         buffer,
-         lstrlen(buffer),
-         &cWritten,
-         NULL
-         );
+      WriteConsole( hStdout, buffer, lstrlen(buffer), &cWritten, NULL);
    }
 
    StringCbPrintf(buffer, cb, L"\n\n");
    for (i = 1; i < 10; i++)
    {
-      WriteConsole(
-         hStdout,
-         buffer,
-         lstrlen(buffer),
-         &cWritten,
-         NULL
-         );
+      WriteConsole( hStdout, buffer, lstrlen(buffer), &cWritten, NULL);
    }
 
 
    for (i = 1; i < 20; i++)
    {
       StringCbPrintf(buffer, cb, L"CopyDisplayedText:Copy Line %d\n", i);
-      WriteConsole(
-         hStdout,
-         buffer,
-         lstrlen(buffer),
-         &cWritten,
-         NULL
-         );
+      WriteConsole( hStdout, buffer, lstrlen(buffer), &cWritten, NULL);
    }
 
    MessageBox (NULL, L"Copy to new window", L"APIs", MB_OK);
 
    // Get the screen buffer information and set the rectangles
-   GetConsoleScreenBufferInfo(
-      hStdout, &lConsoleScreenBufferInfo
-      );
+   GetConsoleScreenBufferInfo( hStdout, &lConsoleScreenBufferInfo);
    srctReadRect.Top=lConsoleScreenBufferInfo.srWindow.Top;
    srctReadRect.Left=lConsoleScreenBufferInfo.srWindow.Left;
    srctReadRect.Bottom=lConsoleScreenBufferInfo.srWindow.Bottom;
@@ -327,13 +262,7 @@ void CopyDisplayedText(void)
    coordBufCoord.Y=lConsoleScreenBufferInfo.srWindow.Top;
 
    // Read the window
-   ReadConsoleOutput(
-      hStdout,
-      chiBuffer,
-      coordBufSize,
-      coordBufCoord,
-      &srctReadRect
-      );
+   ReadConsoleOutput( hStdout, chiBuffer, coordBufSize, coordBufCoord, &srctReadRect);
 
    srctWriteRect.Left=lConsoleScreenBufferInfo.srWindow.Left;
    srctWriteRect.Top=lConsoleScreenBufferInfo.srWindow.Top;
@@ -345,27 +274,18 @@ void CopyDisplayedText(void)
    bRet = fpAttachConsole(hConsole2.dwProcessId);
    if (FALSE == bRet)
    {
-      StringCbPrintf(buffer, cb, L"Error, couldn't attach to the console: %d.", 
-          GetLastError());
-      MessageBox(NULL,buffer, L"Track and Find Consoles", 
-            MB_OK | MB_SYSTEMMODAL);
+      StringCbPrintf(buffer, cb, L"Error, couldn't attach to the console: %d.", GetLastError());
+      MessageBox(NULL,buffer, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
       return;
    }
 
    hStdout = GetStdHandle(STD_OUTPUT_HANDLE); 
    
    // Display the buffer in the new window
-   WriteConsoleOutput(
-      hStdout,
-      chiBuffer,
-      coordBufSize,
-      coordBufCoord,
-      &srctWriteRect
-      );
+   WriteConsoleOutput( hStdout, chiBuffer, coordBufSize, coordBufCoord, &srctWriteRect);
    FreeConsole();
 
-   MessageBox (NULL, L"Return to original console.",
-       L"APIs", MB_OK);
+   MessageBox (NULL, L"Return to original console.", L"APIs", MB_OK);
 return;
 }
 
@@ -389,10 +309,7 @@ HWINEVENTHOOK   hEventHook;
 /*******************************************************************
 WinEventProc() - Callback function handles events
 *******************************************************************/
-WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK 
-    hWinEventHook, DWORD event, HWND hwnd, 
-    LONG idObject, LONG idChild, 
-    DWORD dwEventThread, DWORD dwmsEventTime )
+WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime )
 {
 
     DWORD dwProcessId;
@@ -420,17 +337,14 @@ WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK
             else if( 2 == idObject ) //CONSOLE_CARET_VISIBLE
                 StringCbCopy(Buf, cb, L"idObject: CONSOLE CARET VISIBLE - ");
             else
-                StringCbPrintf(Buf, cb, L" idObject: %d - INVALID VALUE!! - ", 
-                idObject );
+                StringCbPrintf(Buf, cb, L" idObject: %d - INVALID VALUE!! - ", idObject );
 
             StringCbPrintf(Buf, cb, L"\r\nEvent Console CARET!\r\nX: \
-                                     %d - Y: %d \r\n\r\n", 
-                                     LOWORD(idChild), HIWORD(idChild) );
+                                     %d - Y: %d \r\n\r\n", LOWORD(idChild), HIWORD(idChild) );
             StringCbLength(Buf, cb, &len); 
             if (FALSE == WriteConsole(hStdOut, Buf, len, &cWritten, NULL))
             {
-                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", 
-                    GetLastError());
+                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", GetLastError());
                 MessageBox(NULL, Buf, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
             }
         }
@@ -440,14 +354,11 @@ WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK
     case EVENT_CONSOLE_UPDATE_REGION:
         {
             StringCbPrintf(Buf, cb, L"Event Console UPDATE REGION!\r\n \
-                                     Left: %d - Top: %d - Right: %d - Bottom:%d \r\n\r\n", 
-                                     LOWORD(idObject), HIWORD(idObject), LOWORD(idChild), 
-                                     HIWORD(idChild) );
+                                     Left: %d - Top: %d - Right: %d - Bottom:%d \r\n\r\n", LOWORD(idObject), HIWORD(idObject), LOWORD(idChild), HIWORD(idChild) );
             StringCbLength(Buf, cb, &len); 
             if (FALSE == WriteConsole(hStdOut, Buf, len, &cWritten, NULL))
             {
-                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", 
-                    GetLastError());
+                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", GetLastError());
                 MessageBox(NULL,Buf, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
             }
 
@@ -458,14 +369,11 @@ WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK
     case EVENT_CONSOLE_UPDATE_SIMPLE:
         {
             StringCbPrintf(Buf, cb, L"\r\nEvent Console UPDATE SIMPLE!\r\n \
-                                     X: %d - Y: %d\t Char: %d Attr: %d\r\n\r\n", 
-                                     LOWORD(idObject), HIWORD(idObject), 
-                                     LOWORD(idChild), HIWORD(idChild) );
+                                     X: %d - Y: %d\t Char: %d Attr: %d\r\n\r\n", LOWORD(idObject), HIWORD(idObject), LOWORD(idChild), HIWORD(idChild) );
             StringCbLength(Buf, cb, &len); 
             if (FALSE == WriteConsole( hStdOut, Buf, len, &cWritten, NULL))
             {
-                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", 
-                    GetLastError());
+                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", GetLastError());
                 MessageBox(NULL, Buf, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
             }
 
@@ -480,8 +388,7 @@ WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK
             StringCbLength(Buf, cb, &len);                     
             if (FALSE == WriteConsole( hStdOut, Buf, len, &cWritten, NULL))
             {
-                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", 
-                    GetLastError());
+                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", GetLastError());
                 MessageBox(NULL, Buf, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
             }
         }
@@ -494,8 +401,7 @@ WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK
             StringCbLength(Buf, cb, &len);                     
             if (FALSE == WriteConsole( hStdOut, Buf, len, &cWritten, NULL))
             {
-                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", 
-                    GetLastError());
+                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", GetLastError());
                 MessageBox(NULL, Buf, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
             }
 
