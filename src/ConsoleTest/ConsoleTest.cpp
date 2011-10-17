@@ -11,14 +11,37 @@ PROCESS_INFORMATION hConsole1, hConsole2;
 typedef BOOL (WINAPI* PFN_AttachConsole)(DWORD);
 typedef HWND (WINAPI* PFN_GetConsoleWindow)(VOID);
 
+HWINEVENTHOOK   hEventHook;
+
+#define  EVENT_CONSOLE_CARET              0x4001
+#define  EVENT_CONSOLE_UPDATE_REGION      0x4002
+#define  EVENT_CONSOLE_UPDATE_SIMPLE      0x4003
+#define  EVENT_CONSOLE_UPDATE_SCROLL      0x4004
+#define  EVENT_CONSOLE_LAYOUT             0x4005
+#define  EVENT_CONSOLE_START_APPLICATION  0x4006
+#define  EVENT_CONSOLE_END_APPLICATION    0x4007
+
+#define WINEVENTDLL_API __declspec(dllexport)
+
 PFN_AttachConsole fpAttachConsole;
 PFN_GetConsoleWindow fpGetConsoleWindow;
 DWORD g_dwCurrentProc;
-void createConsoles(void);
+void DemoInitialization();
+void CopyBlock();
+void CopyDisplayedText_Buggy();
+WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime );
+WINEVENTDLL_API BOOL InstallWinEventsHook();
+WINEVENTDLL_API BOOL UninstallWinEventsHook();
 
+BOOL InstallWinEventsHook();
 
-// Main entry point (the function arguments are ignored).
 void _tmain(int argc, _TCHAR* argv[])
+{
+    DemoInitialization();
+    InstallWinEventsHook();
+}
+
+void DemoInitialization()
 {
     LPTSTR lpstrMyprompt;
     LPTSTR lpstrEditcmd;
@@ -79,8 +102,8 @@ void _tmain(int argc, _TCHAR* argv[])
         HWND hWnd = fpGetConsoleWindow();
         GetWindowRect(hWnd,&rcConsole2);
 
-        hStartUp.dwX = rcConsole2.left + 10;
-        hStartUp.dwY = rcConsole2.bottom + 10;
+        hStartUp.dwX = rcConsole2.left + 100;
+        hStartUp.dwY = rcConsole2.top + 100;
         hStartUp.dwXSize = rcConsole2.right - rcConsole2.left;
         hStartUp.dwYSize = rcConsole2.bottom - rcConsole2.top;
         hStartUp.dwFlags = STARTF_USEPOSITION;
@@ -94,7 +117,7 @@ void _tmain(int argc, _TCHAR* argv[])
 
     FreeConsole();
 
-    StringCbPrintf(lpstrEditcmd, cb, L"%s\\edit.com", lpstrSysDir);
+    StringCbPrintf(lpstrEditcmd, cb, L"%s\\cmd.exe", lpstrSysDir);
     StringCbCopy(lpstrMyprompt, cb, L"Console #2");
 
     // First, we have to create two consoles
@@ -105,7 +128,7 @@ void _tmain(int argc, _TCHAR* argv[])
         return;
     }
 
-    Sleep(5000);
+    Sleep(1000);
     bRet = fpAttachConsole(hConsole2.dwProcessId);
     if (FALSE == bRet)
     {
@@ -117,16 +140,8 @@ void _tmain(int argc, _TCHAR* argv[])
     SetConsoleTitle (lpstrMyprompt);
 
     FreeConsole();
-
 }
-
-
-//-----------------------------------------------------------------------------------------
-
-
-// Extracting Console Information
-
-void DisplayRegion()
+void CopyBlock()
 {
     int i;
     HANDLE hStdout;
@@ -154,7 +169,6 @@ void DisplayRegion()
 
     for (i = 1; i < 10; i++)
     {
-
         StringCbPrintf(buffer, cb, L"\nLine %d to copy over...\n", i);
         WriteConsole( hStdout, buffer, lstrlen(buffer), &cWritten, NULL);
     }
@@ -195,15 +209,7 @@ void DisplayRegion()
     return;
 
 }
-
-
-
-//--------------------------------------------------------------------------------------------
-
-
-// Extracting Console Information
-
-void CopyDisplayedText(void) 
+void CopyDisplayedText_Buggy() 
 {
    int i;
    HANDLE hStdout;
@@ -286,32 +292,13 @@ void CopyDisplayedText(void)
    FreeConsole();
 
    MessageBox (NULL, L"Return to original console.", L"APIs", MB_OK);
-return;
 }
-
-
-//-------------------------------------------------------------------------------------------------------------
-
-
-
-HWINEVENTHOOK   hEventHook;
-
-#define  EVENT_CONSOLE_CARET              0x4001
-#define  EVENT_CONSOLE_UPDATE_REGION      0x4002
-#define  EVENT_CONSOLE_UPDATE_SIMPLE      0x4003
-#define  EVENT_CONSOLE_UPDATE_SCROLL      0x4004
-#define  EVENT_CONSOLE_LAYOUT             0x4005
-#define  EVENT_CONSOLE_START_APPLICATION  0x4006
-#define  EVENT_CONSOLE_END_APPLICATION    0x4007
-
-#define WINEVENTDLL_API __declspec(dllexport)
 
 /*******************************************************************
 WinEventProc() - Callback function handles events
 *******************************************************************/
 WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime )
 {
-
     DWORD dwProcessId;
     GetWindowThreadProcessId(hwnd,&dwProcessId);
 
@@ -328,10 +315,8 @@ WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD e
 
     switch (event)
     {
-
     case EVENT_CONSOLE_CARET:
         {
-
             if( 1 == idObject )      //CONSOLE_CARET_SELECTION
                 StringCbCopy(Buf, cb, L"idObject: CONSOLE CARET SELECTION - ");
             else if( 2 == idObject ) //CONSOLE_CARET_VISIBLE
@@ -446,13 +431,11 @@ WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD e
 
 }
 
-
 /*************************************************************************
 InstallWinEventsHook() - Initalize the Active Accessibility subsystem
 *************************************************************************/
 WINEVENTDLL_API BOOL InstallWinEventsHook()
 {
-
     TCHAR buffer[BUFFSIZE];
     LPTSTR lpstrMyprompt;
     size_t cb = sizeof(TCHAR) * BUFFSIZE;
