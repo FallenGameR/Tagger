@@ -11,6 +11,9 @@
 #include <iostream>
 #include <sstream>
 #include <Strsafe.h> 
+//#include <io.h>
+//#include <fcntl.h>
+#include <fstream> 
 
 // Using std namespace
 using namespace std;
@@ -223,10 +226,21 @@ void InstallWinEventsHook()
     hEventHook = SetWinEventHook( EVENT_MIN, EVENT_MAX, NULL, WinEventProc, 0, 0, WINEVENT_OUTOFCONTEXT); 
     if( !hEventHook ) { throw "SetWinEventHook"; }
 
+    //AllocConsole
     BOOL bRet = AttachConsole(hConsole1.dwProcessId);
     if( !bRet ) { throw "AttachConsole"; }
 
-    cprintf( "Please start typing to see event information\n" );
+    // http://blog.signalsondisplay.com/?p=85
+
+    // first we need to backup the current stream buffer so that we can restore it later
+    std::streambuf *backup = std::cout.rdbuf();
+
+    // then we need to open the output stream associated with the console
+    std::ofstream console_out("CONOUT$");
+
+    // once we have the console buffer, we can set it as the std::cout stream buffer
+    std::cout.rdbuf(console_out.rdbuf());
+
     cout << "Please start typing to see event information" << endl;
     g_dwCurrentProc = hConsole1.dwProcessId;
 }
