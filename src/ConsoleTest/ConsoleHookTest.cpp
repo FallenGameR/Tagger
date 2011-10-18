@@ -27,9 +27,9 @@ DWORD g_dwCurrentProc;
 
 // Forwards
 void DemoInitialization();
-VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime );
-BOOL InstallWinEventsHook();
-BOOL UninstallWinEventsHook();
+void CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime );
+void InstallWinEventsHook();
+void UninstallWinEventsHook();
 LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
 
 int APIENTRY _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow )
@@ -65,8 +65,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
     {
     case WM_CREATE:
         DemoInitialization();
-        hookSuccess = InstallWinEventsHook();
-        if( !hookSuccess ) { throw "InstallWinEventsHook"; }
+        InstallWinEventsHook();
         break;
 
     case WM_DESTROY:
@@ -214,52 +213,38 @@ VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd,
     }
 }
 
-BOOL InstallWinEventsHook()
+void InstallWinEventsHook()
 {
-    TCHAR buffer[BUFFSIZE];
-    LPTSTR lpstrMyprompt;
-    size_t cb = sizeof(TCHAR) * BUFFSIZE;
-    size_t len = 0;
-
-    lpstrMyprompt = &buffer[0];
-
     // Set up event call back
     // We want all events
     // Use our own module
     // All processes
     // All threads
     hEventHook = SetWinEventHook( EVENT_MIN, EVENT_MAX, NULL, WinEventProc, 0, 0, WINEVENT_OUTOFCONTEXT); 
+    if( !hEventHook ) { throw "SetWinEventHook"; }
 
-    // Did we install correctly? 
-    if (hEventHook)
+    BOOL bRet = AttachConsole(hConsole1.dwProcessId);
+    if( !bRet ) { throw "AttachConsole"; }
+
+    TCHAR buffer[BUFFSIZE];
+    size_t cb = sizeof(TCHAR) * BUFFSIZE;
+    size_t len = 0;
+
+    HANDLE hStdout = GetStdHandle( STD_OUTPUT_HANDLE );
+    DWORD cWritten;
+
+    StringCbPrintf(buffer, cb, L"\nPlease start typing to see event information\n");
+    StringCbLength(buffer, cb, &len);                     
+    if (FALSE == WriteConsole(hStdout, buffer, len, &cWritten, NULL))
     {
-        BOOL bRet = AttachConsole(hConsole1.dwProcessId);
-        if (bRet)
-        {
-            HANDLE hStdout = GetStdHandle( STD_OUTPUT_HANDLE );
-            DWORD cWritten;
-
-            StringCbPrintf(buffer, cb, L"\nPlease start typing to see event information\n");
-            StringCbLength(buffer, cb, &len);                     
-            if (FALSE == WriteConsole(hStdout, buffer, len, &cWritten, NULL))
-            {
-                StringCbPrintf(buffer, cb, L"Error, couldn't write to the console: %d.", GetLastError());
-                MessageBox(NULL, buffer, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
-            }
-
-            g_dwCurrentProc = hConsole1.dwProcessId;
-            return TRUE;
-        }
+        StringCbPrintf(buffer, cb, L"Error, couldn't write to the console: %d.", GetLastError());
+        MessageBox(NULL, buffer, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
     }
 
-    // Did not install properly - fail
-    StringCbPrintf(buffer, cb, L"Error, couldn't set windows hook: %d.", GetLastError());
-    MessageBox(NULL, lpstrMyprompt, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
-    return FALSE;
+    g_dwCurrentProc = hConsole1.dwProcessId;
 }
 
-BOOL UninstallWinEventsHook()
+void UninstallWinEventsHook()
 {
     UnhookWinEvent(hEventHook);
-    return TRUE;
 }
