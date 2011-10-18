@@ -10,31 +10,26 @@
 #include <conio.h>
 #include <iostream>
 #include <sstream>
-
+#include <Strsafe.h> 
 
 // Using std namespace
 using namespace std;
 
-// Global Variables
+// Constants
+#define BUFFSIZE  128
 TCHAR* szTitle = TEXT("Windows Target x86");
 TCHAR* szWindowClass = TEXT("TARGET");
-HFONT defaultFont;
-RECT rect, moveRect, movingRect, sizeRect, sizingRect;
 
-#include <Strsafe.h> 
-
-#define BUFFSIZE  128
-
+// Global Variables
 PROCESS_INFORMATION hConsole1, hConsole2;
-
 HWINEVENTHOOK   hEventHook;
-#define WINEVENTDLL_API __declspec(dllexport)
-
 DWORD g_dwCurrentProc;
+
+// Forwards
 void DemoInitialization();
-WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime );
-WINEVENTDLL_API BOOL InstallWinEventsHook();
-WINEVENTDLL_API BOOL UninstallWinEventsHook();
+VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime );
+BOOL InstallWinEventsHook();
+BOOL UninstallWinEventsHook();
 LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
 
 int APIENTRY _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow )
@@ -175,7 +170,7 @@ void DemoInitialization()
     FreeConsole();
 }
 
-WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime )
+VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime )
 {
     DWORD dwProcessId;
     GetWindowThreadProcessId(hwnd,&dwProcessId);
@@ -219,7 +214,7 @@ WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD e
     }
 }
 
-WINEVENTDLL_API BOOL InstallWinEventsHook()
+BOOL InstallWinEventsHook()
 {
     TCHAR buffer[BUFFSIZE];
     LPTSTR lpstrMyprompt;
@@ -263,7 +258,7 @@ WINEVENTDLL_API BOOL InstallWinEventsHook()
     return FALSE;
 }
 
-WINEVENTDLL_API BOOL UninstallWinEventsHook()
+BOOL UninstallWinEventsHook()
 {
     UnhookWinEvent(hEventHook);
     return TRUE;

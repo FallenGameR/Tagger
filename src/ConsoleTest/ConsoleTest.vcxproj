@@ -14,7 +14,7 @@
     <ProjectGuid>{305E12C0-DB92-4CB3-B89C-3AD5F599DEE8}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ConsoleTest</RootNamespace>
-    <ProjectName>ConsoleHookTest</ProjectName>
+    <ProjectName>AnotherSpy</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
