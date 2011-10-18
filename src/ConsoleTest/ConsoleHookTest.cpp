@@ -226,21 +226,8 @@ void InstallWinEventsHook()
     BOOL bRet = AttachConsole(hConsole1.dwProcessId);
     if( !bRet ) { throw "AttachConsole"; }
 
-    TCHAR buffer[BUFFSIZE];
-    size_t cb = sizeof(TCHAR) * BUFFSIZE;
-    size_t len = 0;
-
-    HANDLE hStdout = GetStdHandle( STD_OUTPUT_HANDLE );
-    DWORD cWritten;
-
-    StringCbPrintf(buffer, cb, L"\nPlease start typing to see event information\n");
-    StringCbLength(buffer, cb, &len);                     
-    if (FALSE == WriteConsole(hStdout, buffer, len, &cWritten, NULL))
-    {
-        StringCbPrintf(buffer, cb, L"Error, couldn't write to the console: %d.", GetLastError());
-        MessageBox(NULL, buffer, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
-    }
-
+    cprintf( "Please start typing to see event information\n" );
+    cout << "Please start typing to see event information" << endl;
     g_dwCurrentProc = hConsole1.dwProcessId;
 }
 
