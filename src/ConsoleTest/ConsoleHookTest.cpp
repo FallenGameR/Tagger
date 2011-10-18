@@ -47,25 +47,19 @@ int APIENTRY _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpC
     // Register window class
     WNDCLASSEX wcex; ZeroMemory( &wcex, sizeof(WNDCLASSEX) );
     wcex.cbSize         = sizeof(WNDCLASSEX);
-    wcex.style		    = CS_HREDRAW | CS_VREDRAW;
     wcex.lpfnWndProc	= WndProc;
     wcex.hInstance		= hInstance;
-    wcex.hIcon			= LoadIcon( NULL, IDI_INFORMATION );
-    wcex.hCursor		= LoadCursor( NULL, IDC_ARROW );
-    wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
     wcex.lpszClassName	= szWindowClass;
     RegisterClassEx( &wcex );
 
-    // Initialize window
-    HWND hWnd = CreateWindow( szWindowClass, szTitle, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL );
+    // Initialize message window
+    HWND hWnd = CreateWindow( szWindowClass, szTitle, 0, 0, 0, 0, 0, NULL, NULL, hInstance, NULL );
     if( !hWnd ) { return FALSE; }
-
-    ShowWindow( hWnd, nCmdShow );
+    SetParent( hWnd, HWND_MESSAGE );
     UpdateWindow( hWnd );
 
     // Main message loop
     MSG msg;
-
     while( GetMessage( &msg, NULL, 0, 0 ) )
     {
         TranslateMessage( &msg );
@@ -87,36 +81,13 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
     switch( message )
     {
     case WM_CREATE:
-        SetWindowPos( hWnd, NULL, 400, 600, 900, 400, 0 );
-
-        GetWindowRect( hWnd, &currentRect );
-        moveRect = movingRect = sizeRect = sizingRect = currentRect;
-
         DemoInitialization();
         hookSuccess = InstallWinEventsHook();
         if( !hookSuccess ) { throw "InstallWinEventsHook"; }
-
         break;
 
     case WM_DESTROY:
         PostQuitMessage( 0 );
-        break;
-
-    case WM_MOVE:
-        GetWindowRect( hWnd, &moveRect );
-        InvalidateRect( hWnd, NULL, FALSE );
-        break;
-
-    case WM_MOVING:
-        GetWindowRect( hWnd, &movingRect );
-        break;
-
-    case WM_SIZE:
-        GetWindowRect( hWnd, &sizeRect );
-        break;
-
-    case WM_SIZING:
-        GetWindowRect( hWnd, &sizingRect );
         break;
     }
 
@@ -228,7 +199,9 @@ WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD e
     if (((dwProcessId == hConsole1.dwProcessId) || 
         (dwProcessId == hConsole2.dwProcessId)) &&
         (dwProcessId == g_dwCurrentProc))
+    {
         return;
+    }
 
     TCHAR Buf[BUFFSIZE];
     size_t cb = sizeof(TCHAR) * BUFFSIZE;
@@ -248,7 +221,6 @@ WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD e
                 StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", GetLastError());
                 MessageBox(NULL, Buf, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
             }
-
             break;
         }
     }
@@ -256,9 +228,6 @@ WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD e
 
 }
 
-/*************************************************************************
-InstallWinEventsHook() - Initalize the Active Accessibility subsystem
-*************************************************************************/
 WINEVENTDLL_API BOOL InstallWinEventsHook()
 {
     TCHAR buffer[BUFFSIZE];
@@ -306,14 +275,8 @@ WINEVENTDLL_API BOOL InstallWinEventsHook()
     return FALSE;
 }
 
-/*************************************************************************
-UninstallWinEventsHook() - Shuts down the Active Accessibility subsystem
-*************************************************************************/
 WINEVENTDLL_API BOOL UninstallWinEventsHook(void)
 {
-
-    // Remove the WinEvent hook    
     UnhookWinEvent(hEventHook);
-
-    return(TRUE);
+    return TRUE;
 }
