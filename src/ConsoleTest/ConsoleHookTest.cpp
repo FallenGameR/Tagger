@@ -7,6 +7,10 @@
 
 // C RunTime Header Files
 #include <tchar.h>
+#include <conio.h>
+#include <iostream>
+#include <sstream>
+
 
 // Using std namespace
 using namespace std;
@@ -15,67 +19,51 @@ using namespace std;
 TCHAR* szTitle = TEXT("Windows Target x86");
 TCHAR* szWindowClass = TEXT("TARGET");
 HFONT defaultFont;
-RECT currentRect, moveRect, movingRect, sizeRect, sizingRect;
+RECT rect, moveRect, movingRect, sizeRect, sizingRect;
 
 #include <Strsafe.h> 
 
 #define BUFFSIZE  128
 
 PROCESS_INFORMATION hConsole1, hConsole2;
-typedef BOOL (WINAPI* PFN_AttachConsole)(DWORD);
-typedef HWND (WINAPI* PFN_GetConsoleWindow)(VOID);
 
 HWINEVENTHOOK   hEventHook;
 #define WINEVENTDLL_API __declspec(dllexport)
 
-PFN_AttachConsole fpAttachConsole;
-PFN_GetConsoleWindow fpGetConsoleWindow;
 DWORD g_dwCurrentProc;
 void DemoInitialization();
 WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime );
 WINEVENTDLL_API BOOL InstallWinEventsHook();
 WINEVENTDLL_API BOOL UninstallWinEventsHook();
-
-BOOL InstallWinEventsHook();
-
-
-// Forwards
 LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
 
 int APIENTRY _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow )
 {
     // Register window class
-    WNDCLASSEX wcex; ZeroMemory( &wcex, sizeof(WNDCLASSEX) );
+    WNDCLASSEX wcex; 
+    ZeroMemory( &wcex, sizeof(WNDCLASSEX) );
     wcex.cbSize         = sizeof(WNDCLASSEX);
     wcex.lpfnWndProc	= WndProc;
-    wcex.hInstance		= hInstance;
     wcex.lpszClassName	= szWindowClass;
     RegisterClassEx( &wcex );
 
     // Initialize message window
-    HWND hWnd = CreateWindow( szWindowClass, szTitle, 0, 0, 0, 0, 0, NULL, NULL, hInstance, NULL );
+    HWND hWnd = CreateWindowEx( 0, szWindowClass, szTitle, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, hInstance, NULL );
     if( !hWnd ) { return FALSE; }
-    SetParent( hWnd, HWND_MESSAGE );
     UpdateWindow( hWnd );
 
     // Main message loop
     MSG msg;
     while( GetMessage( &msg, NULL, 0, 0 ) )
     {
-        TranslateMessage( &msg );
         DispatchMessage( &msg );
     }
 
     return (int) msg.wParam;
 }
 
-
 LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
-    TCHAR text[ 4096 ];
-    size_t textLength;
-    PAINTSTRUCT paint;
-    HDC hdc;  
     BOOL hookSuccess;
 
     switch( message )
@@ -87,6 +75,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
         break;
 
     case WM_DESTROY:
+        UninstallWinEventsHook();
         PostQuitMessage( 0 );
         break;
     }
@@ -103,15 +92,10 @@ void DemoInitialization()
     TCHAR buffer[BUFFSIZE];
     TCHAR buffer2[BUFFSIZE];
     TCHAR buffer3[BUFFSIZE];
-    HINSTANCE hInst;
     STARTUPINFO hStartUp;
     RECT   rcConsole2;
 
     // Check for AttachConsole
-    hInst = ::LoadLibrary(L"kernel32.dll");
-    fpAttachConsole = (BOOL (_stdcall*)(DWORD))GetProcAddress(hInst,"AttachConsole");
-    fpGetConsoleWindow = (HWND (_stdcall *)(VOID))GetProcAddress(hInst,"GetConsoleWindow");
-
     memset(&hStartUp, 0, sizeof(hStartUp));   
     hStartUp.cb = sizeof(hStartUp);  
     lpstrMyprompt = &buffer[0];
@@ -135,7 +119,7 @@ void DemoInitialization()
     StringCbPrintf(lpstrEditcmd, cb, L"\nAttached\n"); 
 
     Sleep(1000);
-    BOOL bRet = fpAttachConsole(hConsole1.dwProcessId);
+    BOOL bRet = AttachConsole(hConsole1.dwProcessId);
     if (bRet)
     {
         HANDLE hStdOut = GetStdHandle( STD_OUTPUT_HANDLE );
@@ -148,7 +132,7 @@ void DemoInitialization()
 
         SetConsoleTitle (lpstrMyprompt);
         MessageBox (NULL, L"Successfully attached to console #1", L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
-        HWND hWnd = fpGetConsoleWindow();
+        HWND hWnd = GetConsoleWindow();
         GetWindowRect(hWnd,&rcConsole2);
 
         hStartUp.dwX = rcConsole2.left + 100;
@@ -178,7 +162,7 @@ void DemoInitialization()
     }
 
     Sleep(1000);
-    bRet = fpAttachConsole(hConsole2.dwProcessId);
+    bRet = AttachConsole(hConsole2.dwProcessId);
     if (FALSE == bRet)
     {
         StringCbPrintf(buffer, cb, L"Error, couldn't attach to the console: %d.", GetLastError()); 
@@ -203,29 +187,36 @@ WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD e
         return;
     }
 
-    TCHAR Buf[BUFFSIZE];
+    RECT rect;
+    CHAR Buf[BUFFSIZE];
     size_t cb = sizeof(TCHAR) * BUFFSIZE;
     size_t len = 0;
     HANDLE hStdOut = GetStdHandle( STD_OUTPUT_HANDLE );
     DWORD cWritten;
 
+    std::stringstream ss;
+
     switch (event)
     {
-    case EVENT_SYSTEM_MOVESIZESTART:
-    case EVENT_SYSTEM_MOVESIZEEND:
+    //case EVENT_SYSTEM_MOVESIZESTART:
+    //case EVENT_SYSTEM_MOVESIZEEND:
+    case EVENT_OBJECT_LOCATIONCHANGE:
         {
-            StringCbPrintf(Buf, cb, L"Event Console Move!\r\n", idObject, idChild );
-            StringCbLength(Buf, cb, &len);                     
-            if (FALSE == WriteConsole( hStdOut, Buf, len, &cWritten, NULL))
+            GetWindowRect( hwnd, &rect );
+
+            ss << event <<  ", left: " << rect.left << ", top: " << rect.top << endl;
+
+            StringCbPrintfA(Buf, cb, ss.str().c_str(), idObject, idChild );
+            StringCbLengthA(Buf, cb, &len);                     
+
+            if (FALSE == WriteConsoleA( hStdOut, Buf, len, &cWritten, NULL))
             {
-                StringCbPrintf(Buf, cb, L"Error, couldn't write to the console: %d.", GetLastError());
-                MessageBox(NULL, Buf, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
+                StringCbPrintfA(Buf, cb, "Error, couldn't write to the console: %d.", GetLastError());
+                MessageBoxA(NULL, Buf, "Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
             }
             break;
         }
     }
-    return;
-
 }
 
 WINEVENTDLL_API BOOL InstallWinEventsHook()
@@ -238,19 +229,16 @@ WINEVENTDLL_API BOOL InstallWinEventsHook()
     lpstrMyprompt = &buffer[0];
 
     // Set up event call back
-    hEventHook = SetWinEventHook(EVENT_MIN,
-        // We want all events
-        EVENT_MAX,
-        NULL,         // Use our own module
-        WinEventProc, // Our callback function
-        0,            // All processes
-        0,            // All threads
-        WINEVENT_OUTOFCONTEXT); 
+    // We want all events
+    // Use our own module
+    // All processes
+    // All threads
+    hEventHook = SetWinEventHook( EVENT_MIN, EVENT_MAX, NULL, WinEventProc, 0, 0, WINEVENT_OUTOFCONTEXT); 
 
     // Did we install correctly? 
     if (hEventHook)
     {
-        BOOL bRet = fpAttachConsole(hConsole1.dwProcessId);
+        BOOL bRet = AttachConsole(hConsole1.dwProcessId);
         if (bRet)
         {
             HANDLE hStdout = GetStdHandle( STD_OUTPUT_HANDLE );
@@ -275,7 +263,7 @@ WINEVENTDLL_API BOOL InstallWinEventsHook()
     return FALSE;
 }
 
-WINEVENTDLL_API BOOL UninstallWinEventsHook(void)
+WINEVENTDLL_API BOOL UninstallWinEventsHook()
 {
     UnhookWinEvent(hEventHook);
     return TRUE;
