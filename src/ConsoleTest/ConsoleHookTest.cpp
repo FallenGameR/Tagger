@@ -1,22 +1,6 @@
 #include "stdafx.h"
+#include "DebugConsole.h"
 
-// Windows Header Files
-#define WIN32_LEAN_AND_MEAN
-#include <SDKDDKVer.h>
-#include <windows.h>
-
-// C RunTime Header Files
-#include <tchar.h>
-#include <conio.h>
-#include <iostream>
-#include <sstream>
-#include <Strsafe.h> 
-//#include <io.h>
-//#include <fcntl.h>
-#include <fstream> 
-
-// Using std namespace
-using namespace std;
 
 // Constants
 #define BUFFSIZE  128
@@ -27,6 +11,7 @@ TCHAR* szWindowClass = TEXT("TARGET");
 PROCESS_INFORMATION hConsole1, hConsole2;
 HWINEVENTHOOK   hEventHook;
 DWORD g_dwCurrentProc;
+DebugConsole console;
 
 // Forwards
 void DemoInitialization();
@@ -37,25 +22,23 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 
 int APIENTRY _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow )
 {
-    // Register window class
     WNDCLASSEX wcex; 
+    MSG msg;
+
+    // Register window class
     ZeroMemory( &wcex, sizeof(WNDCLASSEX) );
-    wcex.cbSize         = sizeof(WNDCLASSEX);
-    wcex.lpfnWndProc	= WndProc;
-    wcex.lpszClassName	= szWindowClass;
+    wcex.cbSize = sizeof(WNDCLASSEX);
+    wcex.lpfnWndProc = WndProc;
+    wcex.lpszClassName = szWindowClass;
     RegisterClassEx( &wcex );
 
     // Initialize message window
     HWND hWnd = CreateWindowEx( 0, szWindowClass, szTitle, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, hInstance, NULL );
     if( !hWnd ) { return FALSE; }
-    UpdateWindow( hWnd );
 
     // Main message loop
-    MSG msg;
-    while( GetMessage( &msg, NULL, 0, 0 ) )
-    {
-        DispatchMessage( &msg );
-    }
+    UpdateWindow( hWnd );
+    while( GetMessage( &msg, NULL, 0, 0 ) ) { DispatchMessage( &msg ); }
 
     return (int) msg.wParam;
 }
@@ -73,6 +56,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 
     case WM_DESTROY:
         UninstallWinEventsHook();
+        console.Close();
         PostQuitMessage( 0 );
         break;
     }
@@ -170,28 +154,23 @@ void DemoInitialization()
     SetConsoleTitle (lpstrMyprompt);
 
     FreeConsole();
+
+    console.Open();
 }
 
 VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime )
 {
+    RECT rect;
     DWORD dwProcessId;
+
     GetWindowThreadProcessId(hwnd,&dwProcessId);
 
-    if (((dwProcessId == hConsole1.dwProcessId) || 
+    if(((dwProcessId == hConsole1.dwProcessId) || 
         (dwProcessId == hConsole2.dwProcessId)) &&
         (dwProcessId == g_dwCurrentProc))
     {
         return;
     }
-
-    RECT rect;
-    CHAR Buf[BUFFSIZE];
-    size_t cb = sizeof(TCHAR) * BUFFSIZE;
-    size_t len = 0;
-    HANDLE hStdOut = GetStdHandle( STD_OUTPUT_HANDLE );
-    DWORD cWritten;
-
-    std::stringstream ss;
 
     switch (event)
     {
@@ -200,17 +179,7 @@ VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd,
     case EVENT_OBJECT_LOCATIONCHANGE:
         {
             GetWindowRect( hwnd, &rect );
-
-            ss << event <<  ", left: " << rect.left << ", top: " << rect.top << endl;
-
-            StringCbPrintfA(Buf, cb, ss.str().c_str(), idObject, idChild );
-            StringCbLengthA(Buf, cb, &len);                     
-
-            if (FALSE == WriteConsoleA( hStdOut, Buf, len, &cWritten, NULL))
-            {
-                StringCbPrintfA(Buf, cb, "Error, couldn't write to the console: %d.", GetLastError());
-                MessageBoxA(NULL, Buf, "Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
-            }
+            cout << event <<  ", left: " << rect.left << ", top: " << rect.top << endl;
             break;
         }
     }
@@ -225,21 +194,6 @@ void InstallWinEventsHook()
     // All threads
     hEventHook = SetWinEventHook( EVENT_MIN, EVENT_MAX, NULL, WinEventProc, 0, 0, WINEVENT_OUTOFCONTEXT); 
     if( !hEventHook ) { throw "SetWinEventHook"; }
-
-    //AllocConsole
-    BOOL bRet = AttachConsole(hConsole1.dwProcessId);
-    if( !bRet ) { throw "AttachConsole"; }
-
-    // http://blog.signalsondisplay.com/?p=85
-
-    // first we need to backup the current stream buffer so that we can restore it later
-    std::streambuf *backup = std::cout.rdbuf();
-
-    // then we need to open the output stream associated with the console
-    std::ofstream console_out("CONOUT$");
-
-    // once we have the console buffer, we can set it as the std::cout stream buffer
-    std::cout.rdbuf(console_out.rdbuf());
 
     cout << "Please start typing to see event information" << endl;
     g_dwCurrentProc = hConsole1.dwProcessId;
