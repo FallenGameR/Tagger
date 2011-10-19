@@ -21,7 +21,7 @@
 
 #define BUFFSIZE  128
 
-PROCESS_INFORMATION hConsole1, hConsole2;
+PROCESS_INFORMATION hConsole1, hTargetConsole;
 typedef BOOL (WINAPI* PFN_AttachConsole)(DWORD);
 typedef HWND (WINAPI* PFN_GetConsoleWindow)(VOID);
 
@@ -115,7 +115,7 @@ void createConsoles(void)
     StringCbCopy(lpstrMyprompt, cb, L"Console #2");
 
     // First, we have to create two consoles
-    if (FALSE == CreateProcess(lpstrEditcmd, NULL, NULL, NULL, FALSE, CREATE_NEW_CONSOLE | NORMAL_PRIORITY_CLASS, NULL, NULL, &hStartUp, &hConsole2))
+    if (FALSE == CreateProcess(lpstrEditcmd, NULL, NULL, NULL, FALSE, CREATE_NEW_CONSOLE | NORMAL_PRIORITY_CLASS, NULL, NULL, &hStartUp, &hTargetConsole))
     {
         StringCbPrintf(lpstrMyprompt, cb, L"Error, couldn't create a new console: %d.", GetLastError()); 
         MessageBox(NULL,lpstrMyprompt, L"Track and Find Consoles", MB_OK | MB_SYSTEMMODAL);
@@ -123,7 +123,7 @@ void createConsoles(void)
     }
 
     Sleep(5000);
-    bRet = fpAttachConsole(hConsole2.dwProcessId);
+    bRet = fpAttachConsole(hTargetConsole.dwProcessId);
     if (FALSE == bRet)
     {
         StringCbPrintf(buffer, cb, L"Error, couldn't attach to the console: %d.", GetLastError()); 
@@ -137,7 +137,7 @@ void createConsoles(void)
 
 }
 
-HWINEVENTHOOK   hEventHook;
+HWINEVENTHOOK   hWinEventHook;
 
 #define  EVENT_CONSOLE_CARET              0x4001
 #define  EVENT_CONSOLE_UPDATE_REGION      0x4002
@@ -159,7 +159,7 @@ WINEVENTDLL_API VOID CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD e
     GetWindowThreadProcessId(hwnd,&dwProcessId);
 
     if (((dwProcessId == hConsole1.dwProcessId) || 
-        (dwProcessId == hConsole2.dwProcessId)) &&
+        (dwProcessId == hTargetConsole.dwProcessId)) &&
         (dwProcessId == g_dwCurrentProc))
         return;
 
@@ -293,7 +293,7 @@ WINEVENTDLL_API BOOL InstallWinEventsHook()
     lpstrMyprompt = &buffer[0];
 
     // Set up event call back
-    hEventHook = SetWinEventHook(EVENT_CONSOLE_CARET,               
+    hWinEventHook = SetWinEventHook(EVENT_CONSOLE_CARET,               
         // We want all events
         EVENT_CONSOLE_END_APPLICATION,     
         NULL,         // Use our own module
@@ -304,7 +304,7 @@ WINEVENTDLL_API BOOL InstallWinEventsHook()
         WINEVENT_OUTOFCONTEXT); 
 
     // Did we install correctly? 
-    if (hEventHook)
+    if (hWinEventHook)
     {
         BOOL bRet = fpAttachConsole(hConsole1.dwProcessId);
         if (bRet)
@@ -334,11 +334,11 @@ WINEVENTDLL_API BOOL InstallWinEventsHook()
 /*************************************************************************
 UninstallWinEventsHook() - Shuts down the Active Accessibility subsystem
 *************************************************************************/
-WINEVENTDLL_API BOOL UninstallWinEventsHook(void)
+WINEVENTDLL_API BOOL Cleanup(void)
 {
 
     // Remove the WinEvent hook    
-    UnhookWinEvent(hEventHook);
+    UnhookWinEvent(hWinEventHook);
 
     return(TRUE);
 }
