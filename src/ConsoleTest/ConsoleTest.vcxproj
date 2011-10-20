@@ -73,14 +73,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="DebugConsole.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ConsoleHookTest.cpp" />
+    <ClCompile Include="AnotherSpy.cpp" />
     <ClCompile Include="DebugConsole.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

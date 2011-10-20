@@ -11,9 +11,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -25,11 +22,9 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ConsoleHookTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DebugConsole.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AnotherSpy.cpp" />
   </ItemGroup>
 </Project>

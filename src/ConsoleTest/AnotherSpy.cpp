@@ -72,7 +72,14 @@ void Initialization()
     BOOL success = CreateProcess( NULL, programName, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &startInfo, &hTargetConsole );
     if( FALSE == success ) { throw "CreateProcess"; }
 
-    hWinEventHook = SetWinEventHook( EVENT_MIN, EVENT_MAX, NULL, WinEventProc, 0, 0, WINEVENT_OUTOFCONTEXT ); 
+    hWinEventHook = SetWinEventHook( 
+        EVENT_OBJECT_LOCATIONCHANGE, 
+        EVENT_OBJECT_LOCATIONCHANGE, 
+        NULL, 
+        WinEventProc, 
+        0, 
+        0, 
+        WINEVENT_OUTOFCONTEXT ); 
     if( !hWinEventHook ) { throw "SetWinEventHook"; }
 
     cout << "Please start typing to see event information" << endl;
@@ -91,16 +98,8 @@ void CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD eventType, HWND h
 
     GetWindowThreadProcessId( hwnd, &dwProcessId );
 
-    switch( eventType )
-    {
-    //case EVENT_SYSTEM_MOVESIZESTART:
-    //case EVENT_SYSTEM_MOVESIZEEND:
-    case EVENT_OBJECT_LOCATIONCHANGE:
-        {
-            GetWindowRect( hwnd, &rect );
-            cout << eventType <<  ", left: " << rect.left << ", top: " << rect.top << endl;
-            break;
-        }
-    }
+    GetWindowRect( hwnd, &rect );
+    cout << eventType <<  ", left: " << rect.left << ", top: " << rect.top << endl;
+    break;
 }
 
