@@ -78,14 +78,16 @@ void CreateTargetConsoleWindow()
 void Initialization( DWORD processId )
 {
     // How to find Process ID for corresponding conhost.exe?
+    // - it is not parent process
+    // - if set up global hook than collection of handles to hooked processes needed to be handles - read/write async access to it. Imagine lock for global hook =)
 
     hWinEventHook = SetWinEventHook( 
         EVENT_OBJECT_LOCATIONCHANGE, 
         EVENT_OBJECT_LOCATIONCHANGE, 
         NULL, 
-        WinEventProc, 
-        0, 
-        0, 
+        WinEventProc,
+        processId, 
+        0,
         WINEVENT_OUTOFCONTEXT ); 
     if( !hWinEventHook ) { throw "SetWinEventHook"; }
 
@@ -101,8 +103,13 @@ void Cleanup()
 void CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD eventType, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime )
 {
     RECT rect;
-    //DWORD dwProcessId;
-    //GetWindowThreadProcessId( hwnd, &dwProcessId );
+    DWORD dwProcessId;
+    GetWindowThreadProcessId( hwnd, &dwProcessId );
+
+    if( dwProcessId == hTargetConsole.dwProcessId )
+    {
+        cout << "!!!!" << endl;
+    }
 
     GetWindowRect( hwnd, &rect );
     cout << eventType <<  ", left: " << rect.left << ", top: " << rect.top << endl;
