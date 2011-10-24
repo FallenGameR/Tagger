@@ -11,8 +11,9 @@ HWINEVENTHOOK hWinEventHook;
 DebugConsole debugConsole;
 
 // Forwards
-void Initialization();
+void Initialization( DWORD processId );
 void Cleanup();
+void CreateTargetConsoleWindow();
 void CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime );
 LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
 
@@ -44,7 +45,8 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
     switch( message )
     {
     case WM_CREATE:
-        Initialization();
+        CreateTargetConsoleWindow();
+        Initialization(hTargetConsole.dwProcessId);
         break;
 
     case WM_DESTROY:
@@ -56,7 +58,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
     return DefWindowProc( hWnd, message, wParam, lParam );
 }
 
-void Initialization()
+void CreateTargetConsoleWindow() 
 {
     STARTUPINFO startInfo;
     TCHAR programName[] = TEXT("cmd");
@@ -71,6 +73,11 @@ void Initialization()
 
     BOOL success = CreateProcess( NULL, programName, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &startInfo, &hTargetConsole );
     if( FALSE == success ) { throw "CreateProcess"; }
+}
+
+void Initialization( DWORD processId )
+{
+    // How to find Process ID for corresponding conhost.exe?
 
     hWinEventHook = SetWinEventHook( 
         EVENT_OBJECT_LOCATIONCHANGE, 
@@ -94,12 +101,10 @@ void Cleanup()
 void CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD eventType, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime )
 {
     RECT rect;
-    DWORD dwProcessId;
-
-    GetWindowThreadProcessId( hwnd, &dwProcessId );
+    //DWORD dwProcessId;
+    //GetWindowThreadProcessId( hwnd, &dwProcessId );
 
     GetWindowRect( hwnd, &rect );
     cout << eventType <<  ", left: " << rect.left << ", top: " << rect.top << endl;
-    break;
 }
 
