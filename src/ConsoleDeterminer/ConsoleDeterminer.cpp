@@ -17,6 +17,7 @@ VOID  CopySection(HANDLE, HANDLE, DWORD);
 #define IMAGE_SIZEOF_NT_OPTIONAL32_HEADER    224
 #define IMAGE_SIZEOF_NT_OPTIONAL64_HEADER    240
 
+//sizeof(IMAGE_OPTIONAL_HEADER)
 #ifdef _WIN64
 #define IMAGE_SIZEOF_NT_OPTIONAL_HEADER     IMAGE_SIZEOF_NT_OPTIONAL64_HEADER
 #else
@@ -25,7 +26,7 @@ VOID  CopySection(HANDLE, HANDLE, DWORD);
 
 VOID
 main(int argc, char *argv[])
-{
+{   
     HANDLE hImage;
 
     DWORD  bytes;
