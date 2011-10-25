@@ -20,6 +20,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EnumeratingProcesses", "Enu
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UsingWct", "UsingWct\UsingWct.vcxproj", "{9F129A24-7953-46EE-8E82-53384BED610F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConsoleDeterminer", "ConsoleDeterminer\ConsoleDeterminer.vcxproj", "{0793CADB-F92A-4230-AA1C-1FA6002EA0BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -54,6 +56,10 @@ Global
 		{9F129A24-7953-46EE-8E82-53384BED610F}.Debug|Win32.Build.0 = Debug|Win32
 		{9F129A24-7953-46EE-8E82-53384BED610F}.Release|Win32.ActiveCfg = Release|Win32
 		{9F129A24-7953-46EE-8E82-53384BED610F}.Release|Win32.Build.0 = Release|Win32
+		{0793CADB-F92A-4230-AA1C-1FA6002EA0BB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0793CADB-F92A-4230-AA1C-1FA6002EA0BB}.Debug|Win32.Build.0 = Debug|Win32
+		{0793CADB-F92A-4230-AA1C-1FA6002EA0BB}.Release|Win32.ActiveCfg = Release|Win32
+		{0793CADB-F92A-4230-AA1C-1FA6002EA0BB}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
