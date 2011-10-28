@@ -45,15 +45,15 @@
   </ItemDefinitionGroup>
   <!-- Files -->
   <ItemGroup>
-    <ClCompile Include="..\ConsoleDeterminer\ConsoleDeterminer.cpp" />
-    <ClCompile Include="..\ConsoleTest\AnotherSpy.cpp" />
-    <ClCompile Include="..\ConsoleTest\DebugConsole.cpp" />
-    <ClCompile Include="..\EnumeratingProcesses\EnumeratingProcesses.cpp" />
-    <ClCompile Include="..\UsingWct\UsingWct.cpp" />
+    <ClCompile Include="ConsoleDeterminer.cpp" />
+    <ClCompile Include="AnotherSpy.cpp" />
+    <ClCompile Include="DebugConsole.cpp" />
+    <ClCompile Include="EnumeratingProcesses.cpp" />
+    <ClCompile Include="UsingWct.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClInclude Include="..\ConsoleTest\DebugConsole.h" />
+    <ClInclude Include="DebugConsole.h" />
     <ClInclude Include="Payload.Dll.h" />
     <ClInclude Include="WinApiException.h" />
     <ClInclude Include="stdafx.h" />

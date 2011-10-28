@@ -2,30 +2,14 @@
 #include <windows.h>
 #include <winnt.h>
 
-VOID  main(int, char **);
+VOID  ConsoleMain(int, char **);
 DWORD AbsoluteSeek(HANDLE, DWORD);
 VOID  ReadBytes(HANDLE, LPVOID, DWORD);
 VOID  WriteBytes(HANDLE, LPVOID, DWORD);
 VOID  CopySection(HANDLE, HANDLE, DWORD);
 
-// http://support.microsoft.com/kb/90493
-#define XFER_BUFFER_SIZE 2048
-
-// http://blogs.msdn.com/b/jeremykuhne/archive/2008/02/19/sscli-2-0-and-visual-studio-2008.aspx
-#pragma warning (disable :4985)
-
-#define IMAGE_SIZEOF_NT_OPTIONAL32_HEADER    224
-#define IMAGE_SIZEOF_NT_OPTIONAL64_HEADER    240
-
-//sizeof(IMAGE_OPTIONAL_HEADER)
-#ifdef _WIN64
-#define IMAGE_SIZEOF_NT_OPTIONAL_HEADER     IMAGE_SIZEOF_NT_OPTIONAL64_HEADER
-#else
-#define IMAGE_SIZEOF_NT_OPTIONAL_HEADER     IMAGE_SIZEOF_NT_OPTIONAL32_HEADER
-#endif
-
 VOID
-main(int argc, char *argv[])
+ConsoleMain(int argc, char *argv[])
 {   
     HANDLE hImage;
 
@@ -51,7 +35,7 @@ main(int argc, char *argv[])
     /*
      *  Open the reference file.
      */ 
-    hImage = CreateFile(argv[1],
+    hImage = CreateFileA(argv[1],
                         GENERIC_READ,
                         FILE_SHARE_READ,
                         NULL,
