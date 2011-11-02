@@ -166,6 +166,7 @@ namespace LockWatcher
         }
 
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Console.WriteLine(System.String,System.Object,System.Object)")]
         public override void OnUsage ( string errorInfo )
         {
             Logo ( );
