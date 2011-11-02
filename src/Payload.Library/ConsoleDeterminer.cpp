@@ -1,4 +1,7 @@
 #include "stdafx.h"
+
+#if 0
+
 #include <windows.h>
 #include <winnt.h>
 
@@ -177,3 +180,4 @@ ReadBytes(HANDLE hFile,
         exit(1);
     }
 }
+#endif

@@ -53,6 +53,7 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Wct_call_Test.cpp" />
     <ClInclude Include="stdafx.h" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Process.cpp" />

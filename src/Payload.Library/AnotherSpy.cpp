@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DebugConsole.h"
 
+#if 0
 // Constants
 TCHAR szTitle[] = TEXT("Windows Target x86");
 TCHAR szWindowClass[] = TEXT("TARGET");
@@ -115,3 +116,4 @@ void CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD eventType, HWND h
     cout << eventType <<  ", left: " << rect.left << ", top: " << rect.top << endl;
 }
 
+#endif

@@ -11,6 +11,9 @@
     <Filter Include="[Precompiled]">
       <UniqueIdentifier>{ae079539-d514-4f32-8ca7-db5bbbd3aceb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Prototypes">
+      <UniqueIdentifier>{cbdca500-c9ce-447e-8de1-e6638ccb691a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Hook.cpp">
@@ -19,20 +22,20 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>[Precompiled]</Filter>
     </ClCompile>
-    <ClCompile Include="..\EnumeratingProcesses\EnumeratingProcesses.cpp">
+    <ClCompile Include="DebugConsole.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\UsingWct\UsingWct.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="AnotherSpy.cpp">
+      <Filter>Prototypes</Filter>
     </ClCompile>
-    <ClCompile Include="..\ConsoleDeterminer\ConsoleDeterminer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ConsoleDeterminer.cpp">
+      <Filter>Prototypes</Filter>
     </ClCompile>
-    <ClCompile Include="..\ConsoleTest\DebugConsole.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="EnumeratingProcesses.cpp">
+      <Filter>Prototypes</Filter>
     </ClCompile>
-    <ClCompile Include="..\ConsoleTest\AnotherSpy.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="UsingWct.cpp">
+      <Filter>Prototypes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -43,7 +46,7 @@
     <ClInclude Include="WinApiException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\ConsoleTest\DebugConsole.h">
+    <ClInclude Include="DebugConsole.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

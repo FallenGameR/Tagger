@@ -1,27 +1,6 @@
 #include "stdafx.h"
+#include "Payload.Dll.h"
 
-// Copyright (C) Microsoft. All rights reserved.
-
-/*
- * Sample code for the Wait Chain Traversal (WCT) API.
- *
- * This program enumerates all threads in the system and prints the
- * wait chain for each of them.  It should be run from an elevated
- * command prompt to get results for services.
- *
- */
-
-#ifndef UNICODE
- #define UNICODE
-#endif
-
-#include <windows.h>
-#include <wct.h>
-#include <psapi.h>
-#include <tlhelp32.h>
-#include <wchar.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 #pragma comment(lib, "Psapi.lib")
 #pragma comment(lib, "Advapi32.lib")
@@ -57,14 +36,9 @@ HMODULE g_Ole32Hnd = NULL;
 // Function prototypes
 //
 
-void
-PrintWaitChain (
-    __in DWORD ThreadId
-    );
+void PrintWaitChain ( __in DWORD ThreadId);
 
-
-BOOL
-GrantDebugPrivilege ( )
+BOOL GrantDebugPrivilege ( )
 /*++
 
 Routine Description:
@@ -130,10 +104,7 @@ Return Value:
     return fSuccess;
 }
 
-BOOL
-CheckThreads (
-    __in DWORD ProcId
-    )
+BOOL CheckThreads ( __in DWORD ProcId)
 /*++
 
 Routine Description:
@@ -264,10 +235,7 @@ Return Value:
     return TRUE;
 }
 
-void
-PrintWaitChain (
-    __in DWORD ThreadId
-    )
+void PrintWaitChain ( __in DWORD ThreadId)
 /*++
 
 Routine Description:
@@ -360,8 +328,7 @@ Return Value:
     printf("\n");
 }
 
-void
-Usage ()
+void Usage ()
 /*++
 
 Routine Description:
@@ -376,8 +343,7 @@ Routine Description:
     printf("\t ProcId      -- get the wait chains for the specified process\n\n");
 }
 
-BOOL
-InitCOMAccess ()
+BOOL InitCOMAccess ()
 /*++
 
 Routine Description:
@@ -422,11 +388,7 @@ Routine Description:
     return TRUE;
 }
 
-int _cdecl
-wmain (
-    __in int argc,
-    __in_ecount(argc) PWSTR* argv
-    )
+HOOKDLL_API int _cdecl UsingWctMain ( __in int argc, __in_ecount(argc) PWSTR* argv)
 /*++
 
 Routine Description:

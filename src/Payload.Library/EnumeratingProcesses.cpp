@@ -1,7 +1,7 @@
-// EnumeratingProcesses.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
+
+#if 0
+
 #include <windows.h>
 #include <tlhelp32.h>
 #include <iostream>	
@@ -39,3 +39,5 @@ int main( )
     cout<<endl<<"***********************************************";
     cout<<endl<<endl;
 }
+
+#endif

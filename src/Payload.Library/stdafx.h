@@ -7,24 +7,23 @@
 
 // C RunTime Header Files
 #include <tchar.h>
-#include <strsafe.h> 
-#include <stdexcept> 
+#include <iostream>
+#include <fstream>
 #include <sstream> 
 
-// Other includes
-#include <streambuf>
-#include <fstream>
-#include <winnt.h>
 #include <tlhelp32.h>
-#include <iostream>	
-#include <string>
 #include <wct.h>
 #include <psapi.h>
-#include <stdio.h>
-#include <stdlib.h>
 
-// Using std namespace
-using namespace std;
+#if 0
+
+//#include <strsafe.h> 
+//#include <stdexcept> 
+//#include <streambuf>
+//#include <winnt.h>
+//#include <string>
+//#include <stdio.h>
+//#include <stdlib.h>
 
 // Macros
 
@@ -43,3 +42,9 @@ using namespace std;
 #else
 #define IMAGE_SIZEOF_NT_OPTIONAL_HEADER     IMAGE_SIZEOF_NT_OPTIONAL32_HEADER
 #endif
+
+#endif
+
+
+// Using std namespace
+using namespace std;
