@@ -53,7 +53,7 @@ BOOL APIENTRY DllMain( HANDLE hModule, DWORD  ul_reason_for_call,  LPVOID lpRese
 
 LRESULT MyHookProcedure( int code, WPARAM wParam, LPARAM lParam )
 {	
-    if( pCW->message == WM_USERMESSAGE ) 
+    if( pCW->message == WM_USERMESSAGE )
     {
         MessageBeep( MB_OK );
         SendMessage( shared_wnd_handle, WM_GETTEXT, 128, (LPARAM) shared_string );
