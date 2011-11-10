@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Payload.Dll.h"
-
+#include "WinApiException.h"
 
 #pragma comment(lib, "Psapi.lib")
 #pragma comment(lib, "Advapi32.lib")
@@ -28,9 +28,6 @@ STR_ARRAY STR_OBJECT_TYPE[] =
 
 // Global variable to store the WCT session handle
 HWCT g_WctHandle = NULL;
-
-// Global variable to store OLE32.DLL module handle.
-HMODULE g_Ole32Hnd = NULL;
 
 //
 // Function prototypes
@@ -61,9 +58,7 @@ Return Value:
     HANDLE           TokenHandle = NULL;
     TOKEN_PRIVILEGES TokenPrivileges;
 
-    if (!OpenProcessToken(GetCurrentProcess(),
-                          TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY,
-                          &TokenHandle))
+    if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &TokenHandle))
     {
         printf("Could not get the process token");
         goto Cleanup;
@@ -71,9 +66,7 @@ Return Value:
 
     TokenPrivileges.PrivilegeCount = 1;
 
-    if (!LookupPrivilegeValue(NULL,
-                              SE_DEBUG_NAME,
-                              &TokenPrivileges.Privileges[0].Luid))
+    if (!LookupPrivilegeValue(NULL, SE_DEBUG_NAME, &TokenPrivileges.Privileges[0].Luid))
     {
         printf("Couldn't lookup SeDebugPrivilege name");
         goto Cleanup;
@@ -81,12 +74,7 @@ Return Value:
 
     TokenPrivileges.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
 
-    if (!AdjustTokenPrivileges(TokenHandle,
-                               FALSE,
-                               &TokenPrivileges,
-                               sizeof(TokenPrivileges),
-                               NULL,
-                               NULL))
+    if (!AdjustTokenPrivileges(TokenHandle, FALSE, &TokenPrivileges, sizeof(TokenPrivileges), NULL, NULL))
     {
         printf("Could not revoke the debug privilege");
         goto Cleanup;
@@ -104,7 +92,7 @@ Return Value:
     return fSuccess;
 }
 
-BOOL CheckThreads ( __in DWORD ProcId)
+BOOL CheckThreads( __in DWORD ProcId )
 /*++
 
 Routine Description:
@@ -148,10 +136,10 @@ Return Value:
         HANDLE process;
         HANDLE snapshot;
 
-        if (processes[i] == GetCurrentProcessId())
+        /*if (processes[i] == GetCurrentProcessId())
         {
             continue;
-        }
+        }*/
 
         // If the caller specified a Process ID, check if we have a match.
         if (ProcId != 0)
@@ -205,9 +193,7 @@ Return Value:
                         if (thread.th32OwnerProcessID == processes[i])
                         {
                             // Open a handle to this specific thread
-                            HANDLE threadHandle = OpenThread(THREAD_ALL_ACCESS,
-                                                             FALSE,
-                                                             thread.th32ThreadID);
+                            HANDLE threadHandle = OpenThread(THREAD_ALL_ACCESS, FALSE, thread.th32ThreadID);
                             if (threadHandle)
                             {
                                 // Check whether the thread is still running
@@ -262,13 +248,7 @@ Return Value:
     Count = WCT_MAX_NODE_COUNT;
 
     // Make a synchronous WCT call to retrieve the wait chain.
-    if (!GetThreadWaitChain(g_WctHandle,
-                            NULL,
-                            WCTP_GETINFO_ALL_FLAGS,
-                            ThreadId,
-                            &Count,
-                            NodeInfoArray,
-                            &IsCycle))
+    if (!GetThreadWaitChain(g_WctHandle, NULL, WCTP_GETINFO_ALL_FLAGS, ThreadId, &Count, NodeInfoArray, &IsCycle))
     {
         printf("Error (0X%x)\n", GetLastError());
         return;
@@ -288,7 +268,7 @@ Return Value:
         {
             case WctThreadType:
                 // A thread node contains process and thread ID.
-                printf("[%x:%x:%s]->",
+                printf("[pid %d tid %d status %s]->",
                        NodeInfoArray[i].ThreadObject.ProcessId,
                        NodeInfoArray[i].ThreadObject.ThreadId,
                        ((NodeInfoArray[i].ObjectStatus == WctStatusBlocked) ? "b" : "r"));
@@ -300,13 +280,13 @@ Return Value:
                 // Some objects have names...
                 if (NodeInfoArray[i].LockObject.ObjectName[0] != L'\0')
                 {
-                    printf("[%s:%S]->",
+                    printf("[description %s name %S]->",
                            STR_OBJECT_TYPE[NodeInfoArray[i].ObjectType-1].Desc,
                            NodeInfoArray[i].LockObject.ObjectName);
                 }
                 else
                 {
-                    printf("[%s]->",
+                    printf("[description %s]->",
                            STR_OBJECT_TYPE[NodeInfoArray[i].ObjectType-1].Desc);
                 }
                 if (NodeInfoArray[i].ObjectStatus == WctStatusAbandoned)
@@ -328,125 +308,19 @@ Return Value:
     printf("\n");
 }
 
-void Usage ()
-/*++
-
-Routine Description:
-
-  Print usage information to stdout.
-
---*/
+///
+/// ProcId
+///     0   - wait chains for all processes
+///     pid - wait chains for the specified process
+///
+HOOKDLL_API int _cdecl UsingWctMain( DWORD pid )
 {
-    printf("\nPrints the thread wait chains for one or all processes in the system.\n\n");
-    printf("\nUsage:\tWctEnum [ProcId]\n");
-    printf("\t (no params) -- get the wait chains for all processes\n");
-    printf("\t ProcId      -- get the wait chains for the specified process\n\n");
-}
-
-BOOL InitCOMAccess ()
-/*++
-
-Routine Description:
-
-    Register COM interfaces with WCT. This enables WCT to provide wait
-    information if a thread is blocked on a COM call.
-
---*/
-{
-    PCOGETCALLSTATE       CallStateCallback;
-    PCOGETACTIVATIONSTATE ActivationStateCallback;
-
-    // Get a handle to OLE32.DLL. You must keep this handle around
-    // for the life time for any WCT session.
-    g_Ole32Hnd = LoadLibrary(L"ole32.dll");
-    if (!g_Ole32Hnd)
-    {
-        printf("ERROR: GetModuleHandle failed: 0x%X\n", GetLastError());
-        return FALSE;
-    }
-
-    // Retrieve the function addresses for the COM helper APIs.
-    CallStateCallback = (PCOGETCALLSTATE)
-        GetProcAddress(g_Ole32Hnd, "CoGetCallState");
-    if (!CallStateCallback)
-    {
-        printf("ERROR: GetProcAddress failed: 0x%X\n", GetLastError());
-        return FALSE;
-    }
-
-    ActivationStateCallback = (PCOGETACTIVATIONSTATE)
-        GetProcAddress(g_Ole32Hnd, "CoGetActivationState");
-    if (!ActivationStateCallback)
-    {
-        printf("ERROR: GetProcAddress failed: 0x%X\n", GetLastError());
-        return FALSE;
-    }
-
-    // Register these functions with WCT.
-    RegisterWaitChainCOMCallback(CallStateCallback,
-                                 ActivationStateCallback);
-    return TRUE;
-}
-
-HOOKDLL_API int _cdecl UsingWctMain ( __in int argc, __in_ecount(argc) PWSTR* argv)
-/*++
-
-Routine Description:
-
-  Main entry point for this application.
-
---*/
-{
-    int rc = 1;
-
-    // Initialize the WCT interface to COM. Continue if this
-    // fails--there just will not be COM information.
-    if (!InitCOMAccess())
-    {
-        printf("Could not enable COM access\n");
-    }
-
-    // Open a synchronous WCT session.
     g_WctHandle = OpenThreadWaitChainSession(0, NULL);
-    if (NULL == g_WctHandle)
-    {
-        printf("ERROR: OpenThreadWaitChainSession failed\n");
-        goto Cleanup;
-    }
+    if( NULL == g_WctHandle ) { throw WinApiException("OpenThreadWaitChainSession"); }
 
-    if (argc < 2)
-    {
-        // Enumerate all threads in the system.
-        CheckThreads(0);
-    }
-    else
-    {
-        // Only enumerate threads in the specified process.
-        //
-        // Take the first command line parameter as the process ID.
-        DWORD  ProcId = 0;
+    CheckThreads(pid);
 
-        ProcId = _wtoi(argv[1]);
-        if (ProcId == 0)
-        {
-            Usage();
-            goto Cleanup;
-        }
-
-        CheckThreads(ProcId);
-    }
-
-    // Close the WCT session.
     CloseThreadWaitChainSession(g_WctHandle);
-
-    rc = 0;
-
- Cleanup:
-
-    if (NULL != g_Ole32Hnd)
-    {
-        FreeLibrary(g_Ole32Hnd);
-    }
-
-    return rc;
+    
+    return 0;
 }
