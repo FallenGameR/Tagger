@@ -92,133 +92,49 @@ Return Value:
     return fSuccess;
 }
 
-BOOL CheckThreads( __in DWORD ProcId )
-/*++
 
-Routine Description:
 
-    Enumerates all threads (or optionally only threads for one
-    process) in the system.  It the calls the WCT API on each of them.
 
-Arguments:
 
-    ProcId--Specifies the process ID to analyze.  If '0' all processes
-        in the system will be checked.
-
-Return Value:
-
-    TRUE if processes could be checked; FALSE if a general failure
-    occurred.
-
---*/
+void CheckThreads( __in DWORD pid )
 {
-    DWORD processes[1024];
-    DWORD numProcesses;
-    DWORD i;
+    // Get a handle to this process.
+    HANDLE process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+    if( NULL == process ) { throw WinApiException("OpenProcess"); }
 
-    // Try to enable the SE_DEBUG_NAME privilege for this process. 
-    // Continue even if this fails--we just won't be able to retrieve
-    // wait chains for processes not owned by the current user.
-    if (!GrantDebugPrivilege())
+    // Get a snapshot of this process. This enables us to enumerate its threads.
+    HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, pid);
+    if( INVALID_HANDLE_VALUE == snapshot ) { throw WinApiException("CreateToolhelp32Snapshot"); } 
+
+    THREADENTRY32 thread;
+    thread.dwSize = sizeof(thread);
+
+    // Walk the thread list and print each wait chain
+    if( !Thread32First(snapshot, &thread) ) { return; }
+
+    do
     {
-        printf("Could not enable the debug privilege");
-    }
+        if( thread.th32OwnerProcessID != pid ) { continue; }
 
-    // Get a list of all processes currently running.
-    if (EnumProcesses(processes, sizeof(processes), &numProcesses) == FALSE)
-    {
-        printf("Could not enumerate processes");
-        return FALSE;
-    }
+        // Open a handle to this specific thread
+        HANDLE threadHandle = OpenThread(THREAD_ALL_ACCESS, FALSE, thread.th32ThreadID);
+        if( NULL == threadHandle ) { throw WinApiException("OpenThread"); }
 
-    for (i = 0; i < numProcesses / sizeof(DWORD); i++)
-    {
-        HANDLE process;
-        HANDLE snapshot;
+        // Check whether the thread is still running
+        DWORD exitCode;
+        GetExitCodeThread(threadHandle, &exitCode);
 
-        /*if (processes[i] == GetCurrentProcessId())
+        if( STILL_ACTIVE == exitCode )
         {
-            continue;
-        }*/
-
-        // If the caller specified a Process ID, check if we have a match.
-        if (ProcId != 0)
-        {
-            if (processes[i] != ProcId)
-            {
-                continue;
-            }
+            PrintWaitChain(thread.th32ThreadID);
         }
 
-        // Get a handle to this process.
-        process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, processes[i]);
-        if (process)
-        {
-            WCHAR file[MAX_PATH];
+        CloseHandle(threadHandle);
+    } 
+    while( Thread32Next(snapshot, &thread) );
 
-            printf("Process 0x%x - ", processes[i]);
-
-            // Retrieve the executable name and print it.
-            if (GetProcessImageFileName(process, file, ARRAYSIZE(file)) > 0)
-            {
-                PCWSTR filePart = wcsrchr(file, L'\\');
-                if (filePart)
-                {
-                    filePart++;
-                }
-                else
-                {
-                    filePart = file;
-                }
-
-                printf("%S", filePart);
-            }
-
-            printf("\n----------------------------------\n");
-
-            // Get a snapshot of this process. This enables us to
-            // enumerate its threads.
-            snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD,
-                                                processes[i]);
-            if (snapshot)
-            {
-                THREADENTRY32 thread;
-                thread.dwSize = sizeof(thread);
-
-                // Walk the thread list and print each wait chain
-                if (Thread32First(snapshot, &thread))
-                {
-                    do
-                    {
-                        if (thread.th32OwnerProcessID == processes[i])
-                        {
-                            // Open a handle to this specific thread
-                            HANDLE threadHandle = OpenThread(THREAD_ALL_ACCESS, FALSE, thread.th32ThreadID);
-                            if (threadHandle)
-                            {
-                                // Check whether the thread is still running
-                                DWORD exitCode;
-                                GetExitCodeThread(threadHandle, &exitCode);
-
-                                if (exitCode == STILL_ACTIVE)
-                                {
-                                    // Print the wait chain.
-                                    PrintWaitChain(thread.th32ThreadID);
-                                }
-
-                                CloseHandle(threadHandle);
-                            }
-                        }
-                    } while (Thread32Next(snapshot, &thread));
-                }
-                CloseHandle(snapshot);
-            }
-
-            CloseHandle(process);
-            printf("\n");
-        }
-    }
-    return TRUE;
+    CloseHandle(snapshot);
+    CloseHandle(process);
 }
 
 void PrintWaitChain ( __in DWORD ThreadId)
@@ -317,6 +233,14 @@ HOOKDLL_API int _cdecl UsingWctMain( DWORD pid )
 {
     g_WctHandle = OpenThreadWaitChainSession(0, NULL);
     if( NULL == g_WctHandle ) { throw WinApiException("OpenThreadWaitChainSession"); }
+
+    // Try to enable the SE_DEBUG_NAME privilege for this process. 
+    // Continue even if this fails--we just won't be able to retrieve
+    // wait chains for processes not owned by the current user.
+    if (!GrantDebugPrivilege())
+    {
+        printf("Could not enable the debug privilege");
+    }
 
     CheckThreads(pid);
 

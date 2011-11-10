@@ -3,7 +3,7 @@
 
 TEST( Wct_call_Test )
 {
-    DWORD pid = GetCurrentProcessId();
+    //DWORD pid = GetCurrentProcessId();
     int returnCode = UsingWctMain( 1880 );
     CHECK( 0 != returnCode );
 }
