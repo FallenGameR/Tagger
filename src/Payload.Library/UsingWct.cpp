@@ -86,6 +86,30 @@ Return Value:
     return fSuccess;
 }
 
+void PrintProcessName( DWORD pid )
+{
+    WCHAR file[MAX_PATH];
+
+    HANDLE process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+    if( NULL == process ) { throw WinApiException("OpenProcess"); }
+
+    // Retrieve the executable name and print it.
+    if (GetProcessImageFileName(process, file, ARRAYSIZE(file)) > 0)
+    {
+        PCWSTR filePart = wcsrchr(file, L'\\');
+        if (filePart)
+        {
+            filePart++;
+        }
+        else
+        {
+            filePart = file;
+        }
+
+        printf("%S", filePart);
+    }
+}
+
 void PrintWaitChain ( __in DWORD tid )
 {
     WAITCHAIN_NODE_INFO nodeInfoArray[WCT_MAX_NODE_COUNT];
@@ -113,7 +137,10 @@ void PrintWaitChain ( __in DWORD tid )
         if( WctThreadType == nodeInfoArray[i].ObjectType )
         {
             // A thread node contains process and thread ID.
-            printf("[pid %d] | ", nodeInfoArray[i].ThreadObject.ProcessId);
+            DWORD pid = nodeInfoArray[i].ThreadObject.ProcessId;
+            printf("[pid %d = ", pid);
+            PrintProcessName( pid );
+            printf("] | ", pid);
         }
     }
 
