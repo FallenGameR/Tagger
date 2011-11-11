@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream> 
+#include <memory>
 
 #include <tlhelp32.h>
 #include <wct.h>

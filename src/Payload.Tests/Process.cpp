@@ -41,3 +41,8 @@ HWND Process::FindMainWindow( LPTSTR className, LPTSTR title )
 
     throw WinApiException("FindWindow");
 }
+
+DWORD Process::GetPid()
+{
+    return m_ProcessInformation.dwProcessId;
+}

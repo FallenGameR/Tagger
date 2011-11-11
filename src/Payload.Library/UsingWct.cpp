@@ -5,30 +5,6 @@
 #pragma comment(lib, "Psapi.lib")
 #pragma comment(lib, "Advapi32.lib")
 
-typedef struct _STR_ARRAY
-{
-    CHAR Desc[32];
-} STR_ARRAY;
-
-// Human-readable names for the different synchronization types.
-STR_ARRAY STR_OBJECT_TYPE[] =
-{
-    {"CriticalSection"},
-    {"SendMessage"},
-    {"Mutex"},
-    {"Alpc"},
-    {"Com"},
-    {"ThreadWait"},
-    {"ProcWait"},
-    {"Thread"},
-    {"ComActivation"},
-    {"Unknown"},
-    {"Max"}
-};
-
-// Global variable to store the WCT session handle
-HWCT g_WctHandle = NULL;
-
 BOOL GrantDebugPrivilege ( )
 /*++
 
@@ -86,117 +62,56 @@ Return Value:
     return fSuccess;
 }
 
-void PrintProcessName( DWORD pid )
+TCHAR* ConhostImageFileName = TEXT("\\Device\\HarddiskVolume1\\Windows\\System32\\conhost.exe");
+
+bool IsConhost( DWORD pid )
 {
-    WCHAR file[MAX_PATH];
-
-    HANDLE process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+    HANDLE process = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid);
     if( NULL == process ) { throw WinApiException("OpenProcess"); }
+    shared_ptr<void> process_deleter( process, CloseHandle );
 
-    // Retrieve the executable name and print it.
-    if (GetProcessImageFileName(process, file, ARRAYSIZE(file)) > 0)
-    {
-        PCWSTR filePart = wcsrchr(file, L'\\');
-        if (filePart)
-        {
-            filePart++;
-        }
-        else
-        {
-            filePart = file;
-        }
+    TCHAR imageFileName[MAX_PATH];
+    DWORD length = GetProcessImageFileName(process, imageFileName, MAX_PATH);
+    if( 0 == length ) { throw WinApiException("GetProcessImageFileName"); }
 
-        printf("%S", filePart);
-    }
+    return 0 == _tcsicmp( imageFileName, ConhostImageFileName );    
 }
 
-void PrintWaitChain ( __in DWORD tid )
+DWORD FindParentConhost( HWCT wctSession, DWORD tid )
 {
-    WAITCHAIN_NODE_INFO nodeInfoArray[WCT_MAX_NODE_COUNT];
-    DWORD count, i;
+    WAITCHAIN_NODE_INFO nodes[WCT_MAX_NODE_COUNT];
+    DWORD count = WCT_MAX_NODE_COUNT;
     BOOL isCycle;
 
-    printf("%d: ", tid);
-
-    count = WCT_MAX_NODE_COUNT;
-
-    // Make a synchronous WCT call to retrieve the wait chain.
-    BOOL success = GetThreadWaitChain(g_WctHandle, NULL, WCTP_GETINFO_ALL_FLAGS, tid, &count, nodeInfoArray, &isCycle);
+    // Synchronous WCT call to retrieve wait chain
+    BOOL success = GetThreadWaitChain( wctSession, NULL, WCT_OUT_OF_PROC_FLAG, tid, &count, nodes, &isCycle );
     if( !success ) { throw WinApiException("GetThreadWaitChain"); }
 
-    // Check if the wait chain is too big for the array we passed in.
-    if (count > WCT_MAX_NODE_COUNT)
+    // Check if thread waits on conhost process
+    for ( DWORD i = 0; i < count; i++)
     {
-        printf("Found additional nodes %d\n", count);
-        count = WCT_MAX_NODE_COUNT;
+        if( WctThreadType != nodes[i].ObjectType ) { continue; }
+        DWORD pid = nodes[i].ThreadObject.ProcessId;
+        if( IsConhost( pid ) ) { return pid; }
     }
 
-    // Loop over all the nodes returned and print useful information.
-    for (i = 0; i < count; i++)
-    {
-        if( WctThreadType == nodeInfoArray[i].ObjectType )
-        {
-            // A thread node contains process and thread ID.
-            DWORD pid = nodeInfoArray[i].ThreadObject.ProcessId;
-            printf("[pid %d = ", pid);
-            PrintProcessName( pid );
-            printf("] | ", pid);
-        }
-    }
-
-    printf("\n");
-}
-
-void CheckThreads( __in DWORD pid )
-{
-    // Get a handle to this process.
-    HANDLE process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-    if( NULL == process ) { throw WinApiException("OpenProcess"); }
-
-    // Get a snapshot of this process. This enables us to enumerate its threads.
-    HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, pid);
-    if( INVALID_HANDLE_VALUE == snapshot ) { throw WinApiException("CreateToolhelp32Snapshot"); } 
-
-    THREADENTRY32 thread;
-    thread.dwSize = sizeof(thread);
-
-    // Walk the thread list and print each wait chain
-    if( !Thread32First(snapshot, &thread) ) { return; }
-
-    do
-    {
-        if( thread.th32OwnerProcessID != pid ) { continue; }
-
-        // Open a handle to this specific thread
-        HANDLE threadHandle = OpenThread(THREAD_ALL_ACCESS, FALSE, thread.th32ThreadID);
-        if( NULL == threadHandle ) { throw WinApiException("OpenThread"); }
-
-        // Check whether the thread is still running
-        DWORD exitCode;
-        GetExitCodeThread(threadHandle, &exitCode);
-
-        if( STILL_ACTIVE == exitCode )
-        {
-            PrintWaitChain(thread.th32ThreadID);
-        }
-
-        CloseHandle(threadHandle);
-    } 
-    while( Thread32Next(snapshot, &thread) );
-
-    CloseHandle(snapshot);
-    CloseHandle(process);
+    // Return 0 if conhost wasn't found
+    return 0;
 }
 
 ///
 /// ProcId
-///     0   - wait chains for all processes
 ///     pid - wait chains for the specified process
 ///
-HOOKDLL_API int _cdecl UsingWctMain( DWORD pid )
+HOOKDLL_API DWORD FindConhost( DWORD pid )
 {
-    g_WctHandle = OpenThreadWaitChainSession(0, NULL);
-    if( NULL == g_WctHandle ) { throw WinApiException("OpenThreadWaitChainSession"); }
+    // We only perform search for concrete process
+    if( 0 == pid ) { return 0; }
+
+    // Create WCT session
+    HWCT wctSession = OpenThreadWaitChainSession(0, NULL);
+    if( NULL == wctSession ) { throw WinApiException("OpenThreadWaitChainSession"); }
+    shared_ptr<void> wctSession_deleter( wctSession, CloseThreadWaitChainSession );
 
     // Try to enable the SE_DEBUG_NAME privilege for this process. 
     // Continue even if this fails--we just won't be able to retrieve
@@ -206,9 +121,40 @@ HOOKDLL_API int _cdecl UsingWctMain( DWORD pid )
         printf("Could not enable the debug privilege");
     }
 
-    CheckThreads(pid);
+    // Get a snapshot of this process. This enables us to enumerate its threads.
+    HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, pid);
+    if( INVALID_HANDLE_VALUE == snapshot ) { throw WinApiException("CreateToolhelp32Snapshot"); } 
+    shared_ptr<void> snapshot_deleter( snapshot, CloseHandle );
 
-    CloseThreadWaitChainSession(g_WctHandle);
-    
+    // Initialize thread entry structure
+    THREADENTRY32 threadEntry;
+    threadEntry.dwSize = sizeof(threadEntry);
+    if( !Thread32First(snapshot, &threadEntry) ) { return 0; }
+
+    // Walk the thread list and print each wait chain
+    do
+    {
+        if( threadEntry.th32OwnerProcessID != pid ) { continue; }
+
+        // Open a handle to this specific thread
+        HANDLE thread = OpenThread(THREAD_ALL_ACCESS, FALSE, threadEntry.th32ThreadID);
+        if( NULL == thread ) { throw WinApiException("OpenThread"); }
+        shared_ptr<void> thread_deleter( thread, CloseHandle );
+
+        // Check whether the thread is still running
+        DWORD exitCode;
+        BOOL success = GetExitCodeThread(thread, &exitCode);
+        if( !success ) { throw WinApiException("GetExitCodeThread"); }
+
+        // Print wait chains for active threads
+        if( STILL_ACTIVE == exitCode )
+        {
+            DWORD conhostPid = FindParentConhost( wctSession, threadEntry.th32ThreadID );
+            if( 0 != conhostPid ) { return conhostPid; }
+        }
+    } 
+    while( Thread32Next(snapshot, &threadEntry) );
+
+    // Return 0 if conhost wasn't found
     return 0;
 }
