@@ -2,67 +2,25 @@
 #include "Payload.Dll.h"
 #include "WinApiException.h"
 
-#pragma comment(lib, "Psapi.lib")
-#pragma comment(lib, "Advapi32.lib")
-
-BOOL GrantDebugPrivilege ( )
-/*++
-
-Routine Description:
-
-    Enables the debug privilege (SE_DEBUG_NAME) for this process.
-    This is necessary if we want to retrieve wait chains for processes
-    not owned by the current user.
-
-Arguments:
-
-    None.
-
-Return Value:
-
-    TRUE if this privilege could be enabled; FALSE otherwise.
-
---*/
-{
-    BOOL             fSuccess    = FALSE;
-    HANDLE           TokenHandle = NULL;
-    TOKEN_PRIVILEGES TokenPrivileges;
-
-    if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &TokenHandle))
-    {
-        printf("Could not get the process token");
-        goto Cleanup;
-    }
-
-    TokenPrivileges.PrivilegeCount = 1;
-
-    if (!LookupPrivilegeValue(NULL, SE_DEBUG_NAME, &TokenPrivileges.Privileges[0].Luid))
-    {
-        printf("Couldn't lookup SeDebugPrivilege name");
-        goto Cleanup;
-    }
-
-    TokenPrivileges.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
-
-    if (!AdjustTokenPrivileges(TokenHandle, FALSE, &TokenPrivileges, sizeof(TokenPrivileges), NULL, NULL))
-    {
-        printf("Could not revoke the debug privilege");
-        goto Cleanup;
-    }
-
-    fSuccess = TRUE;
-
- Cleanup:
-
-    if (TokenHandle)
-    {
-        CloseHandle(TokenHandle);
-    }
-
-    return fSuccess;
-}
-
 TCHAR* ConhostImageFileName = TEXT("\\Device\\HarddiskVolume1\\Windows\\System32\\conhost.exe");
+
+void GrantDebugPrivilege ( )
+{
+    HANDLE token;
+    BOOL successOpen = OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY | TOKEN_ADJUST_PRIVILEGES, &token);
+    if( !successOpen ) { throw WinApiException("OpenProcessToken"); }
+    shared_ptr<void> token_deleter( token, CloseHandle );
+
+    TOKEN_PRIVILEGES privileges;
+    privileges.PrivilegeCount = 1;
+    privileges.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+
+    BOOL successLookup = LookupPrivilegeValue(NULL, SE_DEBUG_NAME, &privileges.Privileges[0].Luid);
+    if( !successLookup ) { throw WinApiException("LookupPrivilegeValue"); }
+
+    BOOL successAdjust = AdjustTokenPrivileges(token, FALSE, &privileges, sizeof(privileges), NULL, NULL);
+    if( !successAdjust ) { throw WinApiException("AdjustTokenPrivileges"); }
+}
 
 bool IsConhost( DWORD pid )
 {
@@ -108,18 +66,15 @@ HOOKDLL_API DWORD FindConhost( DWORD pid )
     // We only perform search for concrete process
     if( 0 == pid ) { return 0; }
 
+    // Try to enable the SE_DEBUG_NAME privilege for this process. 
+    // Continue even if this fails - we just won't be able to retrieve
+    // wait chains for processes not owned by the current user.
+    //GrantDebugPrivilege();
+
     // Create WCT session
     HWCT wctSession = OpenThreadWaitChainSession(0, NULL);
     if( NULL == wctSession ) { throw WinApiException("OpenThreadWaitChainSession"); }
     shared_ptr<void> wctSession_deleter( wctSession, CloseThreadWaitChainSession );
-
-    // Try to enable the SE_DEBUG_NAME privilege for this process. 
-    // Continue even if this fails--we just won't be able to retrieve
-    // wait chains for processes not owned by the current user.
-    if (!GrantDebugPrivilege())
-    {
-        printf("Could not enable the debug privilege");
-    }
 
     // Get a snapshot of this process. This enables us to enumerate its threads.
     HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, pid);
