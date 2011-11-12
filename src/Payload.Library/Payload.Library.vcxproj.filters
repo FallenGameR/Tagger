@@ -34,8 +34,8 @@
     <ClCompile Include="EnumeratingProcesses.cpp">
       <Filter>Prototypes</Filter>
     </ClCompile>
-    <ClCompile Include="UsingWct.cpp">
-      <Filter>Prototypes</Filter>
+    <ClCompile Include="FindConhost.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -47,6 +47,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DebugConsole.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FindConhost.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

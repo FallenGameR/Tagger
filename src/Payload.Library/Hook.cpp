@@ -19,6 +19,7 @@ char    shared_string [128] = { '\0' };
 #pragma comment(linker,"/SECTION:.shared,RWS") 
 
 
+void APIENTRY AddDebugPrivilege();
 
 //-------------------------------------------------------
 // global variables (unshared!)
