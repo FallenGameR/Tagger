@@ -16,9 +16,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Hook.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>[Precompiled]</Filter>
     </ClCompile>
@@ -31,10 +28,10 @@
     <ClCompile Include="ConsoleDeterminer.cpp">
       <Filter>Prototypes</Filter>
     </ClCompile>
-    <ClCompile Include="EnumeratingProcesses.cpp">
-      <Filter>Prototypes</Filter>
-    </ClCompile>
     <ClCompile Include="FindConhost.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OldInjector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

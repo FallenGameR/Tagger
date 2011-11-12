@@ -50,7 +50,6 @@
     <ClCompile Include="ConsoleDeterminer.cpp" />
     <ClCompile Include="AnotherSpy.cpp" />
     <ClCompile Include="DebugConsole.cpp" />
-    <ClCompile Include="EnumeratingProcesses.cpp" />
     <ClCompile Include="FindConhost.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
@@ -60,6 +59,6 @@
     <ClInclude Include="Payload.Dll.h" />
     <ClInclude Include="WinApiException.h" />
     <ClInclude Include="stdafx.h" />
-    <ClCompile Include="Hook.cpp" />
+    <ClCompile Include="OldInjector.cpp" />
   </ItemGroup>
 </Project>

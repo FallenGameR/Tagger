@@ -3,6 +3,7 @@
 #include "WinApiException.h"
 #include "FindConhost.h"
 
+// Constant used to determine if a process is called conhost
 TCHAR* ConhostImageFileName = TEXT("\\Device\\HarddiskVolume1\\Windows\\System32\\conhost.exe");
 
 
@@ -15,7 +16,7 @@ HOOKDLL_API DWORD APIENTRY FindConhost( DWORD pid )
     // We only perform search for concrete process
     if( 0 == pid ) { return 0; }
 
-    // Try to enable the SE_DEBUG_NAME privilege for this process. 
+    // NOTE: We can try to enable the SE_DEBUG_NAME privilege for this process. 
     // Continue even if this fails - we just won't be able to retrieve
     // wait chains for processes not owned by the current user.
     //GrantDebugPrivilege();
