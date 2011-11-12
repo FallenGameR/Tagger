@@ -36,5 +36,8 @@
     <ClCompile Include="Wct_call_Test.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="Cmd_is_console_app_Test.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

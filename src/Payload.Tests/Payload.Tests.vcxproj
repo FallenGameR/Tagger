@@ -50,6 +50,7 @@
   </ItemDefinitionGroup>
   <!-- Files-->
   <ItemGroup>
+    <ClCompile Include="Cmd_is_console_app_Test.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
