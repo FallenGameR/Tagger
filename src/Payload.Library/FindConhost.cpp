@@ -101,6 +101,7 @@ DWORD FindParentConhost( HWCT wctSession, DWORD tid )
 /// <returns>true if process is conhost.exe; false otherwise</returns>
 bool IsConhost( DWORD pid )
 {
+    HANDLE process = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid);
     if( NULL == process ) { throw WinApiException("OpenProcess"); }
     shared_ptr<void> process_deleter( process, CloseHandle );
 

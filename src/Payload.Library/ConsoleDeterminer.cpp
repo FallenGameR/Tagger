@@ -1,82 +1,50 @@
 #include "stdafx.h"
-
-#if 0
-
 #include <windows.h>
 #include <winnt.h>
+#include "WinApiException.h"
 
-VOID  ConsoleMain(int, char **);
+void IsConsoleApp(TCHAR* programPath);
 DWORD AbsoluteSeek(HANDLE, DWORD);
-VOID  ReadBytes(HANDLE, LPVOID, DWORD);
-VOID  WriteBytes(HANDLE, LPVOID, DWORD);
-VOID  CopySection(HANDLE, HANDLE, DWORD);
+void  ReadBytes(HANDLE, LPVOID, DWORD);
+void  WriteBytes(HANDLE, LPVOID, DWORD);
+void  CopySection(HANDLE, HANDLE, DWORD);
 
-VOID
-ConsoleMain(int argc, char *argv[])
-{   
-    HANDLE hImage;
+#define IMAGE_SIZEOF_NT_OPTIONAL_HEADER sizeof(IMAGE_OPTIONAL_HEADER)
 
-    DWORD  bytes;
-    DWORD  iSection;
-    DWORD  SectionOffset;
-    DWORD  CoffHeaderOffset;
-    DWORD  MoreDosHeader[16];
+void ReadBytes(HANDLE hFile, LPVOID buffer, DWORD  size)
+{
+    DWORD bytes;
 
-    ULONG  ntSignature;
-
-    IMAGE_DOS_HEADER      image_dos_header;
-    IMAGE_FILE_HEADER     image_file_header;
-    IMAGE_OPTIONAL_HEADER image_optional_header;
-    IMAGE_SECTION_HEADER  image_section_header;
-
-    if (argc != 2)
+    if (!ReadFile(hFile, buffer, size, &bytes, NULL))
     {
-        printf("USAGE: %s program_file_name\n", argv[1]);
+        printf("ReadFile failed, error %lu.\n", GetLastError());
         exit(1);
     }
-
-    /*
-     *  Open the reference file.
-     */ 
-    hImage = CreateFileA(argv[1],
-                        GENERIC_READ,
-                        FILE_SHARE_READ,
-                        NULL,
-                        OPEN_EXISTING,
-                        FILE_ATTRIBUTE_NORMAL,
-                        NULL);
-
-    if (INVALID_HANDLE_VALUE == hImage)
+    else if (size != bytes)
     {
-        printf("Could not open %s, error %lu\n", argv[1], GetLastError());
+        printf("Read the wrong number of bytes, expected %lu, got %lu.\n",
+            size, bytes);
         exit(1);
     }
+}
 
-    /*
-     *  Read the MS-DOS image header.
-     */ 
-    ReadBytes(hImage,
-              &image_dos_header,
-              sizeof(IMAGE_DOS_HEADER));
 
-    if (IMAGE_DOS_SIGNATURE != image_dos_header.e_magic)
-    {
-        printf("Sorry, I do not understand this file.\n");
-        exit(1);
-    }
+void IsConsoleApp( TCHAR* programPath )
+{       
+    HANDLE hImage = CreateFile( programPath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
+    if( INVALID_HANDLE_VALUE == hImage ) { throw WinApiException("CreateFile"); }
 
-    /*
-     *  Read more MS-DOS header.       */ 
-    ReadBytes(hImage,
-              MoreDosHeader,
-              sizeof(MoreDosHeader));
+    IMAGE_DOS_HEADER image_dos_header;
+    ReadBytes( hImage, &image_dos_header, sizeof(IMAGE_DOS_HEADER) ); 
+    if( IMAGE_DOS_SIGNATURE != image_dos_header.e_magic ) { throw WinApiException("ReadBytes: file image signature is unknown"); }
 
-    /*
-     *  Get actual COFF header.
-     */ 
-    CoffHeaderOffset = AbsoluteSeek(hImage, image_dos_header.e_lfanew) +
-                       sizeof(ULONG);
+    DWORD MoreDosHeader[16];
+    ReadBytes( hImage, MoreDosHeader, sizeof(MoreDosHeader) );
 
+    // actual COFF header
+    DWORD CoffHeaderOffset = CoffHeaderOffset = AbsoluteSeek(hImage, image_dos_header.e_lfanew) + sizeof(ULONG);
+
+    ULONG ntSignature;
     ReadBytes (hImage, &ntSignature, sizeof(ULONG));
 
     if (IMAGE_NT_SIGNATURE != ntSignature)
@@ -85,19 +53,16 @@ ConsoleMain(int argc, char *argv[])
      exit(1);
     }
 
-    SectionOffset = CoffHeaderOffset + IMAGE_SIZEOF_FILE_HEADER +
-                    IMAGE_SIZEOF_NT_OPTIONAL_HEADER;
+    DWORD SectionOffset = CoffHeaderOffset + IMAGE_SIZEOF_FILE_HEADER + IMAGE_SIZEOF_NT_OPTIONAL_HEADER;
 
-    ReadBytes(hImage,
-              &image_file_header,
-              IMAGE_SIZEOF_FILE_HEADER);
+    IMAGE_FILE_HEADER image_file_header;
+    ReadBytes(hImage, &image_file_header, IMAGE_SIZEOF_FILE_HEADER);
 
     /*
      *  Read optional header.
      */ 
-    ReadBytes(hImage,
-              &image_optional_header,
-              IMAGE_SIZEOF_NT_OPTIONAL_HEADER);
+    IMAGE_OPTIONAL_HEADER image_optional_header;
+    ReadBytes(hImage, &image_optional_header, IMAGE_SIZEOF_NT_OPTIONAL_HEADER);
 
     switch (image_optional_header.Subsystem)
     {
@@ -139,16 +104,11 @@ ConsoleMain(int argc, char *argv[])
     }
 }
 
-DWORD
-AbsoluteSeek(HANDLE hFile,
-             DWORD  offset)
+DWORD AbsoluteSeek(HANDLE hFile, DWORD  offset)
 {
     DWORD newOffset;
 
-    if ((newOffset = SetFilePointer(hFile,
-                                    offset,
-                                    NULL,
-                                    FILE_BEGIN)) == 0xFFFFFFFF)
+    if ((newOffset = SetFilePointer(hFile, offset, NULL, FILE_BEGIN)) == 0xFFFFFFFF)
     {
         printf("SetFilePointer failed, error %lu.\n", GetLastError());
         exit(1);
@@ -157,27 +117,3 @@ AbsoluteSeek(HANDLE hFile,
     return newOffset;
 }
 
-VOID
-ReadBytes(HANDLE hFile,
-          LPVOID buffer,
-          DWORD  size)
-{
-    DWORD bytes;
-
-    if (!ReadFile(hFile,
-                  buffer,
-                  size,
-                  &bytes,
-                  NULL))
-    {
-        printf("ReadFile failed, error %lu.\n", GetLastError());
-        exit(1);
-    }
-    else if (size != bytes)
-    {
-        printf("Read the wrong number of bytes, expected %lu, got %lu.\n",
-               size, bytes);
-        exit(1);
-    }
-}
-#endif
