@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "DebugConsole.h"
+#include "Payload.Dll.h"
 
-#if 0
+//#if 0
 // Constants
 TCHAR szTitle[] = TEXT("Windows Target x86");
 TCHAR szWindowClass[] = TEXT("TARGET");
@@ -18,10 +19,14 @@ void CreateTargetConsoleWindow();
 void CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime );
 LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
 
-int APIENTRY _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow )
+DWORD g_pid = 0;
+
+HOOKDLL_API int APIENTRY StartHooking( DWORD pid )
 {
     WNDCLASSEX wcex; 
     MSG msg;
+
+    g_pid = pid;
 
     // Register window class
     ZeroMemory( &wcex, sizeof(WNDCLASSEX) );
@@ -31,6 +36,7 @@ int APIENTRY _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpC
     RegisterClassEx( &wcex );
 
     // Initialize message window
+    HINSTANCE hInstance = GetModuleHandle(NULL);
     HWND hWnd = CreateWindowEx( 0, szWindowClass, szTitle, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, hInstance, NULL );
     if( !hWnd ) { return FALSE; }
 
@@ -47,7 +53,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
     {
     case WM_CREATE:
         CreateTargetConsoleWindow();
-        Initialization(hTargetConsole.dwProcessId);
+        Initialization(g_pid);
         break;
 
     case WM_DESTROY:
@@ -72,8 +78,8 @@ void CreateTargetConsoleWindow()
     startInfo.dwY = 400;
     startInfo.dwFlags = STARTF_USEPOSITION;
 
-    BOOL success = CreateProcess( NULL, programName, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &startInfo, &hTargetConsole );
-    if( FALSE == success ) { throw "CreateProcess"; }
+    //BOOL success = CreateProcess( NULL, programName, NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &startInfo, &hTargetConsole );
+    //if( FALSE == success ) { throw "CreateProcess"; }
 }
 
 void Initialization( DWORD processId )
@@ -116,4 +122,4 @@ void CALLBACK WinEventProc( HWINEVENTHOOK hWinEventHook, DWORD eventType, HWND h
     cout << eventType <<  ", left: " << rect.left << ", top: " << rect.top << endl;
 }
 
-#endif
+//#endif

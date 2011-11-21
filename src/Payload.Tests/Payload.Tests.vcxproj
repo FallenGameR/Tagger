@@ -51,6 +51,7 @@
   <!-- Files-->
   <ItemGroup>
     <ClCompile Include="Is_console_app_Tests.cpp" />
+    <ClCompile Include="New_hook_test.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

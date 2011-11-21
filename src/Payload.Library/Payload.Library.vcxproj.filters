@@ -25,13 +25,13 @@
     <ClCompile Include="AnotherSpy.cpp">
       <Filter>Prototypes</Filter>
     </ClCompile>
-    <ClCompile Include="ConsoleDeterminer.cpp">
-      <Filter>Prototypes</Filter>
-    </ClCompile>
     <ClCompile Include="FindConhost.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OldInjector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IsConsoleApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

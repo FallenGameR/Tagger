@@ -47,7 +47,7 @@
   </ItemDefinitionGroup>
   <!-- Files -->
   <ItemGroup>
-    <ClCompile Include="ConsoleDeterminer.cpp" />
+    <ClCompile Include="IsConsoleApp.cpp" />
     <ClCompile Include="AnotherSpy.cpp" />
     <ClCompile Include="DebugConsole.cpp" />
     <ClCompile Include="FindConhost.cpp" />
