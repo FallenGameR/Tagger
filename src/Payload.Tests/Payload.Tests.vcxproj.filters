@@ -36,7 +36,7 @@
     <ClCompile Include="Wct_call_Test.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="Cmd_is_console_app_Test.cpp">
+    <ClCompile Include="Is_console_app_Tests.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
   </ItemGroup>
