@@ -4,10 +4,12 @@
 DebugConsole::DebugConsole() :
     _cinbuf(0), _coutbuf(0), _cerrbuf(0)
 {
+    Open();
 }
 
 DebugConsole::~DebugConsole() 
 {
+    Close();
 }
 
 void DebugConsole::Open()

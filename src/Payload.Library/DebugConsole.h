@@ -11,9 +11,6 @@ public:
     DebugConsole();
     ~DebugConsole();
 
-    void Open();
-    void Close();
-
 private:
     streambuf* _cinbuf;
     streambuf* _coutbuf;
@@ -21,4 +18,7 @@ private:
     ifstream _console_cin;
     ofstream _console_cout;
     ofstream _console_cerr;
+
+    void Open();
+    void Close();
 };
