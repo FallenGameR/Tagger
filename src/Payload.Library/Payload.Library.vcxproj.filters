@@ -11,9 +11,6 @@
     <Filter Include="[Precompiled]">
       <UniqueIdentifier>{ae079539-d514-4f32-8ca7-db5bbbd3aceb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Prototypes">
-      <UniqueIdentifier>{cbdca500-c9ce-447e-8de1-e6638ccb691a}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -22,9 +19,6 @@
     <ClCompile Include="DebugConsole.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AnotherSpy.cpp">
-      <Filter>Prototypes</Filter>
-    </ClCompile>
     <ClCompile Include="FindConhost.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -32,6 +26,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="IsConsoleApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AnotherSpy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
