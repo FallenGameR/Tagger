@@ -4,7 +4,7 @@
 #include "FindConhost.h"
 
 // Constant used to determine if a process is called conhost
-TCHAR* ConhostImageFileName = TEXT("\\Device\\HarddiskVolume1\\Windows\\System32\\conhost.exe");
+TCHAR* ConhostExeFileName = TEXT("C:\\Windows\\System32\\conhost.exe");
 
 
 /// <summary>
@@ -105,11 +105,12 @@ bool IsConhost( DWORD pid )
     if( NULL == process ) { throw WinApiException("OpenProcess"); }
     shared_ptr<void> process_deleter( process, CloseHandle );
 
-    TCHAR imageFileName[MAX_PATH];
-    DWORD length = GetProcessImageFileName(process, imageFileName, MAX_PATH);
-    if( 0 == length ) { throw WinApiException("GetProcessImageFileName"); }
+    DWORD length = MAX_PATH;
+    TCHAR exeName[MAX_PATH];
+    BOOL success = QueryFullProcessImageName( process, 0, exeName, &length);
+    if( !success ) { throw WinApiException("QueryFullProcessImageName"); }
 
-    return 0 == _tcsicmp( imageFileName, ConhostImageFileName );    
+    return 0 == _tcsicmp( exeName, ConhostExeFileName );    
 }
 
 
