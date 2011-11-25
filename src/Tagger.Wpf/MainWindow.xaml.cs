@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ManagedWinapi.Accessibility;
 
 namespace Tagger.Wpf
 {
@@ -23,5 +24,26 @@ namespace Tagger.Wpf
         {
             InitializeComponent();
         }
+
+        AccessibleEventListener listner;
+        private void Window_Loaded( object sender, RoutedEventArgs e )
+        {
+            listner = new AccessibleEventListener
+            {
+                MinimalEventType = AccessibleEventType.EVENT_OBJECT_LOCATIONCHANGE,
+                MaximalEventType = AccessibleEventType.EVENT_OBJECT_LOCATIONCHANGE,
+                ProcessId = 5228,
+                Enabled = true,
+            };
+
+            listner.EventOccurred += new AccessibleEventHandler( listner_EventOccurred );
+        }
+
+        void listner_EventOccurred( object sender, AccessibleEventArgs e )
+        {
+            // OBJID_WINDOW == 0
+            test.Text = e.ObjectID.ToString();
+        }
+
     }
 }
