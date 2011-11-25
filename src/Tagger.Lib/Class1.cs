@@ -8,7 +8,7 @@ namespace Tagger.Lib
 {
     public static class WinApi
     {
-        public enum EventObject
+        public enum EventObject : uint
         {
             LocationChange = 0x800B
         }
