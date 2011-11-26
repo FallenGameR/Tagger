@@ -55,11 +55,15 @@ namespace LockWatcher
                       WAITCHAIN_NODE_INFO [ NativeMethods.WCT_MAX_NODE_COUNT ];
             uint isDeadlock = 0;
             uint nodeCount = NativeMethods.WCT_MAX_NODE_COUNT;
-            Boolean ret = NativeMethods.GetThreadWaitChain ( waitChainHandle ,
-                                                             threadId ,
-                                                             ref nodeCount ,
-                                                             data ,
-                                                             out isDeadlock );
+            Boolean ret = NativeMethods.GetThreadWaitChain( 
+                waitChainHandle ,
+                IntPtr.Zero , 
+                LockWatcher.NativeMethods.WCT_FLAGS.All,
+                threadId ,
+                ref nodeCount ,
+                data ,
+                out isDeadlock );
+
             WaitData retData = null;
             if ( true == ret )
             {
