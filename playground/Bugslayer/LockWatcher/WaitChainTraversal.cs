@@ -46,7 +46,11 @@ namespace LockWatcher
 
         public WaitChainTraversal ( )
         {
-            waitChainHandle = NativeMethods.OpenThreadWaitChainSession ( );
+            waitChainHandle = NativeMethods.OpenThreadWaitChainSession( 0, IntPtr.Zero );
+            if( waitChainHandle.IsInvalid )
+            {
+                throw new InvalidOperationException( Constants.NoOpenWCTHandle );
+            }
         }
 
         public WaitData GetThreadWaitChain ( Int32 threadId )

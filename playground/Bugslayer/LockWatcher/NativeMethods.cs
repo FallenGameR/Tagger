@@ -112,45 +112,12 @@ namespace LockWatcher
         }
 
         // Allow the code to compile on XP/Server 2003.
-        [DllImport( "ADVAPI32.DLL", SetLastError = true, ExactSpelling = true, CharSet = CharSet.Unicode, EntryPoint = "CloseThreadWaitChainSession" )]
-        extern static private
-        void RealCloseThreadWaitChainSession( IntPtr wctHandle );
-
-        static public void CloseThreadWaitChainSession( IntPtr handle )
-        {
-            RealCloseThreadWaitChainSession( handle );
-        }
+        [DllImport( "ADVAPI32.DLL", SetLastError = true)]
+        extern static public void CloseThreadWaitChainSession( IntPtr wctHandle );
 
         // Allow the code to compile on XP/Server 2003.
-        [DllImport( "ADVAPI32.DLL", EntryPoint = "OpenThreadWaitChainSession" )]
-        extern static private
-        SafeWaitChainHandle RealOpenThreadWaitChainSession( int flags, IntPtr callback );
-
-        // Keep the module handle around for the life of the application as the
-        // WCT code has pointers into it.
-        static SafeModuleHandle oleModule;
-
-        static public SafeWaitChainHandle OpenThreadWaitChainSession()
-        {
-            // Get the COM APIs into WCT. I have no idea why WCT just doesn't
-            // do this itself.
-            if( null == oleModule )
-            {
-                oleModule = LoadLibraryW( "OLE32.DLL" );
-                IntPtr coGetCallState = GetProcAddress( oleModule, "CoGetCallState" );
-                IntPtr coGetActivationState = GetProcAddress( oleModule, "CoGetActivationState" );
-                // Register these functions with WCT.
-                RegisterWaitChainCOMCallback( coGetCallState, coGetActivationState );
-            }
-
-
-            SafeWaitChainHandle wctHandle = RealOpenThreadWaitChainSession( 0, IntPtr.Zero );
-            if( true == wctHandle.IsInvalid )
-            {
-                throw new InvalidOperationException( Constants.NoOpenWCTHandle );
-            }
-            return (wctHandle);
-        }
+        [DllImport( "ADVAPI32.DLL", SetLastError = true )]
+        extern static public SafeWaitChainHandle OpenThreadWaitChainSession( int flags, IntPtr callback );
 
         [DllImport( "ADVAPI32.DLL", ExactSpelling = true, SetLastError = true )]
         internal static extern void RegisterWaitChainCOMCallback( IntPtr callStateCallback, IntPtr activationStateCallback );
