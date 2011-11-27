@@ -11,6 +11,7 @@ using System.IO;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 using WinAPI;
+using System.Linq;
 
 namespace LockWatcher
 {
@@ -37,8 +38,7 @@ namespace LockWatcher
                 Boolean keepLooping = ( opts.UpdateTime > 0 );
                 // Create the traversal class that's used for all 
                 // iterations.
-                using ( WaitChainTraversalObj wct =
-                                                new WaitChainTraversalObj ( ) )
+                using ( WaitChainTraversalObj wct = new WaitChainTraversalObj ( ) )
                 {
                     do
                     {
@@ -92,9 +92,7 @@ namespace LockWatcher
 
         [SuppressMessage ( "Wintellect.PerformanceRules" ,
                            "Wintellect1000:AvoidBoxingAndUnboxingInLoops" )]
-        static Boolean ShowProcessWaitChains ( WaitChainTraversalObj wct ,
-                                               Int32 processId ,
-                                               Boolean showAllData )
+        static Boolean ShowProcessWaitChains ( WaitChainTraversalObj wct , Int32 processId , Boolean showAllData )
         {
             // Look at all the threads for this process.
             Process proc = null;
@@ -116,16 +114,15 @@ namespace LockWatcher
                 {
                     // Get the wait chains for this thread.
                     Int32 currThreadId = proc.Threads [ j ].Id;
-                    WaitData data = wct.GetThreadWaitChain ( currThreadId );
-                    if ( null != data )
+                    var data = wct.GetThreadWaitChain ( currThreadId );
+                    if ( data.Any() )
                     {
                         DisplayThreadData ( data , showAllData );
                     }
                     else
                     {
                         // This happens when running without admin rights.
-                        Console.WriteLine ( Constants.UnableToGetWaitChainsFmt ,
-                                            currThreadId );
+                        Console.WriteLine ( Constants.UnableToGetWaitChainsFmt , currThreadId );
                     }
                 }
                 
@@ -143,24 +140,19 @@ namespace LockWatcher
             return ( sb.ToString ( ) );
         }
 
-        [SuppressMessage ( "Wintellect.PerformanceRules" ,
-                           "Wintellect1000:AvoidBoxingAndUnboxingInLoops" )]
-        static void DisplayThreadData ( WaitData data , Boolean allData )
+        [SuppressMessage ( "Wintellect.PerformanceRules" , "Wintellect1000:AvoidBoxingAndUnboxingInLoops" )]
+        static void DisplayThreadData( IEnumerable<WaitChainTraversal.WAITCHAIN_NODE_INFO> data, Boolean allData )
         {
             // Save the process id value for the first item as this is the 
             // process that owns the thread. I'll use this to check the 
             // later items for threads from other processes.
-            Int32 startingPID = data.Nodes [ 0 ].ProcessId;
+            Int32 startingPID = data.First().ProcessId;
             StringBuilder sb = new StringBuilder ( );
 
             // Report the key deadlocked warning if approriate.
-            if ( true == data.IsDeadlock )
+            for ( int i = 0 ; i < data.Count() ; i++ )
             {
-                Console.WriteLine ( Constants.DeadlockNotification );
-            }
-            for ( int i = 0 ; i < data.NodeCount ; i++ )
-            {
-                WaitChainTraversal.WAITCHAIN_NODE_INFO node = data.Nodes [ i ];
+                WaitChainTraversal.WAITCHAIN_NODE_INFO node = data.ElementAt( i );
                 // Do indenting to make the output easier to read.
                 String indent = String.Empty;
                 if ( i > 0 )

@@ -1,44 +1,23 @@
-/*------------------------------------------------------------------------------
- * MSDN Magazine Bugslayer Column
- * Copyright © 2007 John Robbins -- All rights reserved.
- -----------------------------------------------------------------------------*/
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Collections;
 using WinAPI;
+using System.Linq;
 
 namespace LockWatcher
 {
     internal sealed class WaitData
     {
-        private WaitChainTraversal.WAITCHAIN_NODE_INFO[] data;
-        private Boolean isDeadlock;
-        private Int32 nodeCount;
-
-        public WaitData( WaitChainTraversal.WAITCHAIN_NODE_INFO[] data,
-                          Int32 nodeCount,
-                          Boolean isDeadlock )
+        public WaitData( WaitChainTraversal.WAITCHAIN_NODE_INFO[] data, Int32 nodeCount, Boolean isDeadlock )
         {
-            this.data = data;
-            this.nodeCount = nodeCount;
-            this.isDeadlock = isDeadlock;
+            Nodes = data;
+            NodeCount = nodeCount;
         }
 
-        public WaitChainTraversal.WAITCHAIN_NODE_INFO[] Nodes
-        {
-            get { return (data); }
-        }
+        public WaitChainTraversal.WAITCHAIN_NODE_INFO[] Nodes { get; private set; }
 
-        public Int32 NodeCount
-        {
-            get { return (nodeCount); }
-        }
-
-        public Boolean IsDeadlock
-        {
-            get { return (isDeadlock); }
-        }
+        public Int32 NodeCount { get; private set; }
     }
 
     internal sealed class WaitChainTraversalObj: IDisposable
@@ -54,30 +33,15 @@ namespace LockWatcher
             }
         }
 
-        public WaitData GetThreadWaitChain( Int32 threadId )
+        public IEnumerable<WaitChainTraversal.WAITCHAIN_NODE_INFO> GetThreadWaitChain( Int32 threadId )
         {
-            WaitChainTraversal.WAITCHAIN_NODE_INFO[] data = new WaitChainTraversal.WAITCHAIN_NODE_INFO[ WaitChainTraversal.WCT_MAX_NODE_COUNT ];
+            var data = new WaitChainTraversal.WAITCHAIN_NODE_INFO[ WaitChainTraversal.WCT_MAX_NODE_COUNT ];
             uint isDeadlock = 0;
             uint nodeCount = WaitChainTraversal.WCT_MAX_NODE_COUNT;
-            Boolean ret = WaitChainTraversal.GetThreadWaitChain(
-                waitChainHandle,
-                IntPtr.Zero,
-                WaitChainTraversal.WCT_FLAGS.All,
-                threadId,
-                ref nodeCount,
-                data,
-                out isDeadlock );
+            var ret = WaitChainTraversal.GetThreadWaitChain( waitChainHandle, IntPtr.Zero, WaitChainTraversal.WCT_FLAGS.All, threadId, ref nodeCount, data, out isDeadlock );
 
-            WaitData retData = null;
-            if( true == ret )
-            {
-                retData = new WaitData( data,
-                                         (Int32) nodeCount,
-                                         1 == isDeadlock );
-            }
 
-            return (retData);
-
+            return data.Take( (int) nodeCount );
         }
 
 
