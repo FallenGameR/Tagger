@@ -1,28 +1,33 @@
-/*------------------------------------------------------------------------------
- * MSDN Magazine Bugslayer Column
- * Copyright © 2007 John Robbins -- All rights reserved.
- -----------------------------------------------------------------------------*/
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using LockWatcher;
 
-namespace LockWatcher
+namespace WinAPI
 {
     /// <summary>
-    /// Wraps all the native Wait Chain Traversal code.
+    /// Wraps all the native Wait Chain Traversal code
     /// </summary>
-    internal static partial class NativeMethods
+    /// <remarks>
+    /// Original from http://msdn.microsoft.com/en-us/magazine/cc163395.aspx
+    /// </remarks>
+    internal static partial class WaitChainTraversal
     {
-        // Max. number of nodes in the wait chain
-        internal const int WCT_MAX_NODE_COUNT = 16;
-        // Max. length of a named object.
-        internal const int WCT_OBJNAME_LENGTH = 128;
+        /// <summary>
+        /// Max number of nodes in the wait chain 
+        /// </summary>
+        public const int WCT_MAX_NODE_COUNT = 16;
 
         /// <summary>
-        /// The data structure returned indicating blocked threads.
+        /// Max length of a named object in chars
+        /// </summary>
+        public const int WCT_OBJNAME_LENGTH = 128;
+
+        /// <summary>
+        /// The data structure returned indicating blocked threads
         /// </summary>
         /// <remarks>
         /// Even though the ObjectName field is a character array, it's declared
@@ -36,13 +41,14 @@ namespace LockWatcher
         /// constructor.
         /// </remarks>
         [StructLayout( LayoutKind.Explicit, Size = 280 )]
-        internal unsafe struct WAITCHAIN_NODE_INFO
+        public unsafe struct WAITCHAIN_NODE_INFO
         {
             [FieldOffset( 0x0 )]
             public WCT_OBJECT_TYPE ObjectType;
             [FieldOffset( 0x4 )]
             public WCT_OBJECT_STATUS ObjectStatus;
-            // The name union.
+
+            // The name union
             [FieldOffset( 0x8 )]
             private fixed ushort RealObjectName[ WCT_OBJNAME_LENGTH ];
             [FieldOffset( 0x108 )]
@@ -52,7 +58,7 @@ namespace LockWatcher
             [FieldOffset( 0x110 )]
             public Int32 Alertable;
 
-            // The thread union.
+            // The thread union
             [FieldOffset( 0x8 )]
             public Int32 ProcessId;
             [FieldOffset( 0xC )]
@@ -62,19 +68,24 @@ namespace LockWatcher
             [FieldOffset( 0x14 )]
             public Int32 ContextSwitches;
 
-            // Does the work to get the ObjectName field.
-            public String ObjectName()
+            /// <summary>
+            /// Type casting to get the ObjectName field
+            /// </summary>
+            public String ObjectName
             {
-                fixed( WAITCHAIN_NODE_INFO* p = &this )
+                get
                 {
-                    return (p->RealObjectName[ 0 ] != '\0')
-                             ? new String( (char*) p->RealObjectName )
-                             : String.Empty;
+                    fixed( WAITCHAIN_NODE_INFO* p = &this )
+                    {
+                        return (p->RealObjectName[ 0 ] != '\0')
+                                 ? new String( (char*) p->RealObjectName )
+                                 : String.Empty;
+                    }
                 }
             }
         }
 
-        internal enum WCT_OBJECT_TYPE
+        public enum WCT_OBJECT_TYPE
         {
             CriticalSection = 1,
             SendMessage,
@@ -88,7 +99,7 @@ namespace LockWatcher
             Unknown,
         } ;
 
-        internal enum WCT_OBJECT_STATUS
+        public enum WCT_OBJECT_STATUS
         {
             NoAccess = 1,            // ACCESS_DENIED for this object
             Running,                 // Thread status
@@ -103,7 +114,7 @@ namespace LockWatcher
         } ;
 
         [Flags]
-        internal enum WCT_FLAGS
+        public enum WCT_FLAGS
         {
             Flag = 0x1,
             COM = 0x2,
@@ -111,29 +122,14 @@ namespace LockWatcher
             All = Flag | COM | Proc
         }
 
-        // Allow the code to compile on XP/Server 2003.
-        [DllImport( "ADVAPI32.DLL", SetLastError = true)]
-        extern static public void CloseThreadWaitChainSession( IntPtr wctHandle );
+        [DllImport( "ADVAPI32.DLL", SetLastError = true )]
+        [return: MarshalAs( UnmanagedType.Bool )]
+        extern static public Boolean GetThreadWaitChain( SafeWaitChainHandle wctHandle, IntPtr context, WCT_FLAGS flags, Int32 threadId, ref uint nodeCount, [MarshalAs( UnmanagedType.LPArray, SizeParamIndex = 4 )] [In, Out] WAITCHAIN_NODE_INFO[] nodeInfoArray, out uint isCycle );
 
-        // Allow the code to compile on XP/Server 2003.
         [DllImport( "ADVAPI32.DLL", SetLastError = true )]
         extern static public SafeWaitChainHandle OpenThreadWaitChainSession( int flags, IntPtr callback );
 
-        [DllImport( "ADVAPI32.DLL", ExactSpelling = true, SetLastError = true )]
-        internal static extern void RegisterWaitChainCOMCallback( IntPtr callStateCallback, IntPtr activationStateCallback );
-
         [DllImport( "ADVAPI32.DLL", SetLastError = true )]
-        [return: MarshalAs( UnmanagedType.Bool )]
-        extern static public Boolean GetThreadWaitChain( SafeWaitChainHandle WctHandle, IntPtr Context, WCT_FLAGS Flags, Int32 ThreadId, ref uint NodeCount, [MarshalAs( UnmanagedType.LPArray, SizeParamIndex = 4 )] [In, Out] WAITCHAIN_NODE_INFO[] NodeInfoArray, out uint IsCycle );
-
-        [DllImport( "KERNEL32.DLL", SetLastError = true, ExactSpelling = true, CharSet = CharSet.Unicode )]
-        internal static extern SafeModuleHandle LoadLibraryW( String lpFileName );
-
-        [DllImport( "KERNEL32.DLL", SetLastError = true, ExactSpelling = true )]
-        [return: MarshalAs( UnmanagedType.Bool )]
-        internal static extern Boolean FreeLibrary( IntPtr hModule );
-
-        [DllImport( "KERNEL32.DLL", SetLastError = true, ExactSpelling = true, CharSet = CharSet.Ansi )]
-        internal static extern IntPtr GetProcAddress( SafeModuleHandle hModule, String lpProcName );
+        extern static public void CloseThreadWaitChainSession( IntPtr wctHandle );
     }
 }

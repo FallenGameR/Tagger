@@ -6,17 +6,18 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Collections;
+using WinAPI;
 
 namespace LockWatcher
 {
     internal sealed class WaitData
     {
-        private NativeMethods.WAITCHAIN_NODE_INFO [] data;
+        private WaitChainTraversal.WAITCHAIN_NODE_INFO[] data;
         private Boolean isDeadlock;
         private Int32 nodeCount;
 
-        public WaitData ( NativeMethods.WAITCHAIN_NODE_INFO [] data ,
-                          Int32 nodeCount ,
+        public WaitData( WaitChainTraversal.WAITCHAIN_NODE_INFO[] data,
+                          Int32 nodeCount,
                           Boolean isDeadlock )
         {
             this.data = data;
@@ -24,66 +25,65 @@ namespace LockWatcher
             this.isDeadlock = isDeadlock;
         }
 
-        public NativeMethods.WAITCHAIN_NODE_INFO [] Nodes
+        public WaitChainTraversal.WAITCHAIN_NODE_INFO[] Nodes
         {
-            get { return ( data ); }
+            get { return (data); }
         }
 
         public Int32 NodeCount
         {
-            get { return ( nodeCount ); }
+            get { return (nodeCount); }
         }
 
         public Boolean IsDeadlock
         {
-            get { return ( isDeadlock ); }
+            get { return (isDeadlock); }
         }
     }
 
-    internal sealed class WaitChainTraversal : IDisposable
+    internal sealed class WaitChainTraversalObj: IDisposable
     {
         private SafeWaitChainHandle waitChainHandle;
 
-        public WaitChainTraversal ( )
+        public WaitChainTraversalObj()
         {
-            waitChainHandle = NativeMethods.OpenThreadWaitChainSession( 0, IntPtr.Zero );
+            waitChainHandle = WaitChainTraversal.OpenThreadWaitChainSession( 0, IntPtr.Zero );
             if( waitChainHandle.IsInvalid )
             {
                 throw new InvalidOperationException( Constants.NoOpenWCTHandle );
             }
         }
 
-        public WaitData GetThreadWaitChain ( Int32 threadId )
+        public WaitData GetThreadWaitChain( Int32 threadId )
         {
-            NativeMethods.WAITCHAIN_NODE_INFO [] data = new NativeMethods.
-                      WAITCHAIN_NODE_INFO [ NativeMethods.WCT_MAX_NODE_COUNT ];
+            WaitChainTraversal.WAITCHAIN_NODE_INFO[] data = new WaitChainTraversal.WAITCHAIN_NODE_INFO[ WaitChainTraversal.WCT_MAX_NODE_COUNT ];
             uint isDeadlock = 0;
-            uint nodeCount = NativeMethods.WCT_MAX_NODE_COUNT;
-            Boolean ret = NativeMethods.GetThreadWaitChain( 
-                waitChainHandle ,
-                IntPtr.Zero , 
-                LockWatcher.NativeMethods.WCT_FLAGS.All,
-                threadId ,
-                ref nodeCount ,
-                data ,
+            uint nodeCount = WaitChainTraversal.WCT_MAX_NODE_COUNT;
+            Boolean ret = WaitChainTraversal.GetThreadWaitChain(
+                waitChainHandle,
+                IntPtr.Zero,
+                WaitChainTraversal.WCT_FLAGS.All,
+                threadId,
+                ref nodeCount,
+                data,
                 out isDeadlock );
 
             WaitData retData = null;
-            if ( true == ret )
+            if( true == ret )
             {
-                retData = new WaitData ( data , 
-                                         (Int32)nodeCount , 
+                retData = new WaitData( data,
+                                         (Int32) nodeCount,
                                          1 == isDeadlock );
             }
 
-            return ( retData );
+            return (retData);
 
         }
 
 
-        public void Dispose ( )
+        public void Dispose()
         {
-            waitChainHandle.Dispose ( );
+            waitChainHandle.Dispose();
         }
     }
 }

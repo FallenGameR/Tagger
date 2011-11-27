@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Win32.SafeHandles;
+using WinAPI;
 
 namespace LockWatcher
 {
@@ -17,7 +18,7 @@ namespace LockWatcher
         }
         protected override bool ReleaseHandle ( )
         {
-            NativeMethods.CloseThreadWaitChainSession ( this.handle );
+            WaitChainTraversal.CloseThreadWaitChainSession ( this.handle );
             return ( true );
         }
     }
