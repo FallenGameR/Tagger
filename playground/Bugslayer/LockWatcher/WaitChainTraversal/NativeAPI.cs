@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using LockWatcher;
 
-namespace WinAPI
+namespace WinAPI.WaitChainTraversal
 {
     /// <summary>
     /// Wraps all the native Wait Chain Traversal code
@@ -14,7 +14,7 @@ namespace WinAPI
     /// <remarks>
     /// Original from http://msdn.microsoft.com/en-us/magazine/cc163395.aspx
     /// </remarks>
-    internal static partial class WaitChainTraversal
+    internal static partial class NativeAPI
     {
         /// <summary>
         /// Max number of nodes in the wait chain 
@@ -36,9 +36,12 @@ namespace WinAPI
         /// now blittable, meaning the managed and native types are the same.
         /// A char is not blittable because it has multiple representations in 
         /// native code (ANSI and UNICODE). 
+        /// 
         /// Fortunately, to get the actual character array in ObjectName, you 
         /// can cast the ushort pointer to a char pointer passed to the String
         /// constructor.
+        /// 
+        /// http://msdn.microsoft.com/en-us/site/ms681422
         /// </remarks>
         [StructLayout( LayoutKind.Explicit, Size = 280 )]
         public unsafe struct WAITCHAIN_NODE_INFO
@@ -97,7 +100,7 @@ namespace WinAPI
             Thread,
             COMActivation,
             Unknown,
-        } ;
+        };
 
         public enum WCT_OBJECT_STATUS
         {
@@ -111,23 +114,23 @@ namespace WinAPI
             Abandoned,               // Dispatcher object status
             Unknown,                 // All objects
             Error,                   // All objects
-        } ;
+        };
 
         [Flags]
         public enum WCT_FLAGS
         {
-            Flag = 0x1,
+            Process = 0x1,
             COM = 0x2,
-            Proc = 0x4,
-            All = Flag | COM | Proc
+            CriticalSection = 0x4,
+            All = Process | COM | CriticalSection
         }
 
         [DllImport( "ADVAPI32.DLL", SetLastError = true )]
         [return: MarshalAs( UnmanagedType.Bool )]
-        extern static public Boolean GetThreadWaitChain( SafeWaitChainHandle wctHandle, IntPtr context, WCT_FLAGS flags, Int32 threadId, ref uint nodeCount, [MarshalAs( UnmanagedType.LPArray, SizeParamIndex = 4 )] [In, Out] WAITCHAIN_NODE_INFO[] nodeInfoArray, out uint isCycle );
+        extern static public Boolean GetThreadWaitChain( Handle wctHandle, IntPtr context, WCT_FLAGS flags, Int32 threadId, ref uint nodeCount, [MarshalAs( UnmanagedType.LPArray, SizeParamIndex = 4 )] [In, Out] WAITCHAIN_NODE_INFO[] nodeInfoArray, out uint isCycle );
 
         [DllImport( "ADVAPI32.DLL", SetLastError = true )]
-        extern static public SafeWaitChainHandle OpenThreadWaitChainSession( int flags, IntPtr callback );
+        extern static public Handle OpenThreadWaitChainSession( int flags, IntPtr callback );
 
         [DllImport( "ADVAPI32.DLL", SetLastError = true )]
         extern static public void CloseThreadWaitChainSession( IntPtr wctHandle );

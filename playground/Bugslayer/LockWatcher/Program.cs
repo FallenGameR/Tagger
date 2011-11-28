@@ -10,7 +10,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
-using WinAPI;
+using WinAPI.WaitChainTraversal;
 using System.Linq;
 
 namespace LockWatcher
@@ -38,7 +38,7 @@ namespace LockWatcher
                 Boolean keepLooping = ( opts.UpdateTime > 0 );
                 // Create the traversal class that's used for all 
                 // iterations.
-                using ( WaitChainTraversalObj wct = new WaitChainTraversalObj ( ) )
+                using ( WaitChainTraversal wct = new WaitChainTraversal ( ) )
                 {
                     do
                     {
@@ -92,7 +92,7 @@ namespace LockWatcher
 
         [SuppressMessage ( "Wintellect.PerformanceRules" ,
                            "Wintellect1000:AvoidBoxingAndUnboxingInLoops" )]
-        static Boolean ShowProcessWaitChains ( WaitChainTraversalObj wct , Int32 processId , Boolean showAllData )
+        static Boolean ShowProcessWaitChains ( WaitChainTraversal wct , Int32 processId , Boolean showAllData )
         {
             // Look at all the threads for this process.
             Process proc = null;
@@ -141,7 +141,7 @@ namespace LockWatcher
         }
 
         [SuppressMessage ( "Wintellect.PerformanceRules" , "Wintellect1000:AvoidBoxingAndUnboxingInLoops" )]
-        static void DisplayThreadData( IEnumerable<WaitChainTraversal.WAITCHAIN_NODE_INFO> data, Boolean allData )
+        static void DisplayThreadData( IEnumerable<NativeAPI.WAITCHAIN_NODE_INFO> data, Boolean allData )
         {
             // Save the process id value for the first item as this is the 
             // process that owns the thread. I'll use this to check the 
@@ -152,7 +152,7 @@ namespace LockWatcher
             // Report the key deadlocked warning if approriate.
             for ( int i = 0 ; i < data.Count() ; i++ )
             {
-                WaitChainTraversal.WAITCHAIN_NODE_INFO node = data.ElementAt( i );
+                NativeAPI.WAITCHAIN_NODE_INFO node = data.ElementAt( i );
                 // Do indenting to make the output easier to read.
                 String indent = String.Empty;
                 if ( i > 0 )
@@ -163,15 +163,15 @@ namespace LockWatcher
                 sb.Length = 0;
                 sb.Append ( indent );
 
-                if ( WaitChainTraversal.WCT_OBJECT_TYPE.Thread == node.ObjectType )
+                if ( NativeAPI.WCT_OBJECT_TYPE.Thread == node.ObjectType )
                 {
                     Process proc = Process.GetProcessById ( node.ProcessId );
                     String procName = BuildProcessName ( proc.ProcessName );
 
                     switch ( node.ObjectStatus )
                     {
-                        case WaitChainTraversal.WCT_OBJECT_STATUS.PidOnly:
-                        case WaitChainTraversal.WCT_OBJECT_STATUS.PidOnlyRpcss:
+                        case NativeAPI.WCT_OBJECT_STATUS.PidOnly:
+                        case NativeAPI.WCT_OBJECT_STATUS.PidOnlyRpcss:
                             sb.AppendFormat ( Constants.OwningFmt ,
                                               node.ProcessId ,
                                               procName );
@@ -199,7 +199,7 @@ namespace LockWatcher
                                                   node.ContextSwitches );
                             }
                             else if ( node.ObjectStatus !=
-                                       WaitChainTraversal.WCT_OBJECT_STATUS.Blocked )
+                                       NativeAPI.WCT_OBJECT_STATUS.Blocked )
                             {
                                 sb.AppendFormat ( Constants.ObjectStatusFmt ,
                                                   node.ObjectStatus );
@@ -211,15 +211,15 @@ namespace LockWatcher
                 {
                     switch ( node.ObjectType )
                     {
-                        case WaitChainTraversal.WCT_OBJECT_TYPE.CriticalSection:
-                        case WaitChainTraversal.WCT_OBJECT_TYPE.SendMessage:
-                        case WaitChainTraversal.WCT_OBJECT_TYPE.Mutex:
-                        case WaitChainTraversal.WCT_OBJECT_TYPE.Alpc:
-                        case WaitChainTraversal.WCT_OBJECT_TYPE.COM:
-                        case WaitChainTraversal.WCT_OBJECT_TYPE.ThreadWait:
-                        case WaitChainTraversal.WCT_OBJECT_TYPE.ProcessWait:
-                        case WaitChainTraversal.WCT_OBJECT_TYPE.COMActivation:
-                        case WaitChainTraversal.WCT_OBJECT_TYPE.Unknown:
+                        case NativeAPI.WCT_OBJECT_TYPE.CriticalSection:
+                        case NativeAPI.WCT_OBJECT_TYPE.SendMessage:
+                        case NativeAPI.WCT_OBJECT_TYPE.Mutex:
+                        case NativeAPI.WCT_OBJECT_TYPE.Alpc:
+                        case NativeAPI.WCT_OBJECT_TYPE.COM:
+                        case NativeAPI.WCT_OBJECT_TYPE.ThreadWait:
+                        case NativeAPI.WCT_OBJECT_TYPE.ProcessWait:
+                        case NativeAPI.WCT_OBJECT_TYPE.COMActivation:
+                        case NativeAPI.WCT_OBJECT_TYPE.Unknown:
                             {
                                 sb.AppendFormat ( Constants.ObjectTypeFmt ,
                                                   node.ObjectType ,

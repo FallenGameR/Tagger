@@ -82,11 +82,11 @@
       <DependentUpon>Constants.resx</DependentUpon>
     </Compile>
     <Compile Include="LockWatcherArgParser.cs" />
-    <Compile Include="NativeMethods.cs" />
+    <Compile Include="WaitChainTraversal\NativeAPI.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SafeWaitChainHandle.cs" />
-    <Compile Include="WaitChainTraversal.cs" />
+    <Compile Include="WaitChainTraversal\Handle.cs" />
+    <Compile Include="WaitChainTraversal\WaitChainTraversal.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
