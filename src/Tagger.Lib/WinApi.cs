@@ -11,8 +11,7 @@ namespace Tagger.Lib
     {
         public static void Test( int pid )
         {
-            var process = Process.GetProcessById( pid );
-            var tids = process.Threads.Cast<ProcessThread>().Select( t => t.Id );
+            Process.GetProcessById( pid ).Threads.Cast<ProcessThread>().Select( t => t.Id );
           
         }
     }
