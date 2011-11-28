@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using ManagedWinapi.Accessibility;
 using WinAPI.WaitChainTraversal;
+using System;
 
 namespace Tagger.Wpf
 {
@@ -12,54 +13,49 @@ namespace Tagger.Wpf
         public MainWindow()
         {
             InitializeComponent();
+
+            var listner = new AccessibleEventListener
+            {
+                MinimalEventType = AccessibleEventType.EVENT_MIN,
+                MaximalEventType = AccessibleEventType.EVENT_MAX,
+                Enabled = true,
+            };
+            listner.EventOccurred += delegate( object sender, AccessibleEventArgs e )
+            {
+                if( e.AccessibleObject != null )
+                {
+                    txtInfo.Text = "init";
+                    listner.Enabled = false;                    
+                }
+            };
         }
 
-        AccessibleEventListener listner;
-        private void Window_Loaded( object sender, RoutedEventArgs e )
+        AccessibleEventListener listner2;
+
+        void listner_EventOccurred( object sender, AccessibleEventArgs e )
+        {
+            // Ignore events from cursor
+            if( e.ObjectID != 0 ) { return; }
+            txtInfo.Text = e.AccessibleObject.Location.ToString();
+        }
+
+        private void btnApply1_Click( object sender, RoutedEventArgs e )
+        {
+        }
+
+        private void btnApply2_Click( object sender, RoutedEventArgs e )
         {
             var finder = new ProcessFinder();
-            var pid = finder.FindHostProcess( 2728 );
+            var pid = finder.FindHostProcess( int.Parse( txtPid2.Text ) );
 
-            listner = new AccessibleEventListener
+            listner2 = new AccessibleEventListener
             {
                 MinimalEventType = AccessibleEventType.EVENT_OBJECT_LOCATIONCHANGE,
                 MaximalEventType = AccessibleEventType.EVENT_OBJECT_LOCATIONCHANGE,
                 ProcessId = (uint) pid,
                 Enabled = true,
             };
-
-            listner.EventOccurred += new AccessibleEventHandler( listner_EventOccurred );
-            listner_EventOccurred( null, null );
-        }
-
-        void listner_EventOccurred( object sender, AccessibleEventArgs e )
-        {
-            if( e == null )
-            {
-                MessageBox.Show( "1" );
-                return;
-            }
-
-            // Ignore events from cursor
-            if( e.ObjectID != 0 ) { return; }
-
-            var rect = e.AccessibleObject.Location;
-        //            public SystemAccessibleObject AccessibleObject { get; }
-        //public uint ChildID { get; }
-        //public AccessibleEventType EventType { get; }
-        //public IntPtr HWnd { get; }
-        //public uint ObjectID { get; }
-        //public uint Thread { get; }
-        //public uint Time { get; }
-
-            // OBJID_WINDOW == 0
-            test.Text = string.Format( @"
-{0}
-{1}
-", 
-                e.ObjectID.ToString()
-                ,
-                e.AccessibleObject.Location );
+            listner2.EventOccurred += new AccessibleEventHandler( listner_EventOccurred );
         }
 
     }

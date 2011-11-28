@@ -1,9 +1,25 @@
 ﻿<Window x:Class="Tagger.Wpf.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="76" Width="170" 
-        Loaded="Window_Loaded">
+        Title="MainWindow" Height="127" Width="463" >
     <Grid>
-        <TextBlock x:Name="test" />
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <TextBox Grid.Column="0" Grid.Row="0" Name="txtPid1">2728</TextBox>
+        <Button Grid.Column="1" Grid.Row="0" Name="btnApply1" Click="btnApply1_Click">Apply</Button>
+
+        <TextBox Grid.Column="0" Grid.Row="1" Name="txtPid2">5520</TextBox>
+        <Button Grid.Column="1" Grid.Row="1" Name="btnApply2" Click="btnApply2_Click">Apply</Button>
+        
+        <TextBlock Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Name="txtInfo" />
+        
     </Grid>
 </Window>
