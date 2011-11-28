@@ -9,7 +9,7 @@ namespace WinAPI.WaitChainTraversal
     /// <remarks>
     /// Original from http://msdn.microsoft.com/en-us/magazine/cc163395.aspx
     /// </remarks>
-    internal static partial class NativeAPI
+    internal static class NativeAPI
     {
         /// <summary>
         /// Max number of nodes in the wait chain 
@@ -50,34 +50,34 @@ namespace WinAPI.WaitChainTraversal
             [FieldOffset( 0x8 )]
             private fixed ushort RealObjectName[ WCT_OBJNAME_LENGTH ];
             [FieldOffset( 0x108 )]
-            public Int32 TimeOutLowPart;
+            public int TimeOutLowPart;
             [FieldOffset( 0x10C )]
-            public Int32 TimeOutHiPart;
+            public int TimeOutHiPart;
             [FieldOffset( 0x110 )]
-            public Int32 Alertable;
+            public int Alertable;
 
             // The thread union
             [FieldOffset( 0x8 )]
-            public Int32 ProcessId;
+            public int ProcessId;
             [FieldOffset( 0xC )]
-            public Int32 ThreadId;
+            public int ThreadId;
             [FieldOffset( 0x10 )]
-            public Int32 WaitTime;
+            public int WaitTime;
             [FieldOffset( 0x14 )]
-            public Int32 ContextSwitches;
+            public int ContextSwitches;
 
             /// <summary>
             /// Type casting to get the ObjectName field
             /// </summary>
-            public String ObjectName
+            public string ObjectName
             {
                 get
                 {
                     fixed( WAITCHAIN_NODE_INFO* p = &this )
                     {
                         return (p->RealObjectName[ 0 ] != '\0')
-                                 ? new String( (char*) p->RealObjectName )
-                                 : String.Empty;
+                            ? new string( (char*) p->RealObjectName )
+                            : string.Empty;
                     }
                 }
             }

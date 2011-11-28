@@ -7,11 +7,11 @@ using System.Runtime.InteropServices;
 
 namespace WinAPI.WaitChainTraversal
 {
-    public sealed class WaitChainTraversal: IDisposable
+    public class ProcessFinder: IDisposable
     {
         private Handle m_Handle;
 
-        public WaitChainTraversal()
+        public ProcessFinder()
         {
             m_Handle = NativeAPI.OpenThreadWaitChainSession( 0, IntPtr.Zero );
 
@@ -35,7 +35,7 @@ namespace WinAPI.WaitChainTraversal
         /// for GUI applications that would be the passed pid itself;
         /// for CUI applications that would be pid of a conhost.exe (in Windows 7);
         /// </returns>
-        public int FindWindowPid( int pid )
+        public int FindHostProcess( int pid )
         {
             var query =
                 from thread in Process.GetProcessById( pid ).Threads.Cast<ProcessThread>()

@@ -12,11 +12,11 @@ namespace Tagger.Cui
     {
         static void Main( string[] args )
         {
-
-
-            var wct = new WaitChainTraversal();
-            var window = wct.FindWindowPid( 6572 );
+            var finder = new ProcessFinder();
+            var start = DateTime.Now;
+            var window = finder.FindHostProcess( 6572 );
             Console.WriteLine(window);
+            Console.WriteLine( DateTime.Now - start );
 
             return;
 
@@ -33,6 +33,9 @@ namespace Tagger.Cui
 
         static void listner_EventOccurred( object sender, AccessibleEventArgs e )
         {
+
+
+
             Console.WriteLine( "!" );
         }
     }

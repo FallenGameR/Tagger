@@ -1,6 +1,8 @@
+using Microsoft.Win32.SafeHandles;
+
 namespace WinAPI.WaitChainTraversal
 {
-    internal class Handle: Microsoft.Win32.SafeHandles.SafeHandleZeroOrMinusOneIsInvalid
+    internal class Handle: SafeHandleZeroOrMinusOneIsInvalid
     {
         private Handle() : base( true ) { }
 
