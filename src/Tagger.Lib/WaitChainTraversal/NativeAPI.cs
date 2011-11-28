@@ -1,9 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Runtime.InteropServices;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 
 namespace WinAPI.WaitChainTraversal
 {
@@ -140,7 +136,7 @@ namespace WinAPI.WaitChainTraversal
 
         [DllImport( "ADVAPI32.DLL", SetLastError = true )]
         [return: MarshalAs( UnmanagedType.Bool )]
-        extern static public Boolean GetThreadWaitChain( Handle wctHandle, IntPtr context, WCT_FLAGS flags, Int32 threadId, ref uint nodeCount, [MarshalAs( UnmanagedType.LPArray, SizeParamIndex = 4 )] [In, Out] WAITCHAIN_NODE_INFO[] nodeInfoArray, out uint isCycle );
+        extern static public Boolean GetThreadWaitChain( Handle wctHandle, IntPtr context, WCT_FLAGS flags, Int32 threadId, ref int nodeCount, [MarshalAs( UnmanagedType.LPArray, SizeParamIndex = 4 )] [In, Out] WAITCHAIN_NODE_INFO[] nodeInfoArray, out int isCycle );
 
         [DllImport( "ADVAPI32.DLL", SetLastError = true )]
         extern static public Handle OpenThreadWaitChainSession( int flags, IntPtr callback );

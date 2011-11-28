@@ -12,23 +12,12 @@ namespace Tagger.Cui
     {
         static void Main( string[] args )
         {
-            var pid = 2728;
-            var tids = Process.GetProcessById( pid ).Threads.Cast<ProcessThread>().Select( t => t.Id );
 
 
             var wct = new WaitChainTraversal();
-            foreach( var tid in tids )
-            {
-                try
-                {
-                    var conhost = wct.FindParentConhost( tid );
-                    Console.WriteLine( conhost );
-                }
-                catch( Exception ex )
-                {
-                    Console.WriteLine( ex.Message );
-                }
-            }
+            var window = wct.FindWindowPid( 6572 );
+            Console.WriteLine(window);
+
             return;
 
             var listner = new AccessibleEventListener
