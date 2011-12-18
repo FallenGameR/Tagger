@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace WinAPI.WaitChainTraversal
+namespace Tagger.WinAPI.WaitChainTraversal
 {
     public class ProcessFinder: IDisposable
     {

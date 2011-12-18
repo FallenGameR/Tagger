@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.IO;
 
-
-namespace _3DViewerControls.Data
+namespace Tagger
 {
-
-    // Reads in the header information of the Portable Executable format.
-    // Provides information such as the date the assembly was compiled.
     /// <summary>
+    /// Reads in the header information of the Portable Executable format.
+    /// Provides information such as the date the assembly was compiled. 
     /// Original from http://code.cheesydesign.com/?p=572
     /// </summary>
-    public class PeHeaderReader
+    public class PEParser
     {
         #region File Header Structures
 
@@ -150,7 +148,7 @@ namespace _3DViewerControls.Data
 
         #region Public Methods
 
-        public PeHeaderReader( string filePath )
+        public PEParser( string filePath )
         {
             // Read in the DLL or EXE and get the timestamp
             using( FileStream stream = new FileStream( filePath, System.IO.FileMode.Open, System.IO.FileAccess.Read ) )
@@ -175,7 +173,7 @@ namespace _3DViewerControls.Data
         }
 
         // Gets the header of the .NET assembly that called this function
-        public static PeHeaderReader GetCallingAssemblyHeader()
+        public static PEParser GetCallingAssemblyHeader()
         {
             string pathCallingAssembly = System.Reflection.Assembly.GetCallingAssembly().Location;
 
@@ -184,7 +182,7 @@ namespace _3DViewerControls.Data
             string filePath = System.Reflection.Assembly.GetCallingAssembly().Location;
 
             // Get and return the timestamp
-            return new PeHeaderReader( filePath );
+            return new PEParser( filePath );
         }
 
         // Reads in a block from a file and converts it to the struct

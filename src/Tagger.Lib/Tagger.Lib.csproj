@@ -33,6 +33,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ManagedWinapi">
+      <HintPath>..\..\libs\ManagedWinAPI\ManagedWinapi.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -42,7 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PeReader.cs" />
+    <Compile Include="PEParser.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="WaitChainTraversal\Handle.cs" />
     <Compile Include="WaitChainTraversal\NativeAPI.cs" />
     <Compile Include="WaitChainTraversal\WaitChainTraversal.cs" />

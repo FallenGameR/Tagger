@@ -1,7 +1,8 @@
 ﻿using System.Windows;
 using ManagedWinapi.Accessibility;
-using WinAPI.WaitChainTraversal;
 using System;
+using Tagger.WinAPI.WaitChainTraversal;
+using Tagger.Lib;
 
 namespace Tagger.Wpf
 {
@@ -13,21 +14,7 @@ namespace Tagger.Wpf
         public MainWindow()
         {
             InitializeComponent();
-
-            var listner = new AccessibleEventListener
-            {
-                MinimalEventType = AccessibleEventType.EVENT_MIN,
-                MaximalEventType = AccessibleEventType.EVENT_MAX,
-                Enabled = true,
-            };
-            listner.EventOccurred += delegate( object sender, AccessibleEventArgs e )
-            {
-                if( e.AccessibleObject != null )
-                {
-                    txtInfo.Text = "init";
-                    listner.Enabled = false;                    
-                }
-            };
+            Utils.PreloadAccessibilityAssembly();
         }
 
         AccessibleEventListener listner2;

@@ -1,6 +1,6 @@
 using Microsoft.Win32.SafeHandles;
 
-namespace WinAPI.WaitChainTraversal
+namespace Tagger.WinAPI.WaitChainTraversal
 {
     internal class Handle: SafeHandleZeroOrMinusOneIsInvalid
     {

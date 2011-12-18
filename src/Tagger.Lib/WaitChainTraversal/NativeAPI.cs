@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace WinAPI.WaitChainTraversal
+namespace Tagger.WinAPI.WaitChainTraversal
 {
     /// <summary>
     /// Wraps all the native Wait Chain Traversal code
