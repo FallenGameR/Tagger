@@ -27,7 +27,7 @@ namespace Tagger.WinAPI.WaitChainTraversal
         }
 
         /// <summary>
-        /// Find process ID of window hosting the process
+        /// Find process ID of conhost window hosting the process
         /// </summary>
         /// <param name="pid">Process ID</param>
         /// <returns>
@@ -35,7 +35,7 @@ namespace Tagger.WinAPI.WaitChainTraversal
         /// for GUI applications that would be the passed pid itself;
         /// for CUI applications that would be pid of a conhost.exe (in Windows 7);
         /// </returns>
-        public int FindHostProcess( int pid )
+        public int GetConhostProcess( int pid )
         {
             var query =
                 from thread in Process.GetProcessById( pid ).Threads.Cast<ProcessThread>()

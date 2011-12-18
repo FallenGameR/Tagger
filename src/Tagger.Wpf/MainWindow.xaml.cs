@@ -15,6 +15,41 @@ namespace Tagger.Wpf
         {
             InitializeComponent();
             Utils.PreloadAccessibilityAssembly();
+
+
+            // Check windows edition
+
+            //Utils.PreloadAccessibilityAssembly();
+
+            // If console app
+            // get conhost pid
+
+            // Hook pid (available only in Windowed process)
+
+            /*
+            Console.WriteLine(Utils.IsConsoleApp(9768));
+            Console.WriteLine(Utils.IsConsoleApp(6620));
+
+            return;
+
+            var finder = new ProcessFinder();
+            var start = DateTime.Now;
+            var window = finder.GetConhostProcess(6572);
+            Console.WriteLine(window);
+            Console.WriteLine(DateTime.Now - start);
+
+            return;
+
+            var listner = new AccessibleEventListener
+            {
+                MinimalEventType = AccessibleEventType.EVENT_OBJECT_LOCATIONCHANGE,
+                MaximalEventType = AccessibleEventType.EVENT_OBJECT_LOCATIONCHANGE,
+                ProcessId = 2728,
+                Enabled = true,
+            };
+
+            listner.EventOccurred += new AccessibleEventHandler(listner_EventOccurred);
+            /**/
         }
 
         AccessibleEventListener listner2;
@@ -24,6 +59,7 @@ namespace Tagger.Wpf
             // Ignore events from cursor
             if( e.ObjectID != 0 ) { return; }
             txtInfo.Text = e.AccessibleObject.Location.ToString();
+            Console.WriteLine("!");
         }
 
         private void btnApply1_Click( object sender, RoutedEventArgs e )
@@ -33,7 +69,7 @@ namespace Tagger.Wpf
         private void btnApply2_Click( object sender, RoutedEventArgs e )
         {
             var finder = new ProcessFinder();
-            var pid = finder.FindHostProcess( int.Parse( txtPid2.Text ) );
+            var pid = finder.GetConhostProcess( int.Parse( txtPid2.Text ) );
 
             listner2 = new AccessibleEventListener
             {
