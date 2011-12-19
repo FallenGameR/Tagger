@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Linq;
 using System.Text;
+using Utils.Collections;
 using Utils.Diagnostics;
 using Microsoft.Practices.Prism.Commands;
 
@@ -118,10 +119,7 @@ namespace Utils.Prism
                 where info.PropertyType == typeof(DelegateCommand<object>)
                 select (DelegateCommand<object>) info.GetValue(this, null);
 
-            foreach (var command in commands)
-            {
-                command.RaiseCanExecuteChanged();
-            }
+            commands.Action( c => c.RaiseCanExecuteChanged() );
         }
 
         /// <summary>
