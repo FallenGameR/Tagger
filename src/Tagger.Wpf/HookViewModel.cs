@@ -4,15 +4,51 @@ using System.Linq;
 using System.Text;
 using Utils.Prism;
 using Utils.Reflection;
+using Microsoft.Practices.Prism.Commands;
+using System.Diagnostics;
 
 namespace Tagger.Wpf
 {
+    /// <summary>
+    /// View model for control that allows to hook window
+    /// movement events comming from another process
+    /// </summary>
     public class HookViewModel : ViewModelBase
     {
+        #region Fields
+
         private int m_ProcessId;
         private string m_ApplicationType;
         private bool m_IsHooked;
         private string m_LastKnownPosition;
+
+        #endregion
+
+        #region Constructor
+
+        public HookViewModel()
+        {
+            ProcessId = -1;
+            ApplicationType = "Not set";
+            IsHooked = false;
+            LastKnownPosition = "Not known";
+
+            HookCommand = new DelegateCommand<object>(Hook, CanHook);
+            UnhookCommand = new DelegateCommand<object>( Unhook, CanUnhook );
+        }
+        
+        #endregion
+
+        #region Validation
+
+        /// <summary>
+        /// Recalculate all known hosted commands
+        /// </summary>
+        protected override void OnErrorCollectionChanged()
+        {
+            base.OnErrorCollectionChanged();
+            HookCommand.RaiseCanExecuteChanged();
+        }
 
         /// <summary>
         /// Validation for ProcessId property value
@@ -21,6 +57,60 @@ namespace Tagger.Wpf
         {
             Validate(m_ProcessId > 0, "Process ID must be greater than 0");
         }
+        
+        #endregion
+
+        #region Command - Hook
+
+        /// <summary>
+        /// Command that hooks some process
+        /// </summary>
+        public DelegateCommand<object> HookCommand { get; private set; }
+
+        /// <summary>
+        /// Hook command handler
+        /// </summary>
+        private void Hook(object parameter)
+        {
+        }
+
+        /// <summary>
+        /// Test that verifies if Hook command can be invoked
+        /// </summary>
+        /// <returns>true if command could be invoked</returns>
+        private bool CanHook(object parameter)
+        {
+            return !Errors.Any() && !IsHooked;
+        }
+
+        #endregion
+
+        #region Command - Unhook
+
+        /// <summary>
+        /// Coomands that unhooks a previously set hook
+        /// </summary>
+        public DelegateCommand<object> UnhookCommand { get; private set; }
+
+        /// <summary>
+        /// Unhook command handler
+        /// </summary>
+        private void Unhook(object parameter)
+        {
+        }
+
+        /// <summary>
+        /// Test that verifies if Unhook command can be invoked
+        /// </summary>
+        /// <returns>true if command could be invoked</returns>
+        private bool CanUnhook(object parameter)
+        {
+            return !Errors.Any() && IsHooked;
+        }
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// ID of the process that is being hooked
@@ -57,5 +147,7 @@ namespace Tagger.Wpf
             get { return m_LastKnownPosition; }
             private set { m_LastKnownPosition = value; OnPropertyChanged(this.Property(() => LastKnownPosition)); }
         }
+
+        #endregion
     }
 }

@@ -16,6 +16,8 @@ namespace Tagger.Wpf
             // Check windows edition
             InitializeComponent();
 
+            DataContext = new HookViewModel();
+
             // Prepopulate compiled assebly cache
             //Utils.PreloadAccessibilityAssembly();
 
@@ -56,7 +58,7 @@ namespace Tagger.Wpf
         {
             // Ignore events from cursor
             if( e.ObjectID != 0 ) { return; }
-            txtInfo.Text = e.AccessibleObject.Location.ToString();
+            //txtInfo.Text = e.AccessibleObject.Location.ToString();
             Console.WriteLine("!");
         }
 
@@ -78,5 +80,6 @@ namespace Tagger.Wpf
             };
             listner2.EventOccurred += new AccessibleEventHandler( listner_EventOccurred );
         }
+
     }
 }
