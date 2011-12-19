@@ -97,18 +97,16 @@ namespace Tagger.Wpf
                 ProcessId = (uint) pid,
                 Enabled = true,
             };
-            listner.EventOccurred += listner_EventOccurred;
+            listner.EventOccurred += (object sender, AccessibleEventArgs e) =>
+            {
+                // Ignore events from cursor
+                if (e.ObjectID != 0) { return; }
+                LastKnownPosition = e.AccessibleObject.Location.ToString();
+            };
 
             // Mark window as hooked and recalculate all comands
             IsHooked = true;
             OnDelegateCommandsCanExecuteChanged();
-        }
-
-        void listner_EventOccurred(object sender, AccessibleEventArgs e)
-        {
-            // Ignore events from cursor
-            if (e.ObjectID != 0) { return; }
-            LastKnownPosition = e.AccessibleObject.Location.ToString();
         }
 
         /// <summary>
