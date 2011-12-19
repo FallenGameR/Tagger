@@ -2,9 +2,9 @@ using Microsoft.Win32.SafeHandles;
 
 namespace Tagger.WinAPI.WaitChainTraversal
 {
-    internal class Handle: SafeHandleZeroOrMinusOneIsInvalid
+    internal class Handle : SafeHandleZeroOrMinusOneIsInvalid
     {
-        private Handle() : base( true ) { }
+        private Handle() : base(true) { }
 
         /// <summary>
         /// Executes the code required to free the handle
@@ -14,7 +14,7 @@ namespace Tagger.WinAPI.WaitChainTraversal
         /// </returns>
         protected override bool ReleaseHandle()
         {
-            NativeAPI.CloseThreadWaitChainSession( this.handle );
+            NativeAPI.CloseThreadWaitChainSession(this.handle);
             return true;
         }
     }

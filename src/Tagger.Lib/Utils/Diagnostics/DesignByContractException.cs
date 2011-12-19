@@ -10,11 +10,11 @@ namespace Utils.Diagnostics
     /// Taken from NHibernate Best Practices (on CodeProject site)
     /// </remarks>
     [Serializable]
-    public class DesignByContractException: ProgramException
+    public class DesignByContractException : ProgramException
     {
-        internal DesignByContractException( ) { }
-        internal DesignByContractException( string message ) : base( message ) { }
-        internal DesignByContractException( string message, Exception inner ) : base( message, inner ) { }
-        internal DesignByContractException( SerializationInfo info, StreamingContext context ) : base( info, context ) { }
+        internal DesignByContractException() { }
+        internal DesignByContractException(string message) : base(message) { }
+        internal DesignByContractException(string message, Exception inner) : base(message, inner) { }
+        internal DesignByContractException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 }

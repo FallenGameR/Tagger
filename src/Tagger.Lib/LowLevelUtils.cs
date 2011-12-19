@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace Tagger.Lib
 {
-    public static class Utils
+    public static class LowLevelUtils
     {
         /// <summary>
         /// Preload accessability assembly so that would compile as 
@@ -21,11 +21,11 @@ namespace Tagger.Lib
                 MaximalEventType = AccessibleEventType.EVENT_MAX,
                 Enabled = true,
             };
-            listner.EventOccurred += delegate( object sender, AccessibleEventArgs e )
+            listner.EventOccurred += delegate(object sender, AccessibleEventArgs e)
             {
-                if( e.AccessibleObject != null )
+                if (e.AccessibleObject != null)
                 {
-                    listner.Enabled = false;                    
+                    listner.Enabled = false;
                 }
             };
         }
@@ -35,13 +35,13 @@ namespace Tagger.Lib
         /// </summary>
         /// <param name="pid">Process ID of the checked process</param>
         /// <returns>true if process is a console application</returns>
-        public static bool IsConsoleApp( int pid )
+        public static bool IsConsoleApp(int pid)
         {
             ushort IMAGE_SUBSYSTEM_WINDOWS_CUI = 3;
-            var process = Process.GetProcessById( pid );
-            var peParser = new PEParser( process.MainModule.FileName );
+            var process = Process.GetProcessById(pid);
+            var peParser = new PEParser(process.MainModule.FileName);
 
-            if( peParser.Is32BitHeader )
+            if (peParser.Is32BitHeader)
             {
                 return peParser.OptionalHeader32.Subsystem == IMAGE_SUBSYSTEM_WINDOWS_CUI;
             }

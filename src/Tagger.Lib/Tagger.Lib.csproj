@@ -49,7 +49,8 @@
     <Compile Include="Utils\Diagnostics\DesignByContractException.cs" />
     <Compile Include="Utils\Diagnostics\ProgramException.cs" />
     <Compile Include="PEParser.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="LowLevelUtils.cs" />
+    <Compile Include="Utils\Reflection\Extensions.cs" />
     <Compile Include="WaitChainTraversal\Handle.cs" />
     <Compile Include="WaitChainTraversal\NativeAPI.cs" />
     <Compile Include="WaitChainTraversal\WaitChainTraversal.cs" />

@@ -27,7 +27,7 @@ namespace Utils.Diagnostics
         /// <summary>
         /// Constructor
         /// </summary>
-        static Check( )
+        static Check()
         {
             UseAssertions = false;
         }
@@ -40,15 +40,15 @@ namespace Utils.Diagnostics
         /// Precondition check - should run regardless of preprocessor directives.
         /// </summary>
         [DebuggerStepThrough]
-        public static void Require( bool assertion )
+        public static void Require(bool assertion)
         {
-            if( UseExceptions )
+            if (UseExceptions)
             {
-                if( !assertion ) throw new DesignByContractException( "Precondition failed." );
+                if (!assertion) throw new DesignByContractException("Precondition failed.");
             }
             else
             {
-                Trace.Assert( assertion, "Precondition failed." );
+                Trace.Assert(assertion, "Precondition failed.");
             }
         }
 
@@ -56,15 +56,15 @@ namespace Utils.Diagnostics
         /// Precondition check - should run regardless of preprocessor directives.
         /// </summary>
         [DebuggerStepThrough]
-        public static void Require( bool assertion, string message )
+        public static void Require(bool assertion, string message)
         {
-            if( UseExceptions )
+            if (UseExceptions)
             {
-                if( !assertion ) throw new DesignByContractException( message );
+                if (!assertion) throw new DesignByContractException(message);
             }
             else
             {
-                Trace.Assert( assertion, "Precondition: " + message );
+                Trace.Assert(assertion, "Precondition: " + message);
             }
         }
 
@@ -72,15 +72,15 @@ namespace Utils.Diagnostics
         /// Precondition check - should run regardless of preprocessor directives.
         /// </summary>
         [DebuggerStepThrough]
-        public static void Require( bool assertion, string message, Exception inner )
+        public static void Require(bool assertion, string message, Exception inner)
         {
-            if( UseExceptions )
+            if (UseExceptions)
             {
-                if( !assertion ) throw new DesignByContractException( message, inner );
+                if (!assertion) throw new DesignByContractException(message, inner);
             }
             else
             {
-                Trace.Assert( assertion, "Precondition: " + message );
+                Trace.Assert(assertion, "Precondition: " + message);
             }
         }
 
@@ -88,15 +88,15 @@ namespace Utils.Diagnostics
         /// Postcondition check.
         /// </summary>
         [DebuggerStepThrough]
-        public static void Ensure( bool assertion, string message )
+        public static void Ensure(bool assertion, string message)
         {
-            if( UseExceptions )
+            if (UseExceptions)
             {
-                if( !assertion ) throw new DesignByContractException( message );
+                if (!assertion) throw new DesignByContractException(message);
             }
             else
             {
-                Trace.Assert( assertion, "Postcondition: " + message );
+                Trace.Assert(assertion, "Postcondition: " + message);
             }
         }
 
@@ -104,15 +104,15 @@ namespace Utils.Diagnostics
         /// Postcondition check.
         /// </summary>
         [DebuggerStepThrough]
-        public static void Ensure( bool assertion, string message, Exception inner )
+        public static void Ensure(bool assertion, string message, Exception inner)
         {
-            if( UseExceptions )
+            if (UseExceptions)
             {
-                if( !assertion ) throw new DesignByContractException( message, inner );
+                if (!assertion) throw new DesignByContractException(message, inner);
             }
             else
             {
-                Trace.Assert( assertion, "Postcondition: " + message );
+                Trace.Assert(assertion, "Postcondition: " + message);
             }
         }
 
@@ -120,15 +120,15 @@ namespace Utils.Diagnostics
         /// Postcondition check.
         /// </summary>
         [DebuggerStepThrough]
-        public static void Ensure( bool assertion )
+        public static void Ensure(bool assertion)
         {
-            if( UseExceptions )
+            if (UseExceptions)
             {
-                if( !assertion ) throw new DesignByContractException( "Postcondition failed." );
+                if (!assertion) throw new DesignByContractException("Postcondition failed.");
             }
             else
             {
-                Trace.Assert( assertion, "Postcondition failed." );
+                Trace.Assert(assertion, "Postcondition failed.");
             }
         }
 
@@ -136,15 +136,15 @@ namespace Utils.Diagnostics
         /// Invariant check.
         /// </summary>
         [DebuggerStepThrough]
-        public static void Invariant( bool assertion )
+        public static void Invariant(bool assertion)
         {
-            if( UseExceptions )
+            if (UseExceptions)
             {
-                if( !assertion ) throw new DesignByContractException( "Invariant failed." );
+                if (!assertion) throw new DesignByContractException("Invariant failed.");
             }
             else
             {
-                Trace.Assert( assertion, "Invariant failed." );
+                Trace.Assert(assertion, "Invariant failed.");
             }
         }
 
@@ -152,15 +152,15 @@ namespace Utils.Diagnostics
         /// Invariant check.
         /// </summary>
         [DebuggerStepThrough]
-        public static void Invariant( bool assertion, string message )
+        public static void Invariant(bool assertion, string message)
         {
-            if( UseExceptions )
+            if (UseExceptions)
             {
-                if( !assertion ) throw new DesignByContractException( message );
+                if (!assertion) throw new DesignByContractException(message);
             }
             else
             {
-                Trace.Assert( assertion, "Invariant: " + message );
+                Trace.Assert(assertion, "Invariant: " + message);
             }
         }
 
@@ -168,15 +168,15 @@ namespace Utils.Diagnostics
         /// Invariant check.
         /// </summary>
         [DebuggerStepThrough]
-        public static void Invariant( bool assertion, string message, Exception inner )
+        public static void Invariant(bool assertion, string message, Exception inner)
         {
-            if( UseExceptions )
+            if (UseExceptions)
             {
-                if( !assertion ) throw new DesignByContractException( message, inner );
+                if (!assertion) throw new DesignByContractException(message, inner);
             }
             else
             {
-                Trace.Assert( assertion, "Invariant: " + message );
+                Trace.Assert(assertion, "Invariant: " + message);
             }
         }
 
@@ -184,15 +184,15 @@ namespace Utils.Diagnostics
         /// Assertion check.
         /// </summary>
         [DebuggerStepThrough]
-        public static void Assert( bool assertion )
+        public static void Assert(bool assertion)
         {
-            if( UseExceptions )
+            if (UseExceptions)
             {
-                if( !assertion ) throw new DesignByContractException( "Assertion failed." );
+                if (!assertion) throw new DesignByContractException("Assertion failed.");
             }
             else
             {
-                Trace.Assert( assertion, "Assertion failed." );
+                Trace.Assert(assertion, "Assertion failed.");
             }
         }
 
@@ -200,15 +200,15 @@ namespace Utils.Diagnostics
         /// Assertion check.
         /// </summary>
         [DebuggerStepThrough]
-        public static void Assert( bool assertion, string message )
+        public static void Assert(bool assertion, string message)
         {
-            if( UseExceptions )
+            if (UseExceptions)
             {
-                if( !assertion ) throw new DesignByContractException( message );
+                if (!assertion) throw new DesignByContractException(message);
             }
             else
             {
-                Trace.Assert( assertion, "Assertion: " + message );
+                Trace.Assert(assertion, "Assertion: " + message);
             }
         }
 
@@ -216,15 +216,15 @@ namespace Utils.Diagnostics
         /// Assertion check.
         /// </summary>
         [DebuggerStepThrough]
-        public static void Assert( bool assertion, string message, Exception inner )
+        public static void Assert(bool assertion, string message, Exception inner)
         {
-            if( UseExceptions )
+            if (UseExceptions)
             {
-                if( !assertion ) throw new DesignByContractException( message, inner );
+                if (!assertion) throw new DesignByContractException(message, inner);
             }
             else
             {
-                Trace.Assert( assertion, "Assertion: " + message );
+                Trace.Assert(assertion, "Assertion: " + message);
             }
         }
 

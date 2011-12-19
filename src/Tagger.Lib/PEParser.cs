@@ -16,7 +16,7 @@ namespace Tagger
 
         // DOS .EXE header
         public struct IMAGE_DOS_HEADER
-        {      
+        {
             public UInt16 e_magic;              // Magic number
             public UInt16 e_cblp;               // Bytes on last page of file
             public UInt16 e_cp;                 // Pages in file
@@ -50,7 +50,7 @@ namespace Tagger
             public UInt32 e_lfanew;             // File address of new exe header
         }
 
-        [StructLayout( LayoutKind.Sequential, Pack = 1 )]
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct IMAGE_OPTIONAL_HEADER32
         {
             public UInt16 Magic;
@@ -85,7 +85,7 @@ namespace Tagger
             public UInt32 NumberOfRvaAndSizes;
         }
 
-        [StructLayout( LayoutKind.Sequential, Pack = 1 )]
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct IMAGE_OPTIONAL_HEADER64
         {
             public UInt16 Magic;
@@ -119,7 +119,7 @@ namespace Tagger
             public UInt32 NumberOfRvaAndSizes;
         }
 
-        [StructLayout( LayoutKind.Sequential, Pack = 1 )]
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct IMAGE_FILE_HEADER
         {
             public UInt16 Machine;
@@ -148,26 +148,26 @@ namespace Tagger
 
         #region Public Methods
 
-        public PEParser( string filePath )
+        public PEParser(string filePath)
         {
             // Read in the DLL or EXE and get the timestamp
-            using( FileStream stream = new FileStream( filePath, System.IO.FileMode.Open, System.IO.FileAccess.Read ) )
+            using (FileStream stream = new FileStream(filePath, System.IO.FileMode.Open, System.IO.FileAccess.Read))
             {
-                BinaryReader reader = new BinaryReader( stream );
-                dosHeader = FromBinaryReader<IMAGE_DOS_HEADER>( reader );
+                BinaryReader reader = new BinaryReader(stream);
+                dosHeader = FromBinaryReader<IMAGE_DOS_HEADER>(reader);
 
                 // Add 4 bytes to the offset
-                stream.Seek( dosHeader.e_lfanew, SeekOrigin.Begin );
+                stream.Seek(dosHeader.e_lfanew, SeekOrigin.Begin);
 
                 UInt32 ntHeadersSignature = reader.ReadUInt32();
-                fileHeader = FromBinaryReader<IMAGE_FILE_HEADER>( reader );
-                if( this.Is32BitHeader )
+                fileHeader = FromBinaryReader<IMAGE_FILE_HEADER>(reader);
+                if (this.Is32BitHeader)
                 {
-                    optionalHeader32 = FromBinaryReader<IMAGE_OPTIONAL_HEADER32>( reader );
+                    optionalHeader32 = FromBinaryReader<IMAGE_OPTIONAL_HEADER32>(reader);
                 }
                 else
                 {
-                    optionalHeader64 = FromBinaryReader<IMAGE_OPTIONAL_HEADER64>( reader );
+                    optionalHeader64 = FromBinaryReader<IMAGE_OPTIONAL_HEADER64>(reader);
                 }
             }
         }
@@ -182,19 +182,19 @@ namespace Tagger
             string filePath = System.Reflection.Assembly.GetCallingAssembly().Location;
 
             // Get and return the timestamp
-            return new PEParser( filePath );
+            return new PEParser(filePath);
         }
 
         // Reads in a block from a file and converts it to the struct
         // type specified by the template parameter
-        public static T FromBinaryReader<T>( BinaryReader reader )
+        public static T FromBinaryReader<T>(BinaryReader reader)
         {
             // Read in a byte array
-            byte[] bytes = reader.ReadBytes( Marshal.SizeOf( typeof( T ) ) );
+            byte[] bytes = reader.ReadBytes(Marshal.SizeOf(typeof(T)));
 
             // Pin the managed memory while, copy it out the data, then unpin it
-            GCHandle handle = GCHandle.Alloc( bytes, GCHandleType.Pinned );
-            T theStructure = (T) Marshal.PtrToStructure( handle.AddrOfPinnedObject(), typeof( T ) );
+            GCHandle handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+            T theStructure = (T)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(T));
             handle.Free();
 
             return theStructure;
@@ -247,12 +247,12 @@ namespace Tagger
             get
             {
                 // Timestamp is a date offset from 1970
-                DateTime returnValue = new DateTime( 1970, 1, 1, 0, 0, 0 );
+                DateTime returnValue = new DateTime(1970, 1, 1, 0, 0, 0);
 
                 // Add in the number of seconds since 1970/1/1
-                returnValue = returnValue.AddSeconds( fileHeader.TimeDateStamp );
+                returnValue = returnValue.AddSeconds(fileHeader.TimeDateStamp);
                 // Adjust to local timezone
-                returnValue += TimeZone.CurrentTimeZone.GetUtcOffset( returnValue );
+                returnValue += TimeZone.CurrentTimeZone.GetUtcOffset(returnValue);
 
                 return returnValue;
             }

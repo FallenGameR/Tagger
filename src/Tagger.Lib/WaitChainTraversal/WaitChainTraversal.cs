@@ -7,17 +7,17 @@ using System.Runtime.InteropServices;
 
 namespace Tagger.WinAPI.WaitChainTraversal
 {
-    public class ProcessFinder: IDisposable
+    public class ProcessFinder : IDisposable
     {
         private Handle m_Handle;
 
         public ProcessFinder()
         {
-            m_Handle = NativeAPI.OpenThreadWaitChainSession( 0, IntPtr.Zero );
+            m_Handle = NativeAPI.OpenThreadWaitChainSession(0, IntPtr.Zero);
 
-            if( m_Handle.IsInvalid )
+            if (m_Handle.IsInvalid)
             {
-                throw new Win32Exception( Marshal.GetLastWin32Error() );
+                throw new Win32Exception(Marshal.GetLastWin32Error());
             }
         }
 
@@ -35,22 +35,22 @@ namespace Tagger.WinAPI.WaitChainTraversal
         /// for GUI applications that would be the passed pid itself;
         /// for CUI applications that would be pid of a conhost.exe (in Windows 7);
         /// </returns>
-        public int GetConhostProcess( int pid )
+        public int GetConhostProcess(int pid)
         {
             var query =
-                from thread in Process.GetProcessById( pid ).Threads.Cast<ProcessThread>()
-                from node in GetThreadWaitChain( thread.Id )
+                from thread in Process.GetProcessById(pid).Threads.Cast<ProcessThread>()
+                from node in GetThreadWaitChain(thread.Id)
                 where node.ObjectType == NativeAPI.WCT_OBJECT_TYPE.Thread
-                where Process.GetProcessById( node.ProcessId ).ProcessName == "conhost"
+                where Process.GetProcessById(node.ProcessId).ProcessName == "conhost"
                 select node.ProcessId;
 
             var found = query.FirstOrDefault();
-            return found == default( int ) ? pid : found;
+            return found == default(int) ? pid : found;
         }
 
-        private IEnumerable<NativeAPI.WAITCHAIN_NODE_INFO> GetThreadWaitChain( int threadId )
+        private IEnumerable<NativeAPI.WAITCHAIN_NODE_INFO> GetThreadWaitChain(int threadId)
         {
-            var nodes = new NativeAPI.WAITCHAIN_NODE_INFO[ NativeAPI.WCT_MAX_NODE_COUNT ];
+            var nodes = new NativeAPI.WAITCHAIN_NODE_INFO[NativeAPI.WCT_MAX_NODE_COUNT];
             int length = NativeAPI.WCT_MAX_NODE_COUNT;
             int isCycle;
 
@@ -61,14 +61,14 @@ namespace Tagger.WinAPI.WaitChainTraversal
                 threadId,
                 ref length,
                 nodes,
-                out isCycle );
+                out isCycle);
 
-            if( !success )
+            if (!success)
             {
-                throw new Win32Exception( Marshal.GetLastWin32Error() );
+                throw new Win32Exception(Marshal.GetLastWin32Error());
             }
 
-            return nodes.Take( length );
+            return nodes.Take(length);
         }
     }
 }

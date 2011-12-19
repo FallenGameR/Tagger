@@ -38,32 +38,32 @@ namespace Tagger.WinAPI.WaitChainTraversal
         /// 
         /// http://msdn.microsoft.com/en-us/site/ms681422
         /// </remarks>
-        [StructLayout( LayoutKind.Explicit, Size = 280 )]
+        [StructLayout(LayoutKind.Explicit, Size = 280)]
         public unsafe struct WAITCHAIN_NODE_INFO
         {
-            [FieldOffset( 0x0 )]
+            [FieldOffset(0x0)]
             public WCT_OBJECT_TYPE ObjectType;
-            [FieldOffset( 0x4 )]
+            [FieldOffset(0x4)]
             public WCT_OBJECT_STATUS ObjectStatus;
 
             // The name union
-            [FieldOffset( 0x8 )]
-            private fixed ushort RealObjectName[ WCT_OBJNAME_LENGTH ];
-            [FieldOffset( 0x108 )]
+            [FieldOffset(0x8)]
+            private fixed ushort RealObjectName[WCT_OBJNAME_LENGTH];
+            [FieldOffset(0x108)]
             public int TimeOutLowPart;
-            [FieldOffset( 0x10C )]
+            [FieldOffset(0x10C)]
             public int TimeOutHiPart;
-            [FieldOffset( 0x110 )]
+            [FieldOffset(0x110)]
             public int Alertable;
 
             // The thread union
-            [FieldOffset( 0x8 )]
+            [FieldOffset(0x8)]
             public int ProcessId;
-            [FieldOffset( 0xC )]
+            [FieldOffset(0xC)]
             public int ThreadId;
-            [FieldOffset( 0x10 )]
+            [FieldOffset(0x10)]
             public int WaitTime;
-            [FieldOffset( 0x14 )]
+            [FieldOffset(0x14)]
             public int ContextSwitches;
 
             /// <summary>
@@ -73,10 +73,10 @@ namespace Tagger.WinAPI.WaitChainTraversal
             {
                 get
                 {
-                    fixed( WAITCHAIN_NODE_INFO* p = &this )
+                    fixed (WAITCHAIN_NODE_INFO* p = &this)
                     {
-                        return (p->RealObjectName[ 0 ] != '\0')
-                            ? new string( (char*) p->RealObjectName )
+                        return (p->RealObjectName[0] != '\0')
+                            ? new string((char*)p->RealObjectName)
                             : string.Empty;
                     }
                 }
@@ -134,14 +134,14 @@ namespace Tagger.WinAPI.WaitChainTraversal
             All = Process | COM | CriticalSection | NetworkIo
         }
 
-        [DllImport( "ADVAPI32.DLL", SetLastError = true )]
-        [return: MarshalAs( UnmanagedType.Bool )]
-        extern static public Boolean GetThreadWaitChain( Handle wctHandle, IntPtr context, WCT_FLAGS flags, Int32 threadId, ref int nodeCount, [MarshalAs( UnmanagedType.LPArray, SizeParamIndex = 4 )] [In, Out] WAITCHAIN_NODE_INFO[] nodeInfoArray, out int isCycle );
+        [DllImport("ADVAPI32.DLL", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        extern static public Boolean GetThreadWaitChain(Handle wctHandle, IntPtr context, WCT_FLAGS flags, Int32 threadId, ref int nodeCount, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)] [In, Out] WAITCHAIN_NODE_INFO[] nodeInfoArray, out int isCycle);
 
-        [DllImport( "ADVAPI32.DLL", SetLastError = true )]
-        extern static public Handle OpenThreadWaitChainSession( int flags, IntPtr callback );
+        [DllImport("ADVAPI32.DLL", SetLastError = true)]
+        extern static public Handle OpenThreadWaitChainSession(int flags, IntPtr callback);
 
-        [DllImport( "ADVAPI32.DLL", SetLastError = true )]
-        extern static public void CloseThreadWaitChainSession( IntPtr wctHandle );
+        [DllImport("ADVAPI32.DLL", SetLastError = true)]
+        extern static public void CloseThreadWaitChainSession(IntPtr wctHandle);
     }
 }
