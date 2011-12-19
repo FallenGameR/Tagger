@@ -13,12 +13,10 @@ namespace Tagger.Wpf
     {
         public MainWindow()
         {
-            InitializeComponent();
-            Utils.PreloadAccessibilityAssembly();
-
-
             // Check windows edition
+            InitializeComponent();
 
+            // Prepopulate compiled assebly cache
             //Utils.PreloadAccessibilityAssembly();
 
             // If console app
@@ -69,7 +67,7 @@ namespace Tagger.Wpf
         private void btnApply2_Click( object sender, RoutedEventArgs e )
         {
             var finder = new ProcessFinder();
-            var pid = finder.GetConhostProcess( int.Parse( txtPid2.Text ) );
+            var pid = 0; // finder.GetConhostProcess(int.Parse(txtPid2.Text));
 
             listner2 = new AccessibleEventListener
             {
@@ -80,6 +78,5 @@ namespace Tagger.Wpf
             };
             listner2.EventOccurred += new AccessibleEventHandler( listner_EventOccurred );
         }
-
     }
 }

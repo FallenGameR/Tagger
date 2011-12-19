@@ -45,13 +45,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Utils\Diagnostics\Checks.cs" />
+    <Compile Include="Utils\Diagnostics\DesignByContractException.cs" />
+    <Compile Include="Utils\Diagnostics\ProgramException.cs" />
     <Compile Include="PEParser.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="WaitChainTraversal\Handle.cs" />
     <Compile Include="WaitChainTraversal\NativeAPI.cs" />
     <Compile Include="WaitChainTraversal\WaitChainTraversal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\Prism\ViewModelBase.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
