@@ -6,6 +6,10 @@ using Utils.Prism;
 using Utils.Reflection;
 using Microsoft.Practices.Prism.Commands;
 using System.Diagnostics;
+using Tagger.Lib;
+using Tagger.WinAPI.WaitChainTraversal;
+using ManagedWinapi.Accessibility;
+using ManagedWinapi.Windows;
 
 namespace Tagger.Wpf
 {
@@ -34,9 +38,9 @@ namespace Tagger.Wpf
             LastKnownPosition = "Not known";
 
             HookCommand = new DelegateCommand<object>(Hook, CanHook);
-            UnhookCommand = new DelegateCommand<object>( Unhook, CanUnhook );
+            UnhookCommand = new DelegateCommand<object>(Unhook, CanUnhook);
         }
-        
+
         #endregion
 
         #region Validation
@@ -57,7 +61,7 @@ namespace Tagger.Wpf
         {
             Validate(m_ProcessId > 0, "Process ID must be greater than 0");
         }
-        
+
         #endregion
 
         #region Command - Hook
@@ -72,6 +76,52 @@ namespace Tagger.Wpf
         /// </summary>
         private void Hook(object parameter)
         {
+            // Test if it is a console app
+            bool isConsoleApp = LowLevelUtils.IsConsoleApp(ProcessId);
+            if (isConsoleApp)
+            {
+                ApplicationType = "Console";
+            }
+            else
+            {
+                ApplicationType = "GUI";
+            }
+
+            // Get actual process ID belonging to host window
+            int pid = ProcessId;
+            if (isConsoleApp)
+            {
+                using(var wct = new ProcessFinder())
+                {
+                    pid = wct.GetConhostProcess(pid);
+                }
+            }
+
+            // Get current window position
+            var windowHandle = Process.GetProcessById(ProcessId).MainWindowHandle;
+            LastKnownPosition = new SystemWindow(windowHandle).Location.ToString();
+
+            // Hook pid (available only in Windowed process)
+            var listner = new AccessibleEventListener
+            {
+                MinimalEventType = AccessibleEventType.EVENT_OBJECT_LOCATIONCHANGE,
+                MaximalEventType = AccessibleEventType.EVENT_OBJECT_LOCATIONCHANGE,
+                ProcessId = (uint) pid,
+                Enabled = true,
+            };
+            listner.EventOccurred += listner_EventOccurred;
+
+            // Mark window as hooked and recalculate all comands
+            IsHooked = true;
+            HookCommand.RaiseCanExecuteChanged();
+            UnhookCommand.RaiseCanExecuteChanged();
+        }
+
+        void listner_EventOccurred(object sender, AccessibleEventArgs e)
+        {
+            // Ignore events from cursor
+            if (e.ObjectID != 0) { return; }
+            LastKnownPosition = e.AccessibleObject.Location.ToString();
         }
 
         /// <summary>
@@ -117,8 +167,18 @@ namespace Tagger.Wpf
         /// </summary>
         public int ProcessId
         {
-            get { return m_ProcessId; }
-            set { m_ProcessId = value; OnPropertyChanged(this.Property(() => ProcessId)); }
+            get
+            {
+                return m_ProcessId;
+            }
+            set
+            {
+                if (!IsHooked)
+                {
+                    m_ProcessId = value;
+                }
+                OnPropertyChanged(this.Property(() => ProcessId));
+            }
         }
 
         /// <summary>
