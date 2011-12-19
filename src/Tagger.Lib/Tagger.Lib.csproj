@@ -36,6 +36,9 @@
     <Reference Include="ManagedWinapi">
       <HintPath>..\..\libs\ManagedWinAPI\ManagedWinapi.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.Prism">
+      <HintPath>..\..\libs\Prism\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />

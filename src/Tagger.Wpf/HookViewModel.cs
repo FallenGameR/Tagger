@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using Utils.Prism;
-using Utils.Reflection;
-using Microsoft.Practices.Prism.Commands;
-using System.Diagnostics;
-using Tagger.Lib;
-using Tagger.WinAPI.WaitChainTraversal;
 using ManagedWinapi.Accessibility;
 using ManagedWinapi.Windows;
+using Microsoft.Practices.Prism.Commands;
+using Tagger.Lib;
+using Tagger.WinAPI.WaitChainTraversal;
+using Utils.Prism;
+using Utils.Reflection;
 
 namespace Tagger.Wpf
 {
@@ -44,15 +41,6 @@ namespace Tagger.Wpf
         #endregion
 
         #region Validation
-
-        /// <summary>
-        /// Recalculate all known hosted commands
-        /// </summary>
-        protected override void OnErrorCollectionChanged()
-        {
-            base.OnErrorCollectionChanged();
-            HookCommand.RaiseCanExecuteChanged();
-        }
 
         /// <summary>
         /// Validation for ProcessId property value
@@ -113,8 +101,7 @@ namespace Tagger.Wpf
 
             // Mark window as hooked and recalculate all comands
             IsHooked = true;
-            HookCommand.RaiseCanExecuteChanged();
-            UnhookCommand.RaiseCanExecuteChanged();
+            OnDelegateCommandsCanExecuteChanged();
         }
 
         void listner_EventOccurred(object sender, AccessibleEventArgs e)

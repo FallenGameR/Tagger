@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
+using System.Linq;
 using System.Text;
 using Utils.Diagnostics;
+using Microsoft.Practices.Prism.Commands;
 
 namespace Utils.Prism
 {
@@ -93,6 +95,7 @@ namespace Utils.Prism
         /// </remarks>
         protected virtual void OnErrorCollectionChanged()
         {
+            OnDelegateCommandsCanExecuteChanged();
         }
 
         /// <summary>
@@ -103,6 +106,22 @@ namespace Utils.Prism
         {
             CheckPropertyExist(propertyName);
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <summary>
+        /// Trigger for changed conditions of any hosted command
+        /// </summary>
+        protected void OnDelegateCommandsCanExecuteChanged()
+        {
+            var commands = 
+                from info in GetType().GetProperties()
+                where info.PropertyType == typeof(DelegateCommand<object>)
+                select (DelegateCommand<object>) info.GetValue(this, null);
+
+            foreach (var command in commands)
+            {
+                command.RaiseCanExecuteChanged();
+            }
         }
 
         /// <summary>
