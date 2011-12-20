@@ -7,6 +7,10 @@ using Tagger.Lib;
 using Tagger.WinAPI.WaitChainTraversal;
 using Utils.Prism;
 using Utils.Reflection;
+using System.Runtime.InteropServices;
+using System;
+using System.Windows.Interop;
+using ManagedWinapi.Hooks;
 
 namespace Tagger.Wpf
 {
@@ -23,6 +27,7 @@ namespace Tagger.Wpf
         private bool m_IsHooked;
         private string m_LastKnownPosition;
         private AccessibleEventListener m_Listner;
+        private OverlayWindow m_OverlayWindow;
 
         #endregion
 
@@ -40,6 +45,28 @@ namespace Tagger.Wpf
 
         #endregion
 
+        #region IDisposable Members
+
+        protected override void OnDisposeManaged()
+        {
+            base.OnDisposeManaged();
+            UnhookCommand.Execute(null);
+        }
+
+        #endregion
+
+        #region Methods
+
+        private void ResetPropertyValues()
+        {
+            ProcessId = -1;
+            ApplicationType = "Not set";
+            IsHooked = false;
+            LastKnownPosition = "Not known";
+        }
+
+        #endregion
+
         #region Validation
 
         /// <summary>
@@ -51,20 +78,6 @@ namespace Tagger.Wpf
         }
 
         #endregion
-
-        protected override void OnDisposeManaged()
-        {
-            base.OnDisposeManaged();
-            UnhookCommand.Execute(null);
-        }
-
-        private void ResetPropertyValues()
-        {
-            ProcessId = -1;
-            ApplicationType = "Not set";
-            IsHooked = false;
-            LastKnownPosition = "Not known";
-        }
 
         #region Command - StartConsoleApplication
 
@@ -79,6 +92,28 @@ namespace Tagger.Wpf
         private void StartConsoleApplication(object parameter)
         {
             ProcessId = Process.Start("powershell.exe").Id;
+
+
+            //var hook = new LowLevelKeyboardHook();
+            //hook.CharIntercepted += new LowLevelKeyboardHook.CharCallback(hook_CharIntercepted);
+            //hook.KeyIntercepted += new LowLevelKeyboardHook.KeyCallback(hook_KeyIntercepted);
+            //hook.MessageIntercepted += new LowLevelMessageCallback(hook_MessageIntercepted);
+            //hook.StartHook();
+        }
+
+        void hook_MessageIntercepted(LowLevelMessage evt, ref bool handled)
+        {
+            this.LastKnownPosition = "msg: " + evt.Message.ToString();
+        }
+
+        void hook_KeyIntercepted(int msg, int vkCode, int scanCode, int flags, int time, IntPtr dwExtraInfo, ref bool handled)
+        {
+            this.LastKnownPosition = "key: " + scanCode.ToString() + " " + vkCode.ToString();
+        }
+
+        void hook_CharIntercepted(int msg, string characters, bool deadKeyPending, int vkCode, int scancode, int flags, int time, IntPtr dwExtraInfo)
+        {
+            this.LastKnownPosition = "char: " + characters;
         }
 
         /// <summary>
@@ -126,6 +161,17 @@ namespace Tagger.Wpf
         public DelegateCommand<object> HookCommand { get; private set; }
 
         /// <summary>
+        /// Changes an attribute of the specified window. The function also sets the 32-bit (long) value at the specified offset into the extra window memory.
+        /// </summary>
+        /// <param name="hWnd">A handle to the window and, indirectly, the class to which the window belongs..</param>
+        /// <param name="nIndex">The zero-based offset to the value to be set. Valid values are in the range zero through the number of bytes of extra window memory, minus the size of an integer. To set any other value, specify one of the following values: GWL_EXSTYLE, GWL_HINSTANCE, GWL_ID, GWL_STYLE, GWL_USERDATA, GWL_WNDPROC </param>
+        /// <param name="dwNewLong">The replacement value.</param>
+        /// <returns>If the function succeeds, the return value is the previous value of the specified 32-bit integer.
+        /// If the function fails, the return value is zero. To get extended error information, call GetLastError. </returns>
+        [DllImport("user32.dll")]
+        static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+        /// <summary>
         /// Hook command handler
         /// </summary>
         private void Hook(object parameter)
@@ -158,15 +204,16 @@ namespace Tagger.Wpf
             var hostWindow = new SystemWindow(windowHandle);
             LastKnownPosition = hostWindow.Location.ToString();
 
-            overlayWindow = new OverlayWindow
+            m_OverlayWindow = new OverlayWindow
             {
                 Top = hostWindow.Location.Y,
                 Left = hostWindow.Location.X + hostWindow.Size.Width - 200,
-                Topmost = true,
                 Width = 200,
                 Height = 80,
             };
-            overlayWindow.Show();
+            var wih = new WindowInteropHelper(m_OverlayWindow);
+            wih.Owner = hostWindow.HWnd;
+            m_OverlayWindow.Show();
 
             // Hook pid (available only in Windowed process)
             m_Listner = new AccessibleEventListener
@@ -183,16 +230,14 @@ namespace Tagger.Wpf
 
                 LastKnownPosition = e.AccessibleObject.Location.ToString();
 
-                overlayWindow.Top = e.AccessibleObject.Location.Top;
-                overlayWindow.Left = e.AccessibleObject.Location.X + e.AccessibleObject.Location.Width - 200;
+                m_OverlayWindow.Top = e.AccessibleObject.Location.Top;
+                m_OverlayWindow.Left = e.AccessibleObject.Location.X + e.AccessibleObject.Location.Width - 200;
             };
 
             // Mark window as hooked and recalculate all comands
             IsHooked = true;
             OnDelegateCommandsCanExecuteChanged();
         }
-
-        private OverlayWindow overlayWindow;
 
         /// <summary>
         /// Test that verifies if Hook command can be invoked
@@ -225,10 +270,10 @@ namespace Tagger.Wpf
                 OnDelegateCommandsCanExecuteChanged();
             }
 
-            if (overlayWindow != null)
+            if (m_OverlayWindow != null)
             {
-                overlayWindow.Close();
-                overlayWindow = null;
+                m_OverlayWindow.Close();
+                m_OverlayWindow = null;
             }
         }
 
