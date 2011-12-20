@@ -52,6 +52,12 @@ namespace Tagger.Wpf
 
         #endregion
 
+        protected override void OnDisposeManaged()
+        {
+            base.OnDisposeManaged();
+            UnhookCommand.Execute(null);
+        }
+
         private void ResetPropertyValues()
         {
             ProcessId = -1;
@@ -124,6 +130,8 @@ namespace Tagger.Wpf
         /// </summary>
         private void Hook(object parameter)
         {
+            UnhookCommand.Execute(null);
+
             // Test if it is a console app
             bool isConsoleApp = LowLevelUtils.IsConsoleApp(ProcessId);
             if (isConsoleApp)
@@ -147,10 +155,20 @@ namespace Tagger.Wpf
 
             // Get current window position
             var windowHandle = Process.GetProcessById(ProcessId).MainWindowHandle;
-            LastKnownPosition = new SystemWindow(windowHandle).Location.ToString();
+            var hostWindow = new SystemWindow(windowHandle);
+            LastKnownPosition = hostWindow.Location.ToString();
+
+            overlayWindow = new OverlayWindow
+            {
+                Top = hostWindow.Location.Y,
+                Left = hostWindow.Location.X + hostWindow.Size.Width - 200,
+                Topmost = true,
+                Width = 200,
+                Height = 80,
+            };
+            overlayWindow.Show();
 
             // Hook pid (available only in Windowed process)
-            UnhookCommand.Execute(null);
             m_Listner = new AccessibleEventListener
             {
                 MinimalEventType = AccessibleEventType.EVENT_OBJECT_LOCATIONCHANGE,
@@ -162,13 +180,19 @@ namespace Tagger.Wpf
             {
                 // Ignore events from cursor
                 if (e.ObjectID != 0) { return; }
+
                 LastKnownPosition = e.AccessibleObject.Location.ToString();
+
+                overlayWindow.Top = e.AccessibleObject.Location.Top;
+                overlayWindow.Left = e.AccessibleObject.Location.X + e.AccessibleObject.Location.Width - 200;
             };
 
             // Mark window as hooked and recalculate all comands
             IsHooked = true;
             OnDelegateCommandsCanExecuteChanged();
         }
+
+        private OverlayWindow overlayWindow;
 
         /// <summary>
         /// Test that verifies if Hook command can be invoked
@@ -199,6 +223,12 @@ namespace Tagger.Wpf
                 m_Listner = null;
                 ResetPropertyValues();
                 OnDelegateCommandsCanExecuteChanged();
+            }
+
+            if (overlayWindow != null)
+            {
+                overlayWindow.Close();
+                overlayWindow = null;
             }
         }
 

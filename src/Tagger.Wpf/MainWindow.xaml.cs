@@ -1,8 +1,4 @@
 ﻿using System.Windows;
-using ManagedWinapi.Accessibility;
-using System;
-using Tagger.WinAPI.WaitChainTraversal;
-using Tagger.Lib;
 
 namespace Tagger.Wpf
 {
@@ -19,13 +15,11 @@ namespace Tagger.Wpf
             // Prepopulate compiled assebly cache
             //Utils.PreloadAccessibilityAssembly();
 
-            DataContext = new HookViewModel
-            {
-                ProcessId = 3704,
-            };
+            var viewModel = new HookViewModel();
+            DataContext = viewModel;
+            viewModel.StartWindowedApplicationCommand.Execute(null);
+
+            Closed += delegate { viewModel.Dispose(); };
         }
-
-
-
     }
 }
