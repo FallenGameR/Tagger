@@ -25,7 +25,7 @@ namespace Tagger.Lib
             {
                 if (e.AccessibleObject != null)
                 {
-                    listner.Enabled = false;
+                    listner.Dispose();
                 }
             };
         }

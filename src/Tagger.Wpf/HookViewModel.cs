@@ -22,6 +22,7 @@ namespace Tagger.Wpf
         private string m_ApplicationType;
         private bool m_IsHooked;
         private string m_LastKnownPosition;
+        private AccessibleEventListener m_Listner;
 
         #endregion
 
@@ -29,11 +30,10 @@ namespace Tagger.Wpf
 
         public HookViewModel()
         {
-            ProcessId = -1;
-            ApplicationType = "Not set";
-            IsHooked = false;
-            LastKnownPosition = "Not known";
+            ResetPropertyValues();
 
+            StartConsoleApplicationCommand = new DelegateCommand<object>(StartConsoleApplication, CanStartConsoleApplication);
+            StartWindowedApplicationCommand = new DelegateCommand<object>(StartWindowedApplication, CanStartWindowedApplication);
             HookCommand = new DelegateCommand<object>(Hook, CanHook);
             UnhookCommand = new DelegateCommand<object>(Unhook, CanUnhook);
         }
@@ -48,6 +48,66 @@ namespace Tagger.Wpf
         private void Validate_ProcessId()
         {
             Validate(m_ProcessId > 0, "Process ID must be greater than 0");
+        }
+
+        #endregion
+
+        private void ResetPropertyValues()
+        {
+            ProcessId = -1;
+            ApplicationType = "Not set";
+            IsHooked = false;
+            LastKnownPosition = "Not known";
+        }
+
+        #region Command - StartConsoleApplication
+
+        /// <summary>
+        /// Starts a console application
+        /// </summary>
+        public DelegateCommand<object> StartConsoleApplicationCommand { get; private set; }
+
+        /// <summary>
+        /// StartConsoleApplication command handler
+        /// </summary>
+        private void StartConsoleApplication(object parameter)
+        {
+            ProcessId = Process.Start("powershell.exe").Id;
+        }
+
+        /// <summary>
+        /// Test that verifies if StartConsoleApplication command can be invoked
+        /// </summary>
+        /// <returns>true if command could be invoked</returns>
+        private bool CanStartConsoleApplication(object parameter)
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region Command - StartWindowedApplication
+
+        /// <summary>
+        /// Start a windowed application
+        /// </summary>
+        public DelegateCommand<object> StartWindowedApplicationCommand { get; private set; }
+
+        /// <summary>
+        /// StartWindowedApplication command handler
+        /// </summary>
+        private void StartWindowedApplication(object parameter)
+        {
+            ProcessId = Process.Start("calc.exe").Id;
+        }
+
+        /// <summary>
+        /// Test that verifies if StartWindowedApplication command can be invoked
+        /// </summary>
+        /// <returns>true if command could be invoked</returns>
+        private bool CanStartWindowedApplication(object parameter)
+        {
+            return true;
         }
 
         #endregion
@@ -79,7 +139,7 @@ namespace Tagger.Wpf
             int pid = ProcessId;
             if (isConsoleApp)
             {
-                using(var wct = new ProcessFinder())
+                using (var wct = new ProcessFinder())
                 {
                     pid = wct.GetConhostProcess(pid);
                 }
@@ -90,14 +150,15 @@ namespace Tagger.Wpf
             LastKnownPosition = new SystemWindow(windowHandle).Location.ToString();
 
             // Hook pid (available only in Windowed process)
-            var listner = new AccessibleEventListener
+            UnhookCommand.Execute(null);
+            m_Listner = new AccessibleEventListener
             {
                 MinimalEventType = AccessibleEventType.EVENT_OBJECT_LOCATIONCHANGE,
                 MaximalEventType = AccessibleEventType.EVENT_OBJECT_LOCATIONCHANGE,
-                ProcessId = (uint) pid,
+                ProcessId = (uint)pid,
                 Enabled = true,
             };
-            listner.EventOccurred += (object sender, AccessibleEventArgs e) =>
+            m_Listner.EventOccurred += (object sender, AccessibleEventArgs e) =>
             {
                 // Ignore events from cursor
                 if (e.ObjectID != 0) { return; }
@@ -132,6 +193,13 @@ namespace Tagger.Wpf
         /// </summary>
         private void Unhook(object parameter)
         {
+            if (m_Listner != null)
+            {
+                m_Listner.Dispose();
+                m_Listner = null;
+                ResetPropertyValues();
+                OnDelegateCommandsCanExecuteChanged();
+            }
         }
 
         /// <summary>

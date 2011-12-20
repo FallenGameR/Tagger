@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using Microsoft.Practices.Prism.Commands;
 using Utils.Collections;
 using Utils.Diagnostics;
-using Microsoft.Practices.Prism.Commands;
 
 namespace Utils.Prism
 {
