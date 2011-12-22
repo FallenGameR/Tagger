@@ -43,6 +43,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -52,6 +53,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Hotkeys\KeyboardHook.cs" />
     <Compile Include="Utils\Collections\Extensions.cs" />
     <Compile Include="Utils\Diagnostics\Checks.cs" />
     <Compile Include="Utils\Diagnostics\DesignByContractException.cs" />
