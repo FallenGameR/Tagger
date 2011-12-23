@@ -1,16 +1,18 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Windows.Interop;
 using ManagedWinapi.Accessibility;
+using ManagedWinapi.Hooks;
 using ManagedWinapi.Windows;
 using Microsoft.Practices.Prism.Commands;
 using Tagger.Lib;
 using Tagger.WinAPI.WaitChainTraversal;
 using Utils.Prism;
 using Utils.Reflection;
-using System.Runtime.InteropServices;
-using System;
-using System.Windows.Interop;
-using ManagedWinapi.Hooks;
+using Tagger.WinAPI.Hotkeys;
+using System.Windows.Forms;
 
 namespace Tagger.Wpf
 {
@@ -32,7 +34,7 @@ namespace Tagger.Wpf
         #endregion
 
         #region Constructor
-
+        
         public HookViewModel()
         {
             ResetPropertyValues();
@@ -81,6 +83,8 @@ namespace Tagger.Wpf
 
         #region Command - StartConsoleApplication
 
+        private GlobalHotkey globalHotkey;
+
         /// <summary>
         /// Starts a console application
         /// </summary>
@@ -91,14 +95,20 @@ namespace Tagger.Wpf
         /// </summary>
         private void StartConsoleApplication(object parameter)
         {
-            ProcessId = Process.Start("powershell.exe").Id;
-
+            //ProcessId = Process.Start("powershell.exe").Id;
 
             //var hook = new LowLevelKeyboardHook();
             //hook.CharIntercepted += new LowLevelKeyboardHook.CharCallback(hook_CharIntercepted);
             //hook.KeyIntercepted += new LowLevelKeyboardHook.KeyCallback(hook_KeyIntercepted);
             //hook.MessageIntercepted += new LowLevelMessageCallback(hook_MessageIntercepted);
             //hook.StartHook();
+
+            globalHotkey = new GlobalHotkey();
+            globalHotkey.HotkeyPressed += delegate
+            {
+                MessageBox.Show("Hotkey pressed.");
+            };
+            globalHotkey.RegisterHotKey(ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.NoRepeat, Keys.Z);
         }
 
         void hook_MessageIntercepted(LowLevelMessage evt, ref bool handled)
