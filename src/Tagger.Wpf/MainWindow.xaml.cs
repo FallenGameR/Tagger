@@ -9,17 +9,14 @@ namespace Tagger.Wpf
     {
         public MainWindow()
         {
-            // Check windows edition
+            // Check windows OS edition
+
             InitializeComponent();
 
             // Prepopulate compiled assebly cache
             //Utils.PreloadAccessibilityAssembly();
 
-            var viewModel = new HookViewModel();
-            DataContext = viewModel;
-            viewModel.StartWindowedApplicationCommand.Execute(null);
-
-            Closed += delegate { viewModel.Dispose(); };
+            this.Closed += delegate { App.Current.Shutdown(); };
         }
     }
 }

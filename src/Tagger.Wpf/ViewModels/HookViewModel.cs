@@ -83,8 +83,6 @@ namespace Tagger.Wpf
 
         #region Command - StartConsoleApplication
 
-        private GlobalHotkey globalHotkey;
-
         /// <summary>
         /// Starts a console application
         /// </summary>
@@ -95,35 +93,7 @@ namespace Tagger.Wpf
         /// </summary>
         private void StartConsoleApplication(object parameter)
         {
-            //ProcessId = Process.Start("powershell.exe").Id;
-
-            //var hook = new LowLevelKeyboardHook();
-            //hook.CharIntercepted += new LowLevelKeyboardHook.CharCallback(hook_CharIntercepted);
-            //hook.KeyIntercepted += new LowLevelKeyboardHook.KeyCallback(hook_KeyIntercepted);
-            //hook.MessageIntercepted += new LowLevelMessageCallback(hook_MessageIntercepted);
-            //hook.StartHook();
-
-            globalHotkey = new GlobalHotkey();
-            globalHotkey.HotkeyPressed += delegate
-            {
-                MessageBox.Show("Hotkey pressed.");
-            };
-            globalHotkey.RegisterHotKey(ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.NoRepeat, Keys.Z);
-        }
-
-        void hook_MessageIntercepted(LowLevelMessage evt, ref bool handled)
-        {
-            this.LastKnownPosition = "msg: " + evt.Message.ToString();
-        }
-
-        void hook_KeyIntercepted(int msg, int vkCode, int scanCode, int flags, int time, IntPtr dwExtraInfo, ref bool handled)
-        {
-            this.LastKnownPosition = "key: " + scanCode.ToString() + " " + vkCode.ToString();
-        }
-
-        void hook_CharIntercepted(int msg, string characters, bool deadKeyPending, int vkCode, int scancode, int flags, int time, IntPtr dwExtraInfo)
-        {
-            this.LastKnownPosition = "char: " + characters;
+            ProcessId = Process.Start("powershell.exe").Id;
         }
 
         /// <summary>
@@ -169,17 +139,6 @@ namespace Tagger.Wpf
         /// Command that hooks some process
         /// </summary>
         public DelegateCommand<object> HookCommand { get; private set; }
-
-        /// <summary>
-        /// Changes an attribute of the specified window. The function also sets the 32-bit (long) value at the specified offset into the extra window memory.
-        /// </summary>
-        /// <param name="hWnd">A handle to the window and, indirectly, the class to which the window belongs..</param>
-        /// <param name="nIndex">The zero-based offset to the value to be set. Valid values are in the range zero through the number of bytes of extra window memory, minus the size of an integer. To set any other value, specify one of the following values: GWL_EXSTYLE, GWL_HINSTANCE, GWL_ID, GWL_STYLE, GWL_USERDATA, GWL_WNDPROC </param>
-        /// <param name="dwNewLong">The replacement value.</param>
-        /// <returns>If the function succeeds, the return value is the previous value of the specified 32-bit integer.
-        /// If the function fails, the return value is zero. To get extended error information, call GetLastError. </returns>
-        [DllImport("user32.dll")]
-        static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
         /// <summary>
         /// Hook command handler
