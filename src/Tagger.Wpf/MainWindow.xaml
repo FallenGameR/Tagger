@@ -4,17 +4,20 @@
         xmlns:markupExtensions="clr-namespace:Utils.Prism;assembly=Tagger.Lib"
         xmlns:views="clr-namespace:Tagger.Wpf.Views"
         Background="#FAFAFA"
-        Title="MainWindow" Height="172" Width="475"
+        Title="MainWindow" Width="475"
+        SizeToContent="Height"
         FocusManager.FocusedElement="{markupExtensions:FirstFocusedElement}"
         >
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <views:HookControl Grid.Column="0" Grid.Row="0" />
+        <views:HookControl Grid.Column="0" Grid.Row="0" Height="172"/>
+        <views:HotkeyControl Grid.Column="0" Grid.Row="1" Height="80" />
     </Grid>
 </Window>
