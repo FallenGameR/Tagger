@@ -27,6 +27,7 @@ namespace Tagger.Wpf
         private ModifierKeys m_ModifierKeys;
         private Keys m_Key;
         private string m_Status;
+        private bool m_IsRegistered;
 
         #endregion
 
@@ -56,6 +57,7 @@ namespace Tagger.Wpf
         /// </summary>
         private void RegisterHotkey(object parameter)
         {
+
         }
 
         /// <summary>
@@ -81,6 +83,7 @@ namespace Tagger.Wpf
         /// </summary>
         private void UnregisterHotkey(object parameter)
         {
+
         }
 
         /// <summary>
