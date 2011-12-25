@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
+using System.Windows.Input;
 using Microsoft.Practices.Prism.Commands;
 using Tagger.WinAPI.Hotkeys;
 using Utils.Diagnostics;
@@ -26,13 +27,13 @@ namespace Tagger.Wpf
 
         public HotkeyViewModel()
         {
+            RegisterHotkeyCommand = new DelegateCommand<object>(RegisterHotkey, CanRegisterHotkey);
+            UnregisterHotkeyCommand = new DelegateCommand<object>(UnregisterHotkey, CanUnregisterHotkey);
+
             ModifierKeys = ModifierKeys.None;
             Key = Keys.None;
             Status = "No hotkey registered";
             m_GlobalHotkey = null;
-
-            RegisterHotkeyCommand = new DelegateCommand<object>(RegisterHotkey, CanRegisterHotkey);
-            UnregisterHotkeyCommand = new DelegateCommand<object>(UnregisterHotkey, CanUnregisterHotkey);
         }
 
         #endregion
@@ -75,7 +76,7 @@ namespace Tagger.Wpf
             // Try to register new global hotkey and update status
             try
             {
-                m_GlobalHotkey = new GlobalHotkey(ModifierKeys | ModifierKeys.NoRepeat, Key, (s,a) => MessageBox.Show("Hotkey " + Status + " presed"));
+                m_GlobalHotkey = new GlobalHotkey(ModifierKeys, Key, (s,a) => MessageBox.Show("Hotkey " + Status + " pressed"));
                 Status = "Registered hotkey: " + HotkeyText;
             }
             catch (Win32Exception winEx)
@@ -146,6 +147,7 @@ namespace Tagger.Wpf
                 m_ModifierKeys = value;
                 OnPropertyChanged(this.Property(() => ModifierKeys));
                 OnPropertyChanged(this.Property(() => HotkeyText));
+                OnDelegateCommandsCanExecuteChanged();
             }
         }
 
@@ -163,6 +165,7 @@ namespace Tagger.Wpf
                 m_Key = value;
                 OnPropertyChanged(this.Property(() => Key));
                 OnPropertyChanged(this.Property(() => HotkeyText));
+                OnDelegateCommandsCanExecuteChanged();
             }
         }
 
@@ -187,7 +190,7 @@ namespace Tagger.Wpf
                 {
                     hotkey += "Alt+";
                 }
-                if (ModifierKeys.HasFlag(ModifierKeys.Win))
+                if (ModifierKeys.HasFlag(ModifierKeys.Windows))
                 {
                     hotkey += "Win+";
                 }
@@ -202,7 +205,7 @@ namespace Tagger.Wpf
         public string Status
         {
             get { return m_Status; }
-            set { m_Status = value; OnPropertyChanged(this.Property(() => Status)); }
+            private set { m_Status = value; OnPropertyChanged(this.Property(() => Status)); }
         }
 
         #endregion

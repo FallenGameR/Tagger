@@ -25,15 +25,15 @@
         <Button 
             Grid.Column="2" Grid.Row="0" Margin="3"
             Content="Register"
-            Command="{Binding UnregisterCommand}"/>
+            Command="{Binding RegisterHotkeyCommand}"/>
 
         <Label Grid.Column="0" Grid.Row="1">Registration status</Label>
         <TextBox 
             Grid.Column="1" Grid.Row="1" Margin="3"
-            Text="{Binding Path=ApplicationType, Mode=OneWay}" />
+            Text="{Binding Path=Status, Mode=OneWay}" />
         <Button 
             Grid.Column="2" Grid.Row="1" Margin="3"
             Content="Unregister"
-            Command="{Binding UnregisterCommand}" />
+            Command="{Binding UnregisterHotkeyCommand}" />
     </Grid>
 </UserControl>

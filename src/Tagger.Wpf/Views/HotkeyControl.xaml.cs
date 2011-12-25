@@ -14,8 +14,8 @@ namespace Tagger.Wpf.Views
         {
             InitializeComponent();
 
-            DataContext = new HotkeyViewModel();
-            App.Current.Exit += delegate { ((IDisposable)DataContext).Dispose(); };
+            DataContext = ViewModel;
+            App.Current.Exit += delegate { ViewModel.Dispose(); };
         }
 
         /// <remarks>
@@ -23,43 +23,38 @@ namespace Tagger.Wpf.Views
         /// </remarks>
         private void txtShortcutKey_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            // The text box grabs all input
-            e.Handled = true;
-
             // Fetch the actual shortcut key
-            Key key = (e.Key == Key.System) ? e.SystemKey : e.Key;
+            var key = (e.Key == Key.System) ? e.SystemKey : e.Key;
 
             // Ignore modifier keys
-            if (key == Key.LeftShift || 
-                key == Key.RightShift || 
-                key == Key.LeftCtrl || 
-                key == Key.RightCtrl || 
-                key == Key.LeftAlt || 
-                key == Key.RightAlt || 
-                key == Key.LWin || 
-                key == Key.RWin) 
-            { 
-                return;
-            }
+            if (IsModifierKey(key)) { return; }
 
-            // Build the shortcut key name
-            var shortcutText = new StringBuilder();
-            if ((Keyboard.Modifiers & ModifierKeys.Control) != 0) 
-            {
-                shortcutText.Append("Ctrl+");
-            }
-            if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0) 
-            {
-                shortcutText.Append("Shift+");
-            }
-            if ((Keyboard.Modifiers & ModifierKeys.Alt) != 0) 
-            {
-                shortcutText.Append("Alt+");
-            }
-            shortcutText.Append(key.ToString());
+            // Set view model properties
+            ViewModel.ModifierKeys = Keyboard.Modifiers;
+            ViewModel.Key = (System.Windows.Forms.Keys) KeyInterop.VirtualKeyFromKey(key);
 
             // Update the text box
-            txtShortcutKey.Text = shortcutText.ToString();
+            txtShortcutKey.Text = ViewModel.HotkeyText;
+
+            // The text box grabs all input
+            e.Handled = true;
+        }
+
+        private static bool IsModifierKey(Key key)
+        {
+            return key == Key.LeftShift 
+                || key == Key.RightShift 
+                || key == Key.LeftCtrl 
+                || key == Key.RightCtrl 
+                || key == Key.LeftAlt 
+                || key == Key.RightAlt 
+                || key == Key.LWin 
+                || key == Key.RWin;
+        }
+
+        private HotkeyViewModel ViewModel
+        {
+            get { return (DataContext == null) ? new HotkeyViewModel() : (HotkeyViewModel)DataContext; }
         }
     }
 }

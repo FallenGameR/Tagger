@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace Tagger.WinAPI.Hotkeys
 {

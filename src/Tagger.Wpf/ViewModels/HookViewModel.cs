@@ -37,12 +37,12 @@ namespace Tagger.Wpf
         
         public HookViewModel()
         {
-            ResetPropertyValues();
-
             StartConsoleApplicationCommand = new DelegateCommand<object>(StartConsoleApplication, CanStartConsoleApplication);
             StartWindowedApplicationCommand = new DelegateCommand<object>(StartWindowedApplication, CanStartWindowedApplication);
             HookCommand = new DelegateCommand<object>(Hook, CanHook);
             UnhookCommand = new DelegateCommand<object>(Unhook, CanUnhook);
+
+            ResetPropertyValues();
         }
 
         #endregion

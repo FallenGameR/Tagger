@@ -56,7 +56,6 @@
     <Compile Include="Hotkeys\GlobalHotkey.cs" />
     <Compile Include="Hotkeys\HotkeyPressedEventArgs.cs" />
     <Compile Include="Hotkeys\HotkeyReceiverWindow.cs" />
-    <Compile Include="Hotkeys\ModifierKeys.cs" />
     <Compile Include="Hotkeys\NativeAPI.cs" />
     <Compile Include="Utils\Collections\Extensions.cs" />
     <Compile Include="Utils\Diagnostics\Checks.cs" />

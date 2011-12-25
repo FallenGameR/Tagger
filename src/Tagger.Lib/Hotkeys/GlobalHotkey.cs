@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace Tagger.WinAPI.Hotkeys
 {
@@ -13,6 +14,14 @@ namespace Tagger.WinAPI.Hotkeys
     /// </remarks>    
     public class GlobalHotkey : IDisposable
     {
+        /// <summary>
+        /// Changes the hotkey behavior so that the keyboard auto-repeat does not yield multiple hotkey notifications
+        /// </summary>
+        /// <remarks>
+        /// This flag works only starting Windows 7
+        /// </remarks>
+        private const uint NoRepeat = 0x4000;
+
         private HotkeyReceiverWindow m_ReceiverWindow;
 
         /// <summary>
@@ -26,7 +35,9 @@ namespace Tagger.WinAPI.Hotkeys
             m_ReceiverWindow = new HotkeyReceiverWindow();
             m_ReceiverWindow.KeyPressed += (sender, args) => hotkeyPressed(this, args);
 
-            var success = NativeAPI.RegisterHotKey(m_ReceiverWindow.Handle, 0, (uint)modifier, (uint)key);
+            var noRepeatModifier = (uint)modifier | NoRepeat;
+            var success = NativeAPI.RegisterHotKey(m_ReceiverWindow.Handle, 0, noRepeatModifier, (uint)key);
+
             if (!success)
             {
                 throw new Win32Exception(Marshal.GetLastWin32Error());
