@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System;
 
 namespace Tagger.Wpf.Views
 {
@@ -12,6 +13,9 @@ namespace Tagger.Wpf.Views
         public HotkeyControl()
         {
             InitializeComponent();
+
+            DataContext = new HotkeyViewModel();
+            App.Current.Exit += delegate { ((IDisposable)DataContext).Dispose(); };
         }
 
         /// <remarks>
