@@ -12,12 +12,12 @@ namespace Tagger.WinAPI.Hotkeys
 
         public HotkeyReceiverWindow()
         {
-            this.CreateHandle(new CreateParams());
+            CreateHandle(new CreateParams());
         }
 
         public void Dispose()
         {
-            this.DestroyHandle();
+            DestroyHandle();
         }
 
         /// <summary>
@@ -32,9 +32,9 @@ namespace Tagger.WinAPI.Hotkeys
             var key = (Keys)(((int)m.LParam >> 16) & 0xFFFF);
             var modifier = (ModifierKeys)((int)m.LParam & 0xFFFF);
 
-            if (this.KeyPressed != null)
+            if (KeyPressed != null)
             {
-                this.KeyPressed(this, new HotkeyPressedEventArgs { Key = key, Modifier = modifier });
+                KeyPressed(this, new HotkeyPressedEventArgs { Key = key, Modifier = modifier });
             }
         }
 

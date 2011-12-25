@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Utils.Prism;
-using Utils.Reflection;
-using Tagger.WinAPI.Hotkeys;
+﻿using System.ComponentModel;
 using System.Windows.Forms;
 using Microsoft.Practices.Prism.Commands;
-using System.ComponentModel;
+using Tagger.WinAPI.Hotkeys;
 using Utils.Diagnostics;
+using Utils.Prism;
+using Utils.Reflection;
 
 namespace Tagger.Wpf
 {
@@ -22,7 +18,6 @@ namespace Tagger.Wpf
         private ModifierKeys m_ModifierKeys;
         private Keys m_Key;
         private string m_Status;
-        private bool m_IsRegistered;
         private GlobalHotkey m_GlobalHotkey;
 
         #endregion
@@ -34,16 +29,10 @@ namespace Tagger.Wpf
             ModifierKeys = ModifierKeys.None;
             Key = Keys.None;
             Status = "No hotkey registered";
-            IsRegistered = false;
+            m_GlobalHotkey = null;
 
             RegisterHotkeyCommand = new DelegateCommand<object>(RegisterHotkey, CanRegisterHotkey);
             UnregisterHotkeyCommand = new DelegateCommand<object>(UnregisterHotkey, CanUnregisterHotkey);
-
-            m_GlobalHotkey = new GlobalHotkey();
-            m_GlobalHotkey.HotkeyPressed += delegate
-            {
-                MessageBox.Show("Hotkey pressed.");
-            };
         }
 
         #endregion
@@ -53,7 +42,12 @@ namespace Tagger.Wpf
         protected override void OnDisposeManaged()
         {
             base.OnDisposeManaged();
-            m_GlobalHotkey.Dispose();
+
+            if (m_GlobalHotkey != null)
+            {
+                m_GlobalHotkey.Dispose();
+                m_GlobalHotkey = null;
+            }
         }
 
         #endregion
@@ -70,26 +64,27 @@ namespace Tagger.Wpf
         /// </summary>
         private void RegisterHotkey(object parameter)
         {
-            // Unregister previous hotkey
-            if (IsRegistered)
+            Check.Require(CanRegisterHotkey(parameter));
+            
+            // Unregister previous hotkey if needed
+            if (m_GlobalHotkey != null )
             {
                 UnregisterHotkeyCommand.Execute(null);
             }
 
-            // Try to register new global hotkey
+            // Try to register new global hotkey and update status
             try
             {
-                m_GlobalHotkey.RegisterHotKey(ModifierKeys | ModifierKeys.NoRepeat, Key);
+                m_GlobalHotkey = new GlobalHotkey(ModifierKeys | ModifierKeys.NoRepeat, Key, (s,a) => MessageBox.Show("Hotkey " + Status + " presed"));
+                Status = "Registered hotkey: " + HotkeyText;
             }
             catch (Win32Exception winEx)
             {
                 Status = "Failed to register hotkey: " + winEx.Message;
-                return;
             }
 
-            // Update dependant fields and commands
-            IsRegistered = true;
-            Status = "Registered hotkey: " + HotkeyText;
+            // Update command can execute status
+            OnDelegateCommandsCanExecuteChanged();
         }
 
         /// <summary>
@@ -98,7 +93,7 @@ namespace Tagger.Wpf
         /// <returns>true if command could be invoked</returns>
         private bool CanRegisterHotkey(object parameter)
         {
-            return true;
+            return Key != Keys.None;
         }
 
         #endregion
@@ -115,11 +110,13 @@ namespace Tagger.Wpf
         /// </summary>
         private void UnregisterHotkey(object parameter)
         {
-            Check.Require(IsRegistered, "You must have a hotkey already registered to unregister its");
+            Check.Require(CanUnregisterHotkey(parameter));
 
-            //m_GlobalHotkey.unre
+            m_GlobalHotkey.Dispose();
+            m_GlobalHotkey = null;
 
-            IsRegistered = false;
+            Status = "Hotkey unregistered";
+            OnDelegateCommandsCanExecuteChanged();
         }
 
         /// <summary>
@@ -128,7 +125,7 @@ namespace Tagger.Wpf
         /// <returns>true if command could be invoked</returns>
         private bool CanUnregisterHotkey(object parameter)
         {
-            return IsRegistered;
+            return m_GlobalHotkey != null;
         }
 
         #endregion
@@ -206,29 +203,6 @@ namespace Tagger.Wpf
         {
             get { return m_Status; }
             set { m_Status = value; OnPropertyChanged(this.Property(() => Status)); }
-        }
-
-        /// <summary>
-        /// true if hotkey is registered, false otherwises
-        /// </summary>
-        public bool IsRegistered
-        {
-            get
-            {
-                return m_IsRegistered;
-            }
-            set
-            {
-                bool changed = m_IsRegistered != value; 
-
-                m_IsRegistered = value; 
-                OnPropertyChanged(this.Property(() => IsRegistered));
-
-                if (changed)
-                {
-                    OnDelegateCommandsCanExecuteChanged();
-                }
-            }
         }
 
         #endregion
