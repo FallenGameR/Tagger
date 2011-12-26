@@ -3,10 +3,10 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using Microsoft.Practices.Prism.Commands;
 using Tagger.WinAPI.Hotkeys;
+using Tagger.Wpf.Properties;
 using Utils.Diagnostics;
 using Utils.Prism;
 using Utils.Reflection;
-using Tagger.Wpf.Properties;
 
 namespace Tagger.Wpf
 {
