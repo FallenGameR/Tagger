@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:markupExtensions="clr-namespace:Utils.Prism;assembly=Tagger.Lib"
         xmlns:views="clr-namespace:Tagger.Wpf.Views"
+        xmlns:av="http://schemas.codeplex.com/wpfcontrib/xaml/presentation"
         Background="#FAFAFA"
         Title="MainWindow" Width="475"
         SizeToContent="Height"
@@ -19,5 +20,22 @@
 
         <views:HookControl Grid.Column="0" Grid.Row="0" Height="172"/>
         <views:HotkeyControl Grid.Column="0" Grid.Row="1" Height="80" />
+
+        <av:NotifyIcon Name="notifyIcon" Text="NotifyIcon Demo">
+            <FrameworkElement.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Some Text" />
+                    <MenuItem>
+                        <MenuItem.Header>
+                            <Grid>
+                                <Ellipse StrokeThickness="2" Stroke="Red" />
+                                <TextBlock av:BindingHelpers.Inlines="[b]WPF[/] Content" />
+                            </Grid>
+                        </MenuItem.Header>
+                    </MenuItem>
+                </ContextMenu>
+            </FrameworkElement.ContextMenu>
+        </av:NotifyIcon>
+
     </Grid>
 </Window>
