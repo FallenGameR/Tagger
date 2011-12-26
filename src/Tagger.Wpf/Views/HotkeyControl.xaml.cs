@@ -33,9 +33,6 @@ namespace Tagger.Wpf.Views
             ViewModel.ModifierKeys = Keyboard.Modifiers;
             ViewModel.Key = (System.Windows.Forms.Keys) KeyInterop.VirtualKeyFromKey(key);
 
-            // Update the text box
-            txtShortcutKey.Text = ViewModel.HotkeyText;
-
             // The text box grabs all input
             e.Handled = true;
         }

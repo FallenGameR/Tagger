@@ -6,6 +6,7 @@ using Tagger.WinAPI.Hotkeys;
 using Utils.Diagnostics;
 using Utils.Prism;
 using Utils.Reflection;
+using Tagger.Wpf.Properties;
 
 namespace Tagger.Wpf
 {
@@ -27,13 +28,32 @@ namespace Tagger.Wpf
 
         public HotkeyViewModel()
         {
+            // Initialize fields
+            m_GlobalHotkey = null;
             RegisterHotkeyCommand = new DelegateCommand<object>(RegisterHotkey, CanRegisterHotkey);
             UnregisterHotkeyCommand = new DelegateCommand<object>(UnregisterHotkey, CanUnregisterHotkey);
 
-            ModifierKeys = ModifierKeys.None;
-            Key = Keys.None;
-            Status = "No hotkey registered";
-            m_GlobalHotkey = null;
+            // Restore previous settings state
+            ModifierKeys = (ModifierKeys)Settings.Default.Hotkey_Modifiers;
+            Key = (Keys)Settings.Default.Hotkey_Keys;
+
+            // Restore hotkey if possible
+            if (CanRegisterHotkey(null))
+            {
+                RegisterHotkeyCommand.Execute(null);
+            }
+            else
+            {
+                Status = "No hotkey registered";
+            }
+
+            // Save settings on program deactivation (app exit included)
+            App.Current.Deactivated += delegate
+            {
+                Settings.Default.Hotkey_Modifiers = (int)ModifierKeys;
+                Settings.Default.Hotkey_Keys = (int)Key;
+                Settings.Default.Save();
+            };
         }
 
         #endregion
@@ -66,9 +86,9 @@ namespace Tagger.Wpf
         private void RegisterHotkey(object parameter)
         {
             Check.Require(CanRegisterHotkey(parameter));
-            
+
             // Unregister previous hotkey if needed
-            if (m_GlobalHotkey != null )
+            if (m_GlobalHotkey != null)
             {
                 UnregisterHotkeyCommand.Execute(null);
             }
@@ -76,7 +96,7 @@ namespace Tagger.Wpf
             // Try to register new global hotkey and update status
             try
             {
-                m_GlobalHotkey = new GlobalHotkey(ModifierKeys, Key, (s,a) => MessageBox.Show("Hotkey " + Status + " pressed"));
+                m_GlobalHotkey = new GlobalHotkey(ModifierKeys, Key, (s, a) => HotkeyHandler.HandleHotkeyPress());
                 Status = "Registered hotkey: " + HotkeyText;
             }
             catch (Win32Exception winEx)
