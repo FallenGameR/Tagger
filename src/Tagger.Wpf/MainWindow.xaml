@@ -9,19 +9,13 @@
         SizeToContent="Height"
         FocusManager.FocusedElement="{markupExtensions:FirstFocusedElement}"
         >
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
+    <av:AutoGrid>
 
-        <views:HookControl Grid.Column="0" Grid.Row="0" Height="172"/>
-        <views:HotkeyControl Grid.Column="0" Grid.Row="1" Height="80" />
+        <views:HookControl Height="172"/>
+        <views:HotkeyControl Height="80" />
 
-        <av:NotifyIcon Name="notifyIcon" Text="NotifyIcon Demo">
+        <!-- Notify icon -->
+        <av:NotifyIcon Name="notifyIcon" Icon="/Tagger.Wpf;component/Properties/Logo.ico" Text="Tagger">
             <FrameworkElement.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Some Text" />
@@ -37,5 +31,5 @@
             </FrameworkElement.ContextMenu>
         </av:NotifyIcon>
 
-    </Grid>
+    </av:AutoGrid>
 </Window>
