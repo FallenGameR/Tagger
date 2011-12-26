@@ -1,7 +1,5 @@
-﻿using System.Text;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Input;
-using System;
 
 namespace Tagger.Wpf.Views
 {
@@ -28,7 +26,7 @@ namespace Tagger.Wpf.Views
 
             // Ignore modifier keys
             if (IsModifierKey(key)) { return; }
-
+            
             // Set view model properties
             ViewModel.ModifierKeys = Keyboard.Modifiers;
             ViewModel.Key = (System.Windows.Forms.Keys) KeyInterop.VirtualKeyFromKey(key);
