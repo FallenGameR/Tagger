@@ -61,13 +61,13 @@
     <Compile Include="Utils\Diagnostics\Checks.cs" />
     <Compile Include="Utils\Diagnostics\DesignByContractException.cs" />
     <Compile Include="Utils\Diagnostics\ProgramException.cs" />
-    <Compile Include="PEParser.cs" />
-    <Compile Include="LowLevelUtils.cs" />
+    <Compile Include="ProbablyNotNeeded\PEParser.cs" />
+    <Compile Include="ProbablyNotNeeded\LowLevelUtils.cs" />
     <Compile Include="Utils\Prism\FirstFocusedElementExtension.cs" />
     <Compile Include="Utils\Reflection\Extensions.cs" />
-    <Compile Include="WaitChainTraversal\Handle.cs" />
-    <Compile Include="WaitChainTraversal\NativeAPI.cs" />
-    <Compile Include="WaitChainTraversal\WaitChainTraversal.cs" />
+    <Compile Include="ProbablyNotNeeded\WaitChainTraversal\Handle.cs" />
+    <Compile Include="ProbablyNotNeeded\WaitChainTraversal\NativeAPI.cs" />
+    <Compile Include="ProbablyNotNeeded\WaitChainTraversal\WaitChainTraversal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\Prism\ViewModelBase.cs" />
   </ItemGroup>
