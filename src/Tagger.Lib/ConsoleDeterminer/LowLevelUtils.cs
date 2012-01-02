@@ -9,6 +9,7 @@ namespace Tagger.Lib
 {
     public static class LowLevelUtils
     {
+        /*
         /// <summary>
         /// Preload accessability assembly so that would compile as 
         /// soon as possible and don't trigger some window update lags
@@ -29,6 +30,7 @@ namespace Tagger.Lib
                 }
             };
         }
+         * /**/
 
         /// <summary>
         /// Check if a process is console application
