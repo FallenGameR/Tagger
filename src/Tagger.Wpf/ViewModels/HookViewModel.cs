@@ -1,18 +1,13 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using ManagedWinapi.Accessibility;
-using ManagedWinapi.Hooks;
 using ManagedWinapi.Windows;
 using Microsoft.Practices.Prism.Commands;
 using Tagger.Lib;
 using Tagger.WinAPI.WaitChainTraversal;
 using Utils.Prism;
 using Utils.Reflection;
-using Tagger.WinAPI.Hotkeys;
-using System.Windows.Forms;
 
 namespace Tagger.Wpf
 {
