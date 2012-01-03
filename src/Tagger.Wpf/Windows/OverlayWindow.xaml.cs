@@ -44,6 +44,8 @@ namespace Tagger.Wpf
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
 
+        private static extern int DwmIsCompositionEnabled(out bool enabled);
+
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT
         {
@@ -56,13 +58,45 @@ namespace Tagger.Wpf
         // TODO: Delete on dispose.
         private AccessibleEventListener m_Listner;
 
+        [DllImport("user32.dll")]
+        static extern int SendMessage(IntPtr hWnd, UInt32 msg, Int32 wParam, ref RECT lParam);
+
+        /// <summary>
+        /// The WM_NCCALCSIZE message is sent when the size and position of a window's client area 
+        /// must be calculated. By processing this message, an application can control the content 
+        /// of the window's client area when the size or position of the window changes.
+        /// </summary>
+        static uint WM_NCCALCSIZE = 0x83;
+
         public void HookToForegroundWindow()
         {
             Check.Require(m_Listner == null, "Location change listner should not have been initialized");
 
 
+            // Check if aero is enabled
+            const int S_OK = 0;
+            bool enabled;
+            var success = DwmIsCompositionEnabled(out enabled);
+            if (success != S_OK)
+            {
+                throw new Win32Exception(success);
+            }
+            Check.Require(enabled);
+
+
             var handle = GetForegroundWindow();
             new WindowInteropHelper(this).Owner = handle;
+
+            // 
+            RECT window;
+            bool windowSuccess = GetWindowRect(handle, out window);
+            if (!windowSuccess)
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            }
+            var messageSent = SendMessage(handle, WM_NCCALCSIZE, 0, ref window);
+            Check.Ensure(messageSent == 0);
+
 
             UpdateLocation(handle);
 
