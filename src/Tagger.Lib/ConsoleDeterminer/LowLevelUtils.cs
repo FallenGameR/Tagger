@@ -9,29 +9,6 @@ namespace Tagger.Lib
 {
     public static class LowLevelUtils
     {
-        /*
-        /// <summary>
-        /// Preload accessability assembly so that would compile as 
-        /// soon as possible and don't trigger some window update lags
-        /// </summary>
-        public static void PreloadAccessibilityAssembly()
-        {
-            var listner = new AccessibleEventListener
-            {
-                MinimalEventType = AccessibleEventType.EVENT_MIN,
-                MaximalEventType = AccessibleEventType.EVENT_MAX,
-                Enabled = true,
-            };
-            listner.EventOccurred += delegate(object sender, AccessibleEventArgs e)
-            {
-                if (e.AccessibleObject != null)
-                {
-                    listner.Dispose();
-                }
-            };
-        }
-         * /**/
-
         /// <summary>
         /// Check if a process is console application
         /// </summary>

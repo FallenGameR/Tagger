@@ -5,7 +5,7 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         ShowInTaskbar="False"        
-        Title="OverlayWindow" Height="80" Width="140">
+        Title="OverlayWindow" Height="50" Width="140">
     <Grid>
         <Rectangle >
             <Rectangle.Fill>

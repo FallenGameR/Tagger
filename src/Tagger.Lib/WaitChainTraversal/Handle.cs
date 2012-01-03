@@ -2,7 +2,7 @@ using Microsoft.Win32.SafeHandles;
 
 namespace Tagger.WinAPI.WaitChainTraversal
 {
-    internal class Handle : SafeHandleZeroOrMinusOneIsInvalid
+    public class Handle : SafeHandleZeroOrMinusOneIsInvalid
     {
         private Handle() : base(true) { }
 

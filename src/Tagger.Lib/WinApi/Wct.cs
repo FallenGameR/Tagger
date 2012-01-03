@@ -9,7 +9,7 @@ namespace Tagger.WinAPI.WaitChainTraversal
     /// <remarks>
     /// Original from http://msdn.microsoft.com/en-us/magazine/cc163395.aspx
     /// </remarks>
-    internal static class NativeAPI
+    public static partial class NativeAPI
     {
         /// <summary>
         /// Max number of nodes in the wait chain 
@@ -134,14 +134,13 @@ namespace Tagger.WinAPI.WaitChainTraversal
             All = Process | COM | CriticalSection | NetworkIo
         }
 
-        [DllImport("ADVAPI32.DLL", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        extern static public Boolean GetThreadWaitChain(Handle wctHandle, IntPtr context, WCT_FLAGS flags, Int32 threadId, ref int nodeCount, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)] [In, Out] WAITCHAIN_NODE_INFO[] nodeInfoArray, out int isCycle);
+        [DllImport("advapi32.dll", SetLastError = true)]
+        public extern static bool GetThreadWaitChain(Handle wctHandle, IntPtr context, WCT_FLAGS flags, Int32 threadId, ref int nodeCount, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)] [In, Out] WAITCHAIN_NODE_INFO[] nodeInfoArray, out int isCycle);
 
-        [DllImport("ADVAPI32.DLL", SetLastError = true)]
-        extern static public Handle OpenThreadWaitChainSession(int flags, IntPtr callback);
+        [DllImport("advapi32.dll", SetLastError = true)]
+        public extern static Handle OpenThreadWaitChainSession(int flags, IntPtr callback);
 
-        [DllImport("ADVAPI32.DLL", SetLastError = true)]
-        extern static public void CloseThreadWaitChainSession(IntPtr wctHandle);
+        [DllImport("advapi32.dll", SetLastError = true)]
+        public extern static void CloseThreadWaitChainSession(IntPtr wctHandle);
     }
 }

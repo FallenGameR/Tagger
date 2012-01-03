@@ -133,20 +133,23 @@ namespace Tagger
 
         #endregion File Header Structures
 
-        #region Private Fields
+        #region Fields
 
         // The DOS header
         private IMAGE_DOS_HEADER dosHeader;
+
         // The file header
         private IMAGE_FILE_HEADER fileHeader;
+      
         // Optional 32 bit file header
         private IMAGE_OPTIONAL_HEADER32 optionalHeader32;
+    
         // Optional 64 bit file header
         private IMAGE_OPTIONAL_HEADER64 optionalHeader64;
 
-        #endregion Private Fields
+        #endregion
 
-        #region Public Methods
+        #region Methods
 
         public PEParser(string filePath)
         {
@@ -200,7 +203,7 @@ namespace Tagger
             return theStructure;
         }
 
-        #endregion Public Methods
+        #endregion
 
         #region Properties
 
@@ -217,28 +220,19 @@ namespace Tagger
         // Gets the file header
         public IMAGE_FILE_HEADER FileHeader
         {
-            get
-            {
-                return fileHeader;
-            }
+            get { return fileHeader; }
         }
 
         // Gets the optional header
         public IMAGE_OPTIONAL_HEADER32 OptionalHeader32
         {
-            get
-            {
-                return optionalHeader32;
-            }
+            get { return optionalHeader32; }
         }
 
         // Gets the optional header
         public IMAGE_OPTIONAL_HEADER64 OptionalHeader64
         {
-            get
-            {
-                return optionalHeader64;
-            }
+            get { return optionalHeader64; }
         }
 
         // Gets the timestamp from the file header
@@ -251,6 +245,7 @@ namespace Tagger
 
                 // Add in the number of seconds since 1970/1/1
                 returnValue = returnValue.AddSeconds(fileHeader.TimeDateStamp);
+
                 // Adjust to local timezone
                 returnValue += TimeZone.CurrentTimeZone.GetUtcOffset(returnValue);
 
@@ -258,6 +253,6 @@ namespace Tagger
             }
         }
 
-        #endregion Properties
+        #endregion
     }
 }

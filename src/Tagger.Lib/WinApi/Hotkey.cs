@@ -10,7 +10,7 @@ namespace Tagger.WinAPI.Hotkeys
     /// Looks like the only way to figure out what process did install a hotkey
     /// is to write a driver - http://www.wasm.ru/article.php?article=gui_subsystem
     /// </remarks>
-    public static class NativeAPI
+    public static partial class NativeAPI
     {
         /// <summary>
         /// Defines a system-wide hot key
@@ -20,7 +20,7 @@ namespace Tagger.WinAPI.Hotkeys
         /// <param name="fsModifiers">Key modifiers to be used in hotkey, see ModifierKeys enum for details</param>
         /// <param name="vk">The virtual-key code of the hot key</param>
         /// <returns>true if the function succeeds</returns>
-        [DllImport("USER32.DLL", SetLastError = true)]
+        [DllImport("user32.dll", SetLastError = true)]
         public static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace Tagger.WinAPI.Hotkeys
         /// <param name="hWnd">A handle to the window associated with the hot key to be freed</param>
         /// <param name="id">The identifier of the hot key to be freed</param>
         /// <returns>true if the function succeeds</returns>
-        [DllImport("USER32.DLL", SetLastError = true)]
+        [DllImport("user32.dll", SetLastError = true)]
         public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
     }
 }
