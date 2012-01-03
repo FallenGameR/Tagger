@@ -44,8 +44,6 @@ namespace Tagger.Wpf
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
 
-        private static extern int DwmIsCompositionEnabled(out bool enabled);
-
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT
         {
@@ -72,31 +70,8 @@ namespace Tagger.Wpf
         {
             Check.Require(m_Listner == null, "Location change listner should not have been initialized");
 
-
-            // Check if aero is enabled
-            const int S_OK = 0;
-            bool enabled;
-            var success = DwmIsCompositionEnabled(out enabled);
-            if (success != S_OK)
-            {
-                throw new Win32Exception(success);
-            }
-            Check.Require(enabled);
-
-
             var handle = GetForegroundWindow();
             new WindowInteropHelper(this).Owner = handle;
-
-            // 
-            RECT window;
-            bool windowSuccess = GetWindowRect(handle, out window);
-            if (!windowSuccess)
-            {
-                throw new Win32Exception(Marshal.GetLastWin32Error());
-            }
-            var messageSent = SendMessage(handle, WM_NCCALCSIZE, 0, ref window);
-            Check.Ensure(messageSent == 0);
-
 
             UpdateLocation(handle);
 
@@ -104,6 +79,7 @@ namespace Tagger.Wpf
 
             // Hook pid (available only in Windowed process)
             // TODO: Catch destruction of another window as well
+            // TODO: Dispose on exit
             m_Listner = new AccessibleEventListener
             {
                 MinimalEventType = AccessibleEventType.EVENT_OBJECT_LOCATIONCHANGE,
@@ -120,27 +96,27 @@ namespace Tagger.Wpf
             };
         }
 
+        private static RECT GetClientArea(IntPtr handle)
+        {
+            RECT sizes;
+            bool success = GetWindowRect(handle, out sizes);
+
+            if (!success)
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            }
+
+            var zero = SendMessage(handle, WM_NCCALCSIZE, 0, ref sizes);
+            Check.Ensure(zero == 0);
+
+            return sizes;
+        }
+
         private void UpdateLocation(IntPtr handle)
         {
-            // From http://stackoverflow.com/questions/431470/window-border-width-and-height-in-win32-how-do-i-get-it
-
-            RECT windowRect;
-            bool windowRectSuccess = GetWindowRect(handle, out windowRect);
-            if (!windowRectSuccess)
-            {
-                throw new Win32Exception(Marshal.GetLastWin32Error());
-            }
-
-            // NOTE: Doesn't work with Aero
-            RECT clientRect;
-            bool clientRectSuccess = GetClientRect(handle, out clientRect);
-            if (!clientRectSuccess)
-            {
-                throw new Win32Exception(Marshal.GetLastWin32Error());
-            }
-
-            Top = windowRect.Top + clientRect.Top;
-            Left = windowRect.Right - Width;// -(windowRect.Right - clientRect.Right);
+            RECT clientArea = GetClientArea(handle);
+            Top = clientArea.Top;
+            Left = clientArea.Right - Width;
         }
 
         private static uint GetPid(IntPtr handle)
