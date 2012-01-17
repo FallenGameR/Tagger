@@ -20,20 +20,24 @@
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0" Margin="3">Text</Label>
-        <TextBox Grid.Row="0" Grid.Column="1" Margin="3" />
+        <TextBox Grid.Row="0" Grid.Column="1" Margin="3" 
+            Text="{Binding Path=Text, Mode=OneWayToSource}"/>
 
         <Label Grid.Row="1" Grid.Column="0" Margin="3">Color</Label>
-        <TextBox Grid.Row="1" Grid.Column="1" Margin="3" />
+        <TextBox Grid.Row="1" Grid.Column="1" Margin="3"
+             Text="{Binding Path=Color, Mode=OneWayToSource}"/>
 
         <Label Grid.Row="2" Grid.Column="0" Margin="3">Top offset</Label>
-        <TextBox Grid.Row="2" Grid.Column="1" Margin="3" />
+        <TextBox Grid.Row="2" Grid.Column="1" Margin="3" 
+             Text="{Binding Path=TopOffset, Mode=OneWayToSource}" />
 
         <Label Grid.Row="3" Grid.Column="0" Margin="3">Right offset</Label>
-        <TextBox Grid.Row="3" Grid.Column="1" Margin="3" />
+        <TextBox Grid.Row="3" Grid.Column="1" Margin="3"
+             Text="{Binding Path=RightOffset, Mode=OneWayToSource}"/>
 
         <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Margin="3" Width="120">OK</Button>   
-            <Button Margin="3" Width="120">Cancel</Button>
+            <Button Margin="3" Width="120" Command="{Binding Path=HideSettingsCommand}">OK</Button>   
+            <Button Margin="3" Width="120" Command="{Binding Path=CancelSettingsCommand}">Cancel</Button>
         </StackPanel>
     </Grid>
 </UserControl>

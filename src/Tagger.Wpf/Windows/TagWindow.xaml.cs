@@ -133,5 +133,10 @@ namespace Tagger.Wpf
 
             return pid;
         }
+
+        private void Window_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+
+        }
     }
 }

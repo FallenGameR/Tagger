@@ -19,14 +19,17 @@ namespace Tagger.Wpf.ViewModels
         private Color m_Color;
         private FontFamily m_FontFamily;
         private double m_FontSize;
+        private Color m_FontColor;
 
         #endregion
 
         public TagViewModel(int processId)
         {
-            AttachTagCommand = new DelegateCommand<object>(AttachTag, CanAttachTag);
-            DetachTagCommand = new DelegateCommand<object>(DetachTag, CanDetachTag);
-            ShowSettingsCommand = new DelegateCommand<object>(ShowSettings, CanShowSettings);
+            this.Color = Colors.Green;
+
+            this.AttachTagCommand = new DelegateCommand<object>(AttachTag, CanAttachTag);
+            this.DetachTagCommand = new DelegateCommand<object>(DetachTag, CanDetachTag);
+            this.ShowSettingsCommand = new DelegateCommand<object>(ShowSettings, CanShowSettings);
         }
 
         #region Validation
@@ -77,7 +80,15 @@ namespace Tagger.Wpf.ViewModels
         private void Validate_FontSize()
         {
             Validate(true, "Is always valid");
-        } 
+        }
+
+        /// <summary>
+        /// Validation for FontColor property value
+        /// </summary>
+        private void Validate_FontColor()
+        {
+            Validate(true, "Is always valid");
+        }
 
         #endregion
 
@@ -138,6 +149,15 @@ namespace Tagger.Wpf.ViewModels
         {
             get { return m_FontSize; }
             set { m_FontSize = value; OnPropertyChanged(this.Property(() => FontSize)); }
+        }
+
+        /// <summary>
+        /// Color of the font used to render text
+        /// </summary>
+        public Color FontColor
+        {
+            get { return m_FontColor; }
+            set { m_FontColor = value; OnPropertyChanged(this.Property(() => FontColor)); }
         }
 
         #endregion
