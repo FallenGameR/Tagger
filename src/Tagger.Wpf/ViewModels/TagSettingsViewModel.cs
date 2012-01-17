@@ -24,6 +24,82 @@ namespace Tagger.Wpf.ViewModels
             CancelSettingsCommand = new DelegateCommand<object>(CancelSettings, CanCancelSettings);
         }
 
+        #region Validation
+
+        /// <summary>
+        /// Validation for Text property value
+        /// </summary>
+        private void Validate_Text()
+        {
+            Validate(true, "Is always valid");
+        }
+
+        /// <summary>
+        /// Validation for ColorName property value
+        /// </summary>
+        private void Validate_ColorName()
+        {
+            Validate(true, "Is always valid");
+        }
+
+        /// <summary>
+        /// Validation for TopOffset property value
+        /// </summary>
+        private void Validate_TopOffset()
+        {
+            Validate(true, "Is always valid");
+        }
+
+        /// <summary>
+        /// Validation for RightOffset property value
+        /// </summary>
+        private void Validate_RightOffset()
+        {
+            Validate(true, "Is always valid");
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Text to render in tag
+        /// </summary>
+        public string Text
+        {
+            get { return m_Text; }
+            set { m_Text = value; OnPropertyChanged(this.Property(() => Text)); }
+        }
+
+        /// <summary>
+        /// Name of the color to use
+        /// </summary>
+        public string ColorName
+        {
+            get { return m_ColorName; }
+            set { m_ColorName = value; OnPropertyChanged(this.Property(() => ColorName)); }
+        }
+
+        /// <summary>
+        /// User specified offset from the top of the host window client area
+        /// </summary>
+        public int TopOffset
+        {
+            get { return m_TopOffset; }
+            set { m_TopOffset = value; OnPropertyChanged(this.Property(() => TopOffset)); }
+        }
+
+        /// <summary>
+        /// User specified offset from the right of the host window client area
+        /// </summary>
+        public int RightOffset
+        {
+            get { return m_RightOffset; }
+            set { m_RightOffset = value; OnPropertyChanged(this.Property(() => RightOffset)); }
+        }
+
+        #endregion
+
         #region Command - CreateTag
 
         /// <summary>
@@ -145,82 +221,6 @@ namespace Tagger.Wpf.ViewModels
         private bool CanCancelSettings(object parameter)
         {
             return true;
-        }
-
-        #endregion
-
-        #region Validation
-
-        /// <summary>
-        /// Validation for Text property value
-        /// </summary>
-        private void Validate_Text()
-        {
-            Validate(true, "Is always valid");
-        }
-
-        /// <summary>
-        /// Validation for ColorName property value
-        /// </summary>
-        private void Validate_ColorName()
-        {
-            Validate(true, "Is always valid");
-        }
-
-        /// <summary>
-        /// Validation for TopOffset property value
-        /// </summary>
-        private void Validate_TopOffset()
-        {
-            Validate(true, "Is always valid");
-        }
-
-        /// <summary>
-        /// Validation for RightOffset property value
-        /// </summary>
-        private void Validate_RightOffset()
-        {
-            Validate(true, "Is always valid");
-        }
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// Text to render in tag
-        /// </summary>
-        public string Text
-        {
-            get { return m_Text; }
-            set { m_Text = value; OnPropertyChanged(this.Property(() => Text)); }
-        }
-
-        /// <summary>
-        /// Name of the color to use
-        /// </summary>
-        public string ColorName
-        {
-            get { return m_ColorName; }
-            set { m_ColorName = value; OnPropertyChanged(this.Property(() => ColorName)); }
-        }
-
-        /// <summary>
-        /// User specified offset from the top of the host window client area
-        /// </summary>
-        public int TopOffset
-        {
-            get { return m_TopOffset; }
-            set { m_TopOffset = value; OnPropertyChanged(this.Property(() => TopOffset)); }
-        }
-
-        /// <summary>
-        /// User specified offset from the right of the host window client area
-        /// </summary>
-        public int RightOffset
-        {
-            get { return m_RightOffset; }
-            set { m_RightOffset = value; OnPropertyChanged(this.Property(() => RightOffset)); }
         }
 
         #endregion

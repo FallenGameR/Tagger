@@ -87,6 +87,7 @@
     <Compile Include="Domain\HotkeyHandler.cs" />
     <Compile Include="ViewModels\HookViewModel.cs" />
     <Compile Include="ViewModels\TagSettingsViewModel.cs" />
+    <Compile Include="ViewModels\TagViewModel.cs" />
     <Compile Include="Views\HookControl.xaml.cs">
       <DependentUpon>HookControl.xaml</DependentUpon>
     </Compile>
@@ -116,7 +117,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Windows\OverlayWindow.xaml">
+    <Page Include="Windows\TagWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -134,8 +135,8 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Windows\OverlayWindow.xaml.cs">
-      <DependentUpon>OverlayWindow.xaml</DependentUpon>
+    <Compile Include="Windows\TagWindow.xaml.cs">
+      <DependentUpon>TagWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
