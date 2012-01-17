@@ -86,7 +86,7 @@
     </ApplicationDefinition>
     <Compile Include="Domain\HotkeyHandler.cs" />
     <Compile Include="ViewModels\HookViewModel.cs" />
-    <Compile Include="ViewModels\OverlayViewModel.cs" />
+    <Compile Include="ViewModels\TagSettingsViewModel.cs" />
     <Compile Include="Views\HookControl.xaml.cs">
       <DependentUpon>HookControl.xaml</DependentUpon>
     </Compile>

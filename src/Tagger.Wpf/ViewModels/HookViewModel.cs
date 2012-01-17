@@ -4,7 +4,6 @@ using System.Windows.Interop;
 using ManagedWinapi.Accessibility;
 using ManagedWinapi.Windows;
 using Microsoft.Practices.Prism.Commands;
-using Tagger.Lib;
 using Tagger.WinAPI.WaitChainTraversal;
 using Utils.Prism;
 using Utils.Reflection;
@@ -143,7 +142,7 @@ namespace Tagger.Wpf
             UnhookCommand.Execute(null);
 
             // Test if it is a console app
-            bool isConsoleApp = LowLevelUtils.IsConsoleApp(ProcessId);
+            bool isConsoleApp = ConsoleDeterminer.IsConsoleApplication(ProcessId);
             if (isConsoleApp)
             {
                 ApplicationType = "Console";
