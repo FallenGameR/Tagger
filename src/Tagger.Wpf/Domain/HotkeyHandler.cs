@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using ManagedWinapi.Accessibility;
 using ManagedWinapi.Windows;
-using Tagger.Lib;
 using Tagger.WinAPI.WaitChainTraversal;
 
 namespace Tagger.Wpf

@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using ManagedWinapi.Accessibility;
-using Tagger.Lib;
 using Tagger.WinAPI.WaitChainTraversal;
 using Utils.Diagnostics;
 
@@ -123,7 +122,7 @@ namespace Tagger.Wpf
             GetWindowThreadProcessId(handle, out pid);
 
             // Get actual process ID belonging to host window
-            bool isConsoleApp = LowLevelUtils.IsConsoleApp((int)pid);
+            bool isConsoleApp = ConsoleDeterminer.IsConsoleApplication((int)pid);
             if (isConsoleApp)
             {
                 using (var wct = new ProcessFinder())

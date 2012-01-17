@@ -93,9 +93,16 @@
     <Compile Include="Views\HotkeyControl.xaml.cs">
       <DependentUpon>HotkeyControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\TagSettingsControl.xaml.cs">
+      <DependentUpon>TagSettingsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TrayIconControl.xaml.cs">
       <DependentUpon>TrayIconControl.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\TagSettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

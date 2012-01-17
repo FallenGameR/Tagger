@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Tagger.WinAPI.Hotkeys
+namespace Tagger.WinAPI
 {
     /// <summary>
     /// Win32 API call for hotkey registration
