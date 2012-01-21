@@ -9,13 +9,8 @@ namespace Tagger.Wpf
     {
         public MainWindow()
         {
-            // Check windows OS edition
-
+            // TODO: Check windows OS edition
             InitializeComponent();
-
-            // Prepopulate compiled assebly cache
-            //Utils.PreloadAccessibilityAssembly();
-
             this.Closed += delegate { App.Current.Shutdown(); };
         }
     }

@@ -12,12 +12,15 @@ namespace Tagger.Wpf.Views
         {
             InitializeComponent();
 
-            DataContext = ViewModel;
-            App.Current.Exit += delegate { ViewModel.Dispose(); };
+            this.DataContext = this.ViewModel;
+            App.Current.Exit += delegate { this.ViewModel.Dispose(); };
         }
 
         /// <remarks>
         /// Original http://stackoverflow.com/questions/2136431/how-do-i-read-custom-keyboard-shortcut-from-user-in-wpf
+        /// </remarks>
+        /// <remarks>
+        /// Buggy output on Ctrl+Shift+Z
         /// </remarks>
         private void txtShortcutKey_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -28,8 +31,8 @@ namespace Tagger.Wpf.Views
             if (IsModifierKey(key)) { return; }
             
             // Set view model properties
-            ViewModel.ModifierKeys = Keyboard.Modifiers;
-            ViewModel.Key = (System.Windows.Forms.Keys) KeyInterop.VirtualKeyFromKey(key);
+            this.ViewModel.ModifierKeys = Keyboard.Modifiers;
+            this.ViewModel.Key = (System.Windows.Forms.Keys)KeyInterop.VirtualKeyFromKey(key);
 
             // The text box grabs all input
             e.Handled = true;
@@ -49,7 +52,7 @@ namespace Tagger.Wpf.Views
 
         private HotkeyViewModel ViewModel
         {
-            get { return (DataContext == null) ? new HotkeyViewModel() : (HotkeyViewModel)DataContext; }
+            get { return (this.DataContext == null) ? new HotkeyViewModel() : (HotkeyViewModel)DataContext; }
         }
     }
 }

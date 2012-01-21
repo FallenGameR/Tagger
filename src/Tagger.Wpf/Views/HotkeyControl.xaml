@@ -2,20 +2,20 @@
     x:Class="Tagger.Wpf.Views.HotkeyControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:markupExtensions="clr-namespace:Utils.Prism;assembly=Tagger.Lib"
-    mc:Ignorable="d" 
-    d:DesignHeight="85" d:DesignWidth="408">
+    FocusManager.FocusedElement="{markupExtensions:FirstFocusedElement}"
+    Height="70"
+    Width="500"
+    >
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="100"/>
         </Grid.ColumnDefinitions>
 
         <Label Grid.Column="0" Grid.Row="0">Shortcut key</Label>

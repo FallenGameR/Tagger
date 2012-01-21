@@ -29,13 +29,13 @@ namespace Tagger.Wpf
         public HotkeyViewModel()
         {
             // Initialize fields
-            m_GlobalHotkey = null;
-            RegisterHotkeyCommand = new DelegateCommand<object>(RegisterHotkey, CanRegisterHotkey);
-            UnregisterHotkeyCommand = new DelegateCommand<object>(UnregisterHotkey, CanUnregisterHotkey);
+            this.m_GlobalHotkey = null;
+            this.RegisterHotkeyCommand = new DelegateCommand<object>(RegisterHotkey, CanRegisterHotkey);
+            this.UnregisterHotkeyCommand = new DelegateCommand<object>(UnregisterHotkey, CanUnregisterHotkey);
 
             // Restore previous settings state
-            ModifierKeys = (ModifierKeys)Settings.Default.Hotkey_Modifiers;
-            Key = (Keys)Settings.Default.Hotkey_Keys;
+            this.ModifierKeys = (ModifierKeys)Settings.Default.Hotkey_Modifiers;
+            this.Key = (Keys)Settings.Default.Hotkey_Keys;
 
             // Restore hotkey if possible
             if (CanRegisterHotkey(null))
@@ -44,14 +44,14 @@ namespace Tagger.Wpf
             }
             else
             {
-                Status = "No hotkey registered";
+                this.Status = "No hotkey registered";
             }
 
             // Save settings on program deactivation (app exit included)
             App.Current.Deactivated += delegate
             {
-                Settings.Default.Hotkey_Modifiers = (int)ModifierKeys;
-                Settings.Default.Hotkey_Keys = (int)Key;
+                Settings.Default.Hotkey_Modifiers = (int)this.ModifierKeys;
+                Settings.Default.Hotkey_Keys = (int)this.Key;
                 Settings.Default.Save();
             };
         }
@@ -88,7 +88,7 @@ namespace Tagger.Wpf
             Check.Require(CanRegisterHotkey(parameter));
 
             // Unregister previous hotkey if needed
-            if (m_GlobalHotkey != null)
+            if (this.m_GlobalHotkey != null)
             {
                 UnregisterHotkeyCommand.Execute(null);
             }
@@ -96,12 +96,12 @@ namespace Tagger.Wpf
             // Try to register new global hotkey and update status
             try
             {
-                m_GlobalHotkey = new GlobalHotkey(ModifierKeys, Key, (s, a) => HotkeyHandler.HandleHotkeyPress());
-                Status = "Registered hotkey: " + HotkeyText;
+                this.m_GlobalHotkey = new GlobalHotkey(this.ModifierKeys, this.Key, (s, a) => HotkeyHandler.HandleHotkeyPress());
+                this.Status = "Registered hotkey: " + HotkeyText;
             }
             catch (Win32Exception winEx)
             {
-                Status = "Failed to register hotkey: " + winEx.Message;
+                this.Status = "Failed to register hotkey: " + winEx.Message;
             }
 
             // Update command can execute status
@@ -114,7 +114,7 @@ namespace Tagger.Wpf
         /// <returns>true if command could be invoked</returns>
         private bool CanRegisterHotkey(object parameter)
         {
-            return Key != Keys.None;
+            return this.Key != Keys.None;
         }
 
         #endregion
@@ -133,10 +133,10 @@ namespace Tagger.Wpf
         {
             Check.Require(CanUnregisterHotkey(parameter));
 
-            m_GlobalHotkey.Dispose();
-            m_GlobalHotkey = null;
+            this.m_GlobalHotkey.Dispose();
+            this.m_GlobalHotkey = null;
 
-            Status = "Hotkey unregistered";
+            this.Status = "Hotkey unregistered";
             OnDelegateCommandsCanExecuteChanged();
         }
 
@@ -146,7 +146,7 @@ namespace Tagger.Wpf
         /// <returns>true if command could be invoked</returns>
         private bool CanUnregisterHotkey(object parameter)
         {
-            return m_GlobalHotkey != null;
+            return this.m_GlobalHotkey != null;
         }
 
         #endregion
@@ -160,11 +160,11 @@ namespace Tagger.Wpf
         {
             get
             {
-                return m_ModifierKeys;
+                return this.m_ModifierKeys;
             }
             set
             {
-                m_ModifierKeys = value;
+                this.m_ModifierKeys = value;
                 OnPropertyChanged(this.Property(() => ModifierKeys));
                 OnPropertyChanged(this.Property(() => HotkeyText));
                 OnDelegateCommandsCanExecuteChanged();
@@ -178,11 +178,11 @@ namespace Tagger.Wpf
         {
             get
             {
-                return m_Key;
+                return this.m_Key;
             }
             set
             {
-                m_Key = value;
+                this.m_Key = value;
                 OnPropertyChanged(this.Property(() => Key));
                 OnPropertyChanged(this.Property(() => HotkeyText));
                 OnDelegateCommandsCanExecuteChanged();
@@ -198,24 +198,24 @@ namespace Tagger.Wpf
             {
                 var hotkey = string.Empty;
 
-                if (ModifierKeys.HasFlag(ModifierKeys.Control))
+                if (this.ModifierKeys.HasFlag(ModifierKeys.Control))
                 {
                     hotkey += "Ctrl+";
                 }
-                if (ModifierKeys.HasFlag(ModifierKeys.Shift))
+                if (this.ModifierKeys.HasFlag(ModifierKeys.Shift))
                 {
                     hotkey += "Shift+";
                 }
-                if (ModifierKeys.HasFlag(ModifierKeys.Alt))
+                if (this.ModifierKeys.HasFlag(ModifierKeys.Alt))
                 {
                     hotkey += "Alt+";
                 }
-                if (ModifierKeys.HasFlag(ModifierKeys.Windows))
+                if (this.ModifierKeys.HasFlag(ModifierKeys.Windows))
                 {
                     hotkey += "Win+";
                 }
 
-                return hotkey + Key.ToString();
+                return hotkey + this.Key.ToString();
             }
         }
 
@@ -224,8 +224,15 @@ namespace Tagger.Wpf
         /// </summary>
         public string Status
         {
-            get { return m_Status; }
-            private set { m_Status = value; OnPropertyChanged(this.Property(() => Status)); }
+            get
+            {
+                return this.m_Status;
+            }
+            private set
+            {
+                this.m_Status = value;
+                OnPropertyChanged(this.Property(() => Status));
+            }
         }
 
         #endregion
