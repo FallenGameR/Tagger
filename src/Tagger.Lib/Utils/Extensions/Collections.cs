@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Utils.Collections
+namespace Utils.Extensions
 {
-    public static class Extensions
+    public static class Collections
     {
         /// <summary>
         /// Execute an action for each element in a collection

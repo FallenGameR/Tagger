@@ -1,6 +1,13 @@
-﻿
+﻿using System;
 using System.Collections.Generic;
-using System;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
+using Tagger.Wpf.ViewModels;
+using Tagger.WinAPI;
+
 namespace Tagger.Wpf
 {
     /// <summary>
@@ -8,22 +15,62 @@ namespace Tagger.Wpf
     /// </summary>
     public static class HotkeyHandler
     {
-        private static Dictionary<IntPtr, OverlayWindow> RegisteredTags;
+        private static Dictionary<IntPtr, TagWindow> RegisteredTags = new Dictionary<IntPtr, TagWindow>();
+        private static HashSet<IntPtr> TagHandles = new HashSet<IntPtr>();
+
+        private static IntPtr GetHandle()
+        {
+            var foreground = NativeAPI.GetForegroundWindow();
+
+            if (TagHandles.Contains(foreground))
+            {
+                return RegisteredTags.Keys.Single(host => new WindowInteropHelper(RegisteredTags[host]).Handle == foreground);
+            }
+            else
+            {
+                return foreground;
+            }
+        }
+
 
         /// <summary>
         /// Handle just pressed hotkey
         /// </summary>
         public static void HandleHotkeyPress()
         {
-            var m_OverlayWindow = new OverlayWindow();
-            m_OverlayWindow.HookToForegroundWindow();
-            m_OverlayWindow.Show();
+            // Keep on per handle basis
+            var host = GetHandle();
 
-            // If tag exist, close it
+            if (RegisteredTags.ContainsKey(host))
+            {
+                // If tag exist, close it
+                if (RegisteredTags[host].Visibility == Visibility.Visible)
+                {
+                    RegisteredTags[host].Hide();
+                }
+                else
+                {
+                    RegisteredTags[host].Show();
+                }
+            }
+            else
+            {
+                // Else create it 
+                var tag = new TagWindow(host)
+                {
+                    DataContext = new TagViewModel
+                    {
+                        Text = "File browser",
+                        FontFamily = new FontFamily("Segoe UI"),
+                        FontSize = 50
+                    }
+                };
+                RegisteredTags[host] = tag;
+                TagHandles.Add( new WindowInteropHelper(tag).Handle );
+            }
 
-            // Else create it 
-
-            // Keep settings per window title basis
+            // Preserve settings on per window title basis
+            // Populate setting from the preserved state
         }
     }
 }

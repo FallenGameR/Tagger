@@ -22,6 +22,8 @@ namespace Tagger.WinAPI
         /// </summary>
         public const int WCT_OBJNAME_LENGTH = 128;
 
+        #region WAITCHAIN_NODE_INFO struct
+
         /// <summary>
         /// The data structure returned indicating blocked threads
         /// </summary>
@@ -84,6 +86,10 @@ namespace Tagger.WinAPI
             }
         }
 
+        #endregion
+
+        #region WCT_OBJECT_TYPE enum
+
         /// <summary>
         /// From c:\program files (x86)\microsoft sdks\windows\v7.0a\include\wct.h
         /// </summary>
@@ -103,6 +109,10 @@ namespace Tagger.WinAPI
             SmbIo,
             Max
         };
+        
+        #endregion
+
+        #region WCT_OBJECT_STATUS enum
 
         /// <summary>
         /// From c:\program files (x86)\microsoft sdks\windows\v7.0a\include\wct.h
@@ -122,6 +132,10 @@ namespace Tagger.WinAPI
             Max
         };
 
+        #endregion
+
+        #region WCT_FLAGS enum
+
         /// <summary>
         /// From c:\program files (x86)\microsoft sdks\windows\v7.0a\include\wct.h
         /// </summary>
@@ -134,6 +148,8 @@ namespace Tagger.WinAPI
             NetworkIo = 0x8,
             All = Process | COM | CriticalSection | NetworkIo
         }
+
+        #endregion
 
         [DllImport("advapi32.dll", SetLastError = true)]
         public extern static bool GetThreadWaitChain(Handle wctHandle, IntPtr context, WCT_FLAGS flags, Int32 threadId, ref int nodeCount, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)] [In, Out] WAITCHAIN_NODE_INFO[] nodeInfoArray, out int isCycle);

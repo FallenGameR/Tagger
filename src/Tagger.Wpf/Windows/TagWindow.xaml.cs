@@ -12,20 +12,19 @@ namespace Tagger.Wpf
     /// <summary>
     /// Interaction logic for OverlayWindow.xaml
     /// </summary>
-    public partial class OverlayWindow : Window
+    public partial class TagWindow : Window
     {
-        public OverlayWindow()
+        public TagWindow()
         {
             InitializeComponent();
         }
 
-        /// <summary>
-        /// Retrieves a handle to the foreground window (the window with which the user is currently working)
-        /// </summary>
-        /// <returns>The return value is a handle to the foreground window. The foreground window can 
-        /// be NULL in certain circumstances, such as when a window is losing activation.</returns>
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetForegroundWindow();
+        public TagWindow(IntPtr handle): this()
+        {
+            this.handle = handle;
+            this.HookToForegroundWindow();
+            this.Show();
+        }
 
         /// <summary>
         /// Retrieves the identifier of the thread that created the specified window and, 
@@ -62,11 +61,12 @@ namespace Tagger.Wpf
         /// </summary>
         static uint WM_NCCALCSIZE = 0x83;
 
+        public IntPtr handle { get; set; }
+
         public void HookToForegroundWindow()
         {
             Check.Require(m_Listner == null, "Location change listner should not have been initialized");
 
-            var handle = GetForegroundWindow();
             new WindowInteropHelper(this).Owner = handle;
 
             UpdateLocation(handle);

@@ -5,8 +5,8 @@ using Microsoft.Practices.Prism.Commands;
 using Tagger.WinAPI.Hotkeys;
 using Tagger.Wpf.Properties;
 using Utils.Diagnostics;
+using Utils.Extensions;
 using Utils.Prism;
-using Utils.Reflection;
 
 namespace Tagger.Wpf
 {

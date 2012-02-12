@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace Utils.Reflection
+namespace Utils.Extensions
 {
-    public static class Extensions
+    public static class Reflection
     {
         /// <summary>
         /// Get property name from property accessor

@@ -1,10 +1,10 @@
 ﻿using Utils.Prism;
-using Utils.Reflection;
+using Utils.Extensions;
 using Microsoft.Practices.Prism.Commands;
 
 namespace Tagger.Wpf.ViewModels
 {
-    public class TagSettingsViewModel : ViewModelBase
+    public class SettingsViewModel : ViewModelBase
     {
         #region Fields
 
@@ -15,7 +15,7 @@ namespace Tagger.Wpf.ViewModels
 
         #endregion
         
-        public TagSettingsViewModel(int processId)
+        public SettingsViewModel(int processId)
         {
             CreateTagCommand = new DelegateCommand<object>(CreateTag, CanCreateTag);
             HideSettingsCommand = new DelegateCommand<object>(HideSettings, CanHideSettings);

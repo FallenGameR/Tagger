@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Utils.Prism;
-using Utils.Reflection;
+using Utils.Extensions;
 using System.Windows.Media;
 using Microsoft.Practices.Prism.Commands;
 
@@ -23,7 +23,7 @@ namespace Tagger.Wpf.ViewModels
 
         #endregion
 
-        public TagViewModel(int processId)
+        public TagViewModel()
         {
             this.Color = Colors.Green;
 

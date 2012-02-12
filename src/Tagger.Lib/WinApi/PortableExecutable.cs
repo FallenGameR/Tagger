@@ -8,11 +8,42 @@ namespace Tagger.WinAPI
     /// </summary>
     public static partial class NativeAPI
     {
+        #region IMAGE_SUBSYSTEM_WINDOWS enum 
+
+        /// <summary>
+        /// Windows subsystems enumeration values
+        /// </summary>
         public enum IMAGE_SUBSYSTEM_WINDOWS : ushort
         {
             CUI = 3,
         }
 
+        #endregion
+
+        #region IMAGE_FILE_HEADER struct
+
+        /// <summary>
+        /// File header that precedes optional PE header
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct IMAGE_FILE_HEADER
+        {
+            public UInt16 Machine;
+            public UInt16 NumberOfSections;
+            public UInt32 TimeDateStamp;
+            public UInt32 PointerToSymbolTable;
+            public UInt32 NumberOfSymbols;
+            public UInt16 SizeOfOptionalHeader;
+            public UInt16 Characteristics;
+        }
+
+        #endregion
+
+        #region IMAGE_DOS_HEADER struct
+
+        /// <summary>
+        /// DOS header from PE
+        /// </summary>
         public struct IMAGE_DOS_HEADER
         {
             public UInt16 e_magic;              // Magic number
@@ -48,6 +79,13 @@ namespace Tagger.WinAPI
             public UInt32 e_lfanew;             // File address of new exe header
         }
 
+        #endregion
+
+        #region IMAGE_OPTIONAL_HEADER32 struct
+
+        /// <summary>
+        /// Optional PE header for x86
+        /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct IMAGE_OPTIONAL_HEADER32
         {
@@ -83,6 +121,13 @@ namespace Tagger.WinAPI
             public UInt32 NumberOfRvaAndSizes;
         }
 
+        #endregion
+
+        #region IMAGE_OPTIONAL_HEADER64 struct
+        
+        /// <summary>
+        /// Optional PE header for x64
+        /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct IMAGE_OPTIONAL_HEADER64
         {
@@ -116,17 +161,7 @@ namespace Tagger.WinAPI
             public UInt32 LoaderFlags;
             public UInt32 NumberOfRvaAndSizes;
         }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct IMAGE_FILE_HEADER
-        {
-            public UInt16 Machine;
-            public UInt16 NumberOfSections;
-            public UInt32 TimeDateStamp;
-            public UInt32 PointerToSymbolTable;
-            public UInt32 NumberOfSymbols;
-            public UInt16 SizeOfOptionalHeader;
-            public UInt16 Characteristics;
-        }
+ 
+        #endregion    
     }
 }

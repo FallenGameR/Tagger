@@ -6,8 +6,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Microsoft.Practices.Prism.Commands;
-using Utils.Collections;
 using Utils.Diagnostics;
+using Utils.Extensions;
 
 namespace Utils.Prism
 {

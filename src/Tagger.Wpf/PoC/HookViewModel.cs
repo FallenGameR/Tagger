@@ -6,7 +6,7 @@ using ManagedWinapi.Windows;
 using Microsoft.Practices.Prism.Commands;
 using Tagger.WinAPI.WaitChainTraversal;
 using Utils.Prism;
-using Utils.Reflection;
+using Utils.Extensions;
 
 namespace Tagger.Wpf
 {
@@ -23,7 +23,7 @@ namespace Tagger.Wpf
         private bool m_IsHooked;
         private string m_LastKnownPosition;
         private AccessibleEventListener m_Listner;
-        private OverlayWindow m_OverlayWindow;
+        private TagWindow m_OverlayWindow;
 
         #endregion
 
@@ -167,7 +167,7 @@ namespace Tagger.Wpf
             var hostWindow = new SystemWindow(windowHandle);
             LastKnownPosition = hostWindow.Location.ToString();
 
-            m_OverlayWindow = new OverlayWindow
+            m_OverlayWindow = new TagWindow
             {
                 Top = hostWindow.Location.Y,
                 Left = hostWindow.Location.X + hostWindow.Size.Width - 200,
