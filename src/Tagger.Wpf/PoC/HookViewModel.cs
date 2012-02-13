@@ -153,13 +153,13 @@ namespace Tagger.Wpf
             }
 
             // Get actual process ID belonging to host window
-            int pid = ProcessId;
+            int pid = ProcessId;           
             if (isConsoleApp)
             {
-                using (var wct = new ProcessFinder())
-                {
-                    pid = wct.GetConhostProcess(pid);
-                }
+                //using (var wct = new ProcessFinder())
+                //{
+                //    pid = wct.GetConhostProcess(pid);
+                //}
             }
 
             // Get current window position

@@ -25,12 +25,12 @@ namespace Tagger
         /// The file header
         /// </summary>
         private NativeAPI.IMAGE_FILE_HEADER fileHeader;
-      
+
         /// <summary>
         /// Optional 32 bit file header
         /// </summary>
         private NativeAPI.IMAGE_OPTIONAL_HEADER32 optionalHeader32;
-    
+
         /// <summary>
         /// Optional 64 bit file header
         /// </summary>
@@ -46,23 +46,29 @@ namespace Tagger
         public ConsoleDeterminer(string filePath)
         {
             // Read in the DLL or EXE and get the timestamp
-            using (var stream = new FileStream(filePath, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            using (var reader = new BinaryReader(stream))
             {
-                BinaryReader reader = new BinaryReader(stream);
-                dosHeader = FromBinaryReader<NativeAPI.IMAGE_DOS_HEADER>(reader);
+                // Read DOS header
+                this.dosHeader = ConsoleDeterminer.ReadStructure<NativeAPI.IMAGE_DOS_HEADER>(reader);
 
                 // Add 4 bytes to the offset
-                stream.Seek(dosHeader.e_lfanew, SeekOrigin.Begin);
+                stream.Seek(this.dosHeader.e_lfanew, SeekOrigin.Begin);
 
+                // Skip NT header signature 
                 UInt32 ntHeadersSignature = reader.ReadUInt32();
-                fileHeader = FromBinaryReader<NativeAPI.IMAGE_FILE_HEADER>(reader);
-                if (this.Is32BitHeader)
+
+                // Read file header
+                this.fileHeader = ConsoleDeterminer.ReadStructure<NativeAPI.IMAGE_FILE_HEADER>(reader);
+
+                // Read optional header
+                if (this.Is32BitOptionalHeader)
                 {
-                    optionalHeader32 = FromBinaryReader<NativeAPI.IMAGE_OPTIONAL_HEADER32>(reader);
+                    this.optionalHeader32 = ConsoleDeterminer.ReadStructure<NativeAPI.IMAGE_OPTIONAL_HEADER32>(reader);
                 }
                 else
                 {
-                    optionalHeader64 = FromBinaryReader<NativeAPI.IMAGE_OPTIONAL_HEADER64>(reader);
+                    this.optionalHeader64 = ConsoleDeterminer.ReadStructure<NativeAPI.IMAGE_OPTIONAL_HEADER64>(reader);
                 }
             }
         }
@@ -95,14 +101,14 @@ namespace Tagger
         {
             var process = Process.GetProcessById(pid);
             var parser = new ConsoleDeterminer(process.MainModule.FileName);
-            return parser.Subsystem == (ushort) NativeAPI.IMAGE_SUBSYSTEM_WINDOWS.CUI;
+            return parser.Subsystem == (ushort)NativeAPI.IMAGE_SUBSYSTEM_WINDOWS.CUI;
         }
 
         /// <summary>
         /// Reads in a block from a file and converts it to the struct 
         /// type specified by the template parameter
         /// </summary>
-        private static T FromBinaryReader<T>(BinaryReader reader)
+        private static T ReadStructure<T>(BinaryReader reader)
         {
             // Read in a byte array
             byte[] bytes = reader.ReadBytes(Marshal.SizeOf(typeof(T)));
@@ -122,57 +128,9 @@ namespace Tagger
         /// <summary>
         /// Gets if the file header is 32 bit or not
         /// </summary>
-        public bool Is32BitHeader
+        public bool Is32BitOptionalHeader
         {
-            get
-            {
-                UInt16 IMAGE_FILE_32BIT_MACHINE = 0x0100;
-                return (IMAGE_FILE_32BIT_MACHINE & FileHeader.Characteristics) == IMAGE_FILE_32BIT_MACHINE;
-            }
-        }
-
-        /// <summary>
-        /// Gets the file header
-        /// </summary>
-        public NativeAPI.IMAGE_FILE_HEADER FileHeader
-        {
-            get { return fileHeader; }
-        }
-
-        /// <summary>
-        /// Gets the optional header
-        /// </summary>
-        public NativeAPI.IMAGE_OPTIONAL_HEADER32 OptionalHeader32
-        {
-            get { return optionalHeader32; }
-        }
-
-        /// <summary>
-        /// Gets the optional header
-        /// </summary>
-        public NativeAPI.IMAGE_OPTIONAL_HEADER64 OptionalHeader64
-        {
-            get { return optionalHeader64; }
-        }
-
-        /// <summary>
-        /// Gets the timestamp from the file header
-        /// </summary>
-        public DateTime TimeStamp
-        {
-            get
-            {
-                // Timestamp is a date offset from 1970
-                DateTime returnValue = new DateTime(1970, 1, 1, 0, 0, 0);
-
-                // Add in the number of seconds since 1970/1/1
-                returnValue = returnValue.AddSeconds(fileHeader.TimeDateStamp);
-
-                // Adjust to local timezone
-                returnValue += TimeZone.CurrentTimeZone.GetUtcOffset(returnValue);
-
-                return returnValue;
-            }
+            get { return (NativeAPI.IMAGE_FILE_32BIT_MACHINE & this.fileHeader.Characteristics) != 0; }
         }
 
         /// <summary>
@@ -182,9 +140,9 @@ namespace Tagger
         {
             get
             {
-                return this.Is32BitHeader
-                    ? this.OptionalHeader32.Subsystem
-                    : this.OptionalHeader64.Subsystem;
+                return this.Is32BitOptionalHeader
+                    ? this.optionalHeader32.Subsystem
+                    : this.optionalHeader64.Subsystem;
             }
         }
 

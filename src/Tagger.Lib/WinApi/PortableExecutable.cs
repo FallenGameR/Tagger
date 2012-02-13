@@ -8,6 +8,11 @@ namespace Tagger.WinAPI
     /// </summary>
     public static partial class NativeAPI
     {
+        /// <summary>
+        /// Flag in FileHeader.Characteristics for computer that supports 32-bit words
+        /// </summary>
+        public const UInt16 IMAGE_FILE_32BIT_MACHINE = 0x0100;
+
         #region IMAGE_SUBSYSTEM_WINDOWS enum 
 
         /// <summary>
