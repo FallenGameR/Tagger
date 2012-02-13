@@ -53,9 +53,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GlobalHotkeys\GlobalHotkey.cs" />
-    <Compile Include="GlobalHotkeys\HotkeyPressedEventArgs.cs" />
-    <Compile Include="GlobalHotkeys\HotkeyReceiverWindow.cs" />
+    <Compile Include="GlobalHotkey\HotkeyEventArgs.cs" />
+    <Compile Include="GlobalHotkey\Hotkey.cs" />
     <Compile Include="Utils\Extensions\Strings.cs" />
     <Compile Include="WinApi\Windows.cs" />
     <Compile Include="WinApi\GlobalHotkeys.cs" />

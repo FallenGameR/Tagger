@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using System.Windows.Input;
 using Microsoft.Practices.Prism.Commands;
-using Tagger.WinAPI.Hotkeys;
 using Tagger.Wpf.Properties;
 using Utils.Diagnostics;
 using Utils.Extensions;
@@ -20,7 +19,7 @@ namespace Tagger.Wpf
         private ModifierKeys m_ModifierKeys;
         private Keys m_Key;
         private string m_Status;
-        private GlobalHotkey m_GlobalHotkey;
+        private Hotkey m_GlobalHotkey;
 
         #endregion
 
@@ -96,7 +95,8 @@ namespace Tagger.Wpf
             // Try to register new global hotkey and update status
             try
             {
-                this.m_GlobalHotkey = new GlobalHotkey(this.ModifierKeys, this.Key, (s, a) => RegistrationManager.GlobalHotkeyHandle());
+                this.m_GlobalHotkey = new Hotkey(this.ModifierKeys, this.Key);
+                this.m_GlobalHotkey.KeyPressed += (s, a) => RegistrationManager.GlobalHotkeyHandle();
                 this.Status = "Registered hotkey: " + HotkeyText;
             }
             catch (Win32Exception winEx)

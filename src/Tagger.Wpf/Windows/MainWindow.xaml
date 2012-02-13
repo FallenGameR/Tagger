@@ -8,6 +8,6 @@
         WindowStartupLocation="CenterScreen">
     <StackPanel>
         <views:TrayIconControl />
-        <views:HotkeyControl />
+        <views:HotkeyControl KeyUp="HotkeyControl_KeyUp" />
     </StackPanel>
 </Window>

@@ -13,5 +13,10 @@ namespace Tagger.Wpf
             InitializeComponent();
             this.Closed += delegate { App.Current.Shutdown(); };
         }
+
+        private void HotkeyControl_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+
+        }
     }
 }
