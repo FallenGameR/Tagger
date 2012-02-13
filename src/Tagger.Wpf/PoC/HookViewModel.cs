@@ -139,6 +139,7 @@ namespace Tagger.Wpf
         /// </summary>
         private void Hook(object parameter)
         {
+#if false
             UnhookCommand.Execute(null);
 
             // Test if it is a console app
@@ -156,10 +157,10 @@ namespace Tagger.Wpf
             int pid = ProcessId;           
             if (isConsoleApp)
             {
-                //using (var wct = new ProcessFinder())
-                //{
-                //    pid = wct.GetConhostProcess(pid);
-                //}
+                using (var wct = new ProcessFinder())
+                {
+                    pid = wct.GetConhostProcess(pid);
+                }
             }
 
             // Get current window position
@@ -200,6 +201,7 @@ namespace Tagger.Wpf
             // Mark window as hooked and recalculate all comands
             IsHooked = true;
             OnDelegateCommandsCanExecuteChanged();
+#endif
         }
 
         /// <summary>

@@ -63,13 +63,13 @@
     <Compile Include="Utils\Diagnostics\Checks.cs" />
     <Compile Include="Utils\Diagnostics\DesignByContractException.cs" />
     <Compile Include="Utils\Diagnostics\ProgramException.cs" />
-    <Compile Include="ProcessId\ConsoleDeterminer.cs" />
+    <Compile Include="ProcessId\PortableExecutableReader.cs" />
     <Compile Include="Utils\Prism\FirstFocusedElementExtension.cs" />
     <Compile Include="Utils\Extensions\Reflection.cs" />
     <Compile Include="ProcessId\WctHandle.cs" />
     <Compile Include="WinApi\PortableExecutable.cs" />
     <Compile Include="WinApi\WaitChainTraversal.cs" />
-    <Compile Include="ProcessId\WaitChainTraversal.cs" />
+    <Compile Include="ProcessId\ProcessFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\Prism\ViewModelBase.cs" />
   </ItemGroup>

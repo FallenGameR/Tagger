@@ -7,11 +7,14 @@ namespace Tagger
     /// Safe handle that is used in wait chain traversal API calls
     /// </summary>
     /// <remarks>
-    /// Closes WCT session upon exit
-    /// TODO: Figure out if it's necessary to use such class in the first place
+    /// See http://msdn.microsoft.com/en-us/library/system.runtime.interopservices.safehandle.aspx
+    /// to learn why SafeHandle descendant should be used instead of raw IntPtr
     /// </remarks>
     public class WctHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
+        /// <summary>
+        /// Initializes handle class
+        /// </summary>
         private WctHandle() : base(true) { }
 
         /// <summary>
@@ -22,7 +25,7 @@ namespace Tagger
         /// </returns>
         protected override bool ReleaseHandle()
         {
-            NativeAPI.CloseThreadWaitChainSession(this.handle);
+            NativeAPI.CloseThreadWaitChainSession(this);
             return true;
         }
     }

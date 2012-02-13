@@ -14,7 +14,7 @@ namespace Tagger
         {
             this.HostHandle = handle;
 
-            uint pid = ConsoleDeterminer.GetPid(HostHandle);
+            uint pid = ProcessFinder.GetPid(HostHandle);
 
             // Hook pid (available only in Windowed process)
             // TODO: Catch destruction of another window as well

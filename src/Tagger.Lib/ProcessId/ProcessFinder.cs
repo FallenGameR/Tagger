@@ -12,6 +12,37 @@ namespace Tagger
     {
         private WctHandle m_Handle;
 
+        public static uint GetPid(IntPtr handle)
+        {
+            // TODO: Move to domain logic
+            uint pid;
+            NativeAPI.GetWindowThreadProcessId(handle, out pid);
+
+            // Get actual process ID belonging to host window
+            bool isConsoleApp = ProcessFinder.IsConsoleApplication((int)pid);
+            if (isConsoleApp)
+            {
+                using (var wct = new ProcessFinder())
+                {
+                    pid = (uint)wct.GetConhostProcess((int)pid);
+                }
+            }
+
+            return pid;
+        }
+
+        /// <summary>
+        /// Checks if the application specified by process ID is a console application
+        /// </summary>
+        /// <param name="pid">Process ID for checked application</param>
+        /// <returns>true is application is build as console application</returns>
+        private static bool IsConsoleApplication(int pid)
+        {
+            var process = Process.GetProcessById(pid);
+            var parser = new PortableExecutableReader(process.MainModule.FileName);
+            return parser.OptionalHeader.Subsystem == (ushort)NativeAPI.IMAGE_SUBSYSTEM_WINDOWS.CUI;
+        }
+
         public ProcessFinder()
         {
             m_Handle = NativeAPI.OpenThreadWaitChainSession(0, IntPtr.Zero);
