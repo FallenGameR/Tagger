@@ -96,7 +96,7 @@ namespace Tagger.Wpf
             // Try to register new global hotkey and update status
             try
             {
-                this.m_GlobalHotkey = new GlobalHotkey(this.ModifierKeys, this.Key, (s, a) => HotkeyHandler.HandleHotkeyPress());
+                this.m_GlobalHotkey = new GlobalHotkey(this.ModifierKeys, this.Key, (s, a) => RegistrationManager.GlobalHotkeyHandle());
                 this.Status = "Registered hotkey: " + HotkeyText;
             }
             catch (Win32Exception winEx)

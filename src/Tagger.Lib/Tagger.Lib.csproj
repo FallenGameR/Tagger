@@ -66,7 +66,7 @@
     <Compile Include="ConsoleDeterminer\ConsoleDeterminer.cs" />
     <Compile Include="Utils\Prism\FirstFocusedElementExtension.cs" />
     <Compile Include="Utils\Extensions\Reflection.cs" />
-    <Compile Include="WaitChainTraversal\Handle.cs" />
+    <Compile Include="WaitChainTraversal\WctHandle.cs" />
     <Compile Include="WinApi\PortableExecutable.cs" />
     <Compile Include="WinApi\WaitChainTraversal.cs" />
     <Compile Include="WaitChainTraversal\WaitChainTraversal.cs" />

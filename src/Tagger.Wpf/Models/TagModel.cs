@@ -9,7 +9,7 @@ using Microsoft.Practices.Prism.Commands;
 
 namespace Tagger.Wpf.ViewModels
 {
-    public class TagViewModel: ViewModelBase
+    public class TagModel: ViewModelBase
     {
         #region Fields
 
@@ -23,7 +23,7 @@ namespace Tagger.Wpf.ViewModels
 
         #endregion
 
-        public TagViewModel()
+        public TagModel()
         {
             this.Color = Colors.Green;
 

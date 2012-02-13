@@ -152,10 +152,10 @@ namespace Tagger.WinAPI
         #endregion
 
         [DllImport("advapi32.dll", SetLastError = true)]
-        public extern static bool GetThreadWaitChain(Handle wctHandle, IntPtr context, WCT_FLAGS flags, Int32 threadId, ref int nodeCount, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)] [In, Out] WAITCHAIN_NODE_INFO[] nodeInfoArray, out int isCycle);
+        public extern static bool GetThreadWaitChain(WctHandle wctHandle, IntPtr context, WCT_FLAGS flags, Int32 threadId, ref int nodeCount, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)] [In, Out] WAITCHAIN_NODE_INFO[] nodeInfoArray, out int isCycle);
 
         [DllImport("advapi32.dll", SetLastError = true)]
-        public extern static Handle OpenThreadWaitChainSession(int flags, IntPtr callback);
+        public extern static WctHandle OpenThreadWaitChainSession(int flags, IntPtr callback);
 
         [DllImport("advapi32.dll", SetLastError = true)]
         public extern static void CloseThreadWaitChainSession(IntPtr wctHandle);

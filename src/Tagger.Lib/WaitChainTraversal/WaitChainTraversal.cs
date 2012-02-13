@@ -9,7 +9,7 @@ namespace Tagger.WinAPI.WaitChainTraversal
 {
     public class ProcessFinder : IDisposable
     {
-        private Handle m_Handle;
+        private WctHandle m_Handle;
 
         public ProcessFinder()
         {
