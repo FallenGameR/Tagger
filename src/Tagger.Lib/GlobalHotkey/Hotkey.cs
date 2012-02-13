@@ -13,7 +13,7 @@ namespace Tagger
     /// <remarks>
     /// See also http://www.liensberger.it/web/blog/?p=207 "Installing a global hot key with C#"
     /// </remarks>    
-    public class Hotkey : NativeWindow, IDisposable
+    public sealed class Hotkey : NativeWindow, IDisposable
     {
         /// <summary>
         /// Creates invisible receiver window

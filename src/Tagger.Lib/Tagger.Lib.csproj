@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="GlobalHotkey\HotkeyEventArgs.cs" />
     <Compile Include="GlobalHotkey\Hotkey.cs" />
+    <Compile Include="ProcessId\WindowMovedListner.cs" />
     <Compile Include="Utils\Extensions\Strings.cs" />
     <Compile Include="WinApi\Windows.cs" />
     <Compile Include="WinApi\GlobalHotkeys.cs" />
@@ -62,13 +63,13 @@
     <Compile Include="Utils\Diagnostics\Checks.cs" />
     <Compile Include="Utils\Diagnostics\DesignByContractException.cs" />
     <Compile Include="Utils\Diagnostics\ProgramException.cs" />
-    <Compile Include="ConsoleDeterminer\ConsoleDeterminer.cs" />
+    <Compile Include="ProcessId\ConsoleDeterminer.cs" />
     <Compile Include="Utils\Prism\FirstFocusedElementExtension.cs" />
     <Compile Include="Utils\Extensions\Reflection.cs" />
-    <Compile Include="WaitChainTraversal\WctHandle.cs" />
+    <Compile Include="ProcessId\WctHandle.cs" />
     <Compile Include="WinApi\PortableExecutable.cs" />
     <Compile Include="WinApi\WaitChainTraversal.cs" />
-    <Compile Include="WaitChainTraversal\WaitChainTraversal.cs" />
+    <Compile Include="ProcessId\WaitChainTraversal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\Prism\ViewModelBase.cs" />
   </ItemGroup>

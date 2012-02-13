@@ -67,6 +67,25 @@ namespace Tagger
             }
         }
 
+        public static uint GetPid(IntPtr handle)
+        {
+            // TODO: Move to domain logic
+            uint pid;
+            NativeAPI.GetWindowThreadProcessId(handle, out pid);
+
+            // Get actual process ID belonging to host window
+            bool isConsoleApp = ConsoleDeterminer.IsConsoleApplication((int)pid);
+            if (isConsoleApp)
+            {
+                using (var wct = new ProcessFinder())
+                {
+                    pid = (uint)wct.GetConhostProcess((int)pid);
+                }
+            }
+
+            return pid;
+        }
+
         /// <summary>
         /// Checks if the application specified by process ID is a console application
         /// </summary>

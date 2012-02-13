@@ -1,6 +1,7 @@
 using Microsoft.Win32.SafeHandles;
+using Tagger.WinAPI;
 
-namespace Tagger.WinAPI.WaitChainTraversal
+namespace Tagger
 {
     /// <summary>
     /// Safe handle that is used in wait chain traversal API calls

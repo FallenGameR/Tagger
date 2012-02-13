@@ -4,8 +4,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Tagger.WinAPI;
 
-namespace Tagger.WinAPI.WaitChainTraversal
+namespace Tagger
 {
     public class ProcessFinder : IDisposable
     {

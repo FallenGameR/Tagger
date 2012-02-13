@@ -4,7 +4,7 @@ using System.Windows.Interop;
 using ManagedWinapi.Accessibility;
 using ManagedWinapi.Windows;
 using Microsoft.Practices.Prism.Commands;
-using Tagger.WinAPI.WaitChainTraversal;
+using Tagger;
 using Utils.Prism;
 using Utils.Extensions;
 
