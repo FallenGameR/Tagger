@@ -59,7 +59,8 @@ namespace Tagger.Wpf
                     FontSize = 50
                 }
             };
-            //tag.ShowSettings();
+            tag.Show();
+            tag.UpdateLocation();
 
             RegistrationManager.KnownTags[host] = tag;
             // Preserve settings on per window title basis

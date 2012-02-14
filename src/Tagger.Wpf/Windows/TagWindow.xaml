@@ -6,6 +6,7 @@
     ResizeMode="NoResize" 
     ShowInTaskbar="False"        
     SizeToContent="WidthAndHeight"
+    WindowStartupLocation="Manual"
     MinHeight="50" MinWidth="140" 
     MouseRightButtonUp="Window_MouseRightButtonUp">
     <Grid>

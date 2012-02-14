@@ -46,7 +46,7 @@ namespace Tagger.WinAPI
         /// <param name="lpdwProcessId">A pointer to a variable that receives the process identifier.</param>
         /// <returns>The return value is the identifier of the thread that created the window.</returns>
         [DllImport("user32.dll")]
-        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+        public static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);

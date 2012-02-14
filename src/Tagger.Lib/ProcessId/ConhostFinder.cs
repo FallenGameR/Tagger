@@ -52,7 +52,7 @@ namespace Tagger
         /// <param name="consoleAppProcessId">Process ID of a console application</param>
         /// <returns>
         /// Process ID of conhost process that hosts the console application.
-        /// Exception is thrown if no corresponding conhost process if found.
+        /// ConsoleAppProcessId is returned if no conhost process if found.
         /// </returns>
         public int GetConhostProcessId(int consoleAppProcessId)
         {
@@ -67,12 +67,7 @@ namespace Tagger
 
             if (found == default(int))
             {
-                var info = @"
-Couldn't find conhost.exe that corresponds to console application with PID: {0}
-- Are you running Tagger from unsupported OS? Supported are: Windows 7, Windows 2008 Server R2. You can add support for your OS yourself. Fork here: https://github.com/FallenGameR/Tagger
-- Is {0} a GUI application? If yes, than that's a bug in program logic.
-";
-                throw new ProgramException(info.Trim().Format(consoleAppProcessId));
+                return consoleAppProcessId;
             }
             else
             {

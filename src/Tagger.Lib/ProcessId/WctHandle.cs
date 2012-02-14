@@ -25,7 +25,7 @@ namespace Tagger
         /// </returns>
         protected override bool ReleaseHandle()
         {
-            NativeAPI.CloseThreadWaitChainSession(this);
+            NativeAPI.CloseThreadWaitChainSession(this.handle);
             return true;
         }
     }

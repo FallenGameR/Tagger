@@ -1,32 +1,78 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
 using ManagedWinapi.Accessibility;
 using Tagger.WinAPI;
-using System.Diagnostics;
 
 namespace Tagger
 {
-    public sealed class WindowMovedListner: IDisposable
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <remarks>
+    /// Available only in a host process that has at least one Window
+    /// </remarks>
+    public sealed class WindowMovedListner : IDisposable
     {
-        private AccessibleEventListener m_Listner;
+        private AccessibleEventListener listner;
 
         public WindowMovedListner(IntPtr handle)
         {
-            uint pid = ConhostFinder.GetPid(handle);
+            int pid = GetPid(handle);
 
             // Hook via pid
-            // NOTE: available only in a host process that has at least one Window
             // TODO: Catch destruction of another window as well
-            m_Listner = new AccessibleEventListener
+            this.listner = CreateMoveListner(pid);
+        }
+
+        public void Dispose()
+        {
+            this.listner.Dispose();
+        }
+
+        /// <summary>
+        /// Get actual process ID belonging to host window
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <returns></returns>
+        public int GetPid(IntPtr handle)
+        {
+            int pid;
+            NativeAPI.GetWindowThreadProcessId(handle, out pid);
+
+            bool isConsoleApp = this.IsConsoleApplication(pid);
+            if (!isConsoleApp)
+            {
+                return pid;
+            }
+
+            using (var wct = new ConhostFinder())
+            {
+                return wct.GetConhostProcessId(pid);
+            }
+        }
+
+        /// <summary>
+        /// Checks if the application specified by process ID is a console application
+        /// </summary>
+        /// <param name="pid">Process ID for checked application</param>
+        /// <returns>true is application is build as console application</returns>
+        private bool IsConsoleApplication(int pid)
+        {
+            var process = Process.GetProcessById(pid);
+            var parser = new PortableExecutableReader(process.MainModule.FileName);
+            return parser.OptionalHeader.Subsystem == (ushort)NativeAPI.IMAGE_SUBSYSTEM_WINDOWS.CUI;
+        }
+
+        private AccessibleEventListener CreateMoveListner(int pid)
+        {
+            var listner = new AccessibleEventListener
             {
                 MinimalEventType = AccessibleEventType.EVENT_OBJECT_LOCATIONCHANGE,
                 MaximalEventType = AccessibleEventType.EVENT_OBJECT_LOCATIONCHANGE,
-                ProcessId = pid,
+                ProcessId = (uint)pid,
                 Enabled = true,
             };
-            m_Listner.EventOccurred += (object sender, AccessibleEventArgs ea) =>
+            listner.EventOccurred += (object sender, AccessibleEventArgs ea) =>
             {
                 // Ignore events from cursor
                 if (ea.ObjectID != 0) { return; }
@@ -37,45 +83,9 @@ namespace Tagger
                     this.Moved(this, EventArgs.Empty);
                 }
             };
+            return listner;
         }
 
-        public static uint GetPid(IntPtr handle)
-        {
-            // TODO: Move to domain logic
-            uint pid;
-            NativeAPI.GetWindowThreadProcessId(handle, out pid);
-
-            // Get actual process ID belonging to host window
-            bool isConsoleApp = WindowMovedListner.IsConsoleApplication((int)pid);
-            if (isConsoleApp)
-            {
-                using (var wct = new ConhostFinder())
-                {
-                    pid = (uint)wct.GetConhostProcessId((int)pid);
-                }
-            }
-
-            return pid;
-        }
-
-        /// <summary>
-        /// Checks if the application specified by process ID is a console application
-        /// </summary>
-        /// <param name="pid">Process ID for checked application</param>
-        /// <returns>true is application is build as console application</returns>
-        private static bool IsConsoleApplication(int pid)
-        {
-            var process = Process.GetProcessById(pid);
-            var parser = new PortableExecutableReader(process.MainModule.FileName);
-            return parser.OptionalHeader.Subsystem == (ushort)NativeAPI.IMAGE_SUBSYSTEM_WINDOWS.CUI;
-        }
-
-
-        public void Dispose()
-        {
-            m_Listner.Dispose();
-        }
-        
         public event EventHandler Moved;
     }
 }

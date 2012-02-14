@@ -157,6 +157,6 @@ namespace Tagger.WinAPI
         public extern static bool GetThreadWaitChain(WctHandle wctHandle, IntPtr context, WCT_FLAGS flags, Int32 threadId, ref int nodeCount, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)] [In, Out] WAITCHAIN_NODE_INFO[] nodeInfoArray, out int isCycle);
 
         [DllImport("advapi32.dll", SetLastError = true)]
-        public extern static void CloseThreadWaitChainSession(WctHandle wctHandle);
+        public extern static void CloseThreadWaitChainSession(IntPtr wctHandle);
     }
 }
