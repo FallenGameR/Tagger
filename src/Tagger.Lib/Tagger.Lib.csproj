@@ -69,7 +69,7 @@
     <Compile Include="ProcessId\WctHandle.cs" />
     <Compile Include="WinApi\PortableExecutable.cs" />
     <Compile Include="WinApi\WaitChainTraversal.cs" />
-    <Compile Include="ProcessId\ProcessFinder.cs" />
+    <Compile Include="ProcessId\ConhostFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\Prism\ViewModelBase.cs" />
   </ItemGroup>
