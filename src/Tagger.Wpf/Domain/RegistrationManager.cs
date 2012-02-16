@@ -50,17 +50,12 @@ namespace Tagger.Wpf
             //};
             //settings.ShowDialog();
 
-            var tag = new TagWindow(host)
+            var tag = new TagWindow(host, new TagModel
             {
-                DataContext = new TagModel
-                {
-                    Text = "File browser",
-                    FontFamily = new FontFamily("Segoe UI"),
-                    FontSize = 50
-                }
-            };
-            tag.Show();
-            tag.UpdateLocation();
+                Text = "File browser",
+                FontFamily = new FontFamily("Segoe UI"),
+                FontSize = 50
+            } );
 
             RegistrationManager.KnownTags[host] = tag;
             // Preserve settings on per window title basis

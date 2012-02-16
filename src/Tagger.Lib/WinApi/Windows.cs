@@ -28,13 +28,13 @@ namespace Tagger.WinAPI
 
         #endregion
 
-        // TODO: Do we need to handle LastError codes here?
-
         /// <summary>
         /// Retrieves a handle to the foreground window (the window with which the user is currently working)
         /// </summary>
-        /// <returns>The return value is a handle to the foreground window. The foreground window can 
-        /// be NULL in certain circumstances, such as when a window is losing activation.</returns>
+        /// <returns>
+        /// The return value is a handle to the foreground window. The foreground window can 
+        /// be NULL in certain circumstances, such as when a window is losing activation.
+        /// </returns>
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
 
@@ -42,15 +42,29 @@ namespace Tagger.WinAPI
         /// Retrieves the identifier of the thread that created the specified window and, 
         /// optionally, the identifier of the process that created the window. 
         /// </summary>
-        /// <param name="hWnd">A handle to the window.</param>
-        /// <param name="lpdwProcessId">A pointer to a variable that receives the process identifier.</param>
-        /// <returns>The return value is the identifier of the thread that created the window.</returns>
+        /// <param name="hWnd">A handle to the window</param>
+        /// <param name="lpdwProcessId">A pointer to a variable that receives the process identifier</param>
+        /// <returns>The return value is the identifier of the thread that created the window</returns>
         [DllImport("user32.dll")]
         public static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
+        /// <summary>
+        /// Retrieves the dimensions of the bounding rectangle of the specified window
+        /// </summary>
+        /// <param name="hwnd">A handle to the window</param>
+        /// <param name="lpRect">A pointer to a RECT structure that receives the screen coordinates of the upper-left and lower-right corners of the window</param>
+        /// <returns>If the function succeeds, the return value is nonzero</returns>
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
 
+        /// <summary>
+        /// Sends the specified message to a window 
+        /// </summary>
+        /// <param name="hWnd">A handle to the window whose window procedure will receive the message</param>
+        /// <param name="msg">The message to be sent</param>
+        /// <param name="wParam">Additional message-specific information</param>
+        /// <param name="lParam">Additional message-specific information</param>
+        /// <returns>The return value specifies the result of the message processing; it depends on the message sent</returns>
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, UInt32 msg, Int32 wParam, ref RECT lParam);
     }

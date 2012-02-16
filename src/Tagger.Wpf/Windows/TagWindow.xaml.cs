@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using Tagger.WinAPI;
+using Tagger.Wpf.ViewModels;
 using Utils.Diagnostics;
 using RECT = Tagger.WinAPI.NativeAPI.RECT;
 
@@ -28,20 +29,31 @@ namespace Tagger.Wpf
         }
 
         /// <summary>
-        /// Initializes tag window 
+        /// Initializes and shows new instance of tag window 
         /// </summary>
-        /// <param name="handle"></param>
-        public TagWindow(IntPtr handle)
+        /// <param name="host">Host window this tag belong to</param>
+        /// <param name="viewModel">View model with all settings needed for tag render</param>
+        public TagWindow(IntPtr host, TagModel viewModel)
             : this()
         {
-            // Set window owner so that our window would always be on top
-            new WindowInteropHelper(this).Owner = handle;
+            // Bind to view model
+            this.DataContext = viewModel;
+
+            // Set window owner so that the tag would always be on top of it
+            this.Host = host;
 
             // Subscribe to the tagged window movements
-            this.windowMovedListner = new WindowMovedListner(handle);
-            this.windowMovedListner.Moved += delegate { this.UpdateLocation(); };
+            this.windowMovedListner = new WindowMovedListner(host);
+            this.windowMovedListner.Moved += delegate { this.UpdateTagPosition(); };
+
+            // Show tag window in the right position
+            this.Show();
+            this.UpdateTagPosition();
         }
 
+        /// <summary>
+        /// Cleanup all allocated resources
+        /// </summary>
         public void Dispose()
         {
             if (this.windowMovedListner != null)
@@ -50,15 +62,24 @@ namespace Tagger.Wpf
             }
         }
 
-        public void UpdateLocation()
+        /// <summary>
+        /// Update tag position based on host window position
+        /// </summary>
+        private void UpdateTagPosition()
         {
-            RECT clientArea = this.GetClientArea();
+            RECT clientArea = this.GetHostClientArea();
 
             this.Top = clientArea.Top;
             this.Left = clientArea.Right - Width;
         }
 
-        private RECT GetClientArea()
+        /// <summary>
+        /// Gets host client area rectangle
+        /// </summary>
+        /// <returns>
+        /// Rectangle that borders host window content
+        /// </returns>
+        private RECT GetHostClientArea()
         {
             RECT sizes;
             bool success = NativeAPI.GetWindowRect(this.Host, out sizes);
@@ -74,24 +95,30 @@ namespace Tagger.Wpf
             return sizes;
         }
 
+        /// <summary>
+        /// TODO: Show settings dialog
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Window_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            //this.MouseRightButtonUp
-            // TODO: Show settings dialog
         }
 
         /// <summary>
-        /// Native handle corresponding to this window
+        /// Native handle corresponding to this tag window
         /// </summary>
         public IntPtr Handle
         {
             get { return new WindowInteropHelper(this).Handle; }
         }
 
-        public IntPtr Host
+        /// <summary>
+        /// Native handle for host window (the owner window this tag belongs to)
+        /// </summary>
+        private IntPtr Host
         {
             get { return new WindowInteropHelper(this).Owner; }
+            set { new WindowInteropHelper(this).Owner = value; }
         }
-
     }
 }
