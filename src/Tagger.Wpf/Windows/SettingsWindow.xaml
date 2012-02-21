@@ -34,6 +34,7 @@
         <TextBox Grid.Row="3" Grid.Column="1" Margin="3"
              Text="{Binding Path=RightOffset, Mode=OneWayToSource}"/>
 
+        <!-- TODO: Add invisible button that would be called on Enter or Escape key press -->
         <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Margin="3" Width="120" Command="{Binding Path=HideSettingsCommand}">OK</Button>
             <Button Margin="3" Width="120" Command="{Binding Path=CancelSettingsCommand}">Cancel</Button>
