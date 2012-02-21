@@ -26,7 +26,7 @@ namespace Tagger
 
             if (context != null)
             {
-                context.ToggleTagVisibility();
+                context.TagWindow.ToggleVisibility();
             }
             else
             {

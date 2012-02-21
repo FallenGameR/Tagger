@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using Tagger.ViewModels;
 using Utils.Extensions;
@@ -29,6 +30,16 @@ namespace Tagger.Wpf.Windows
             this.DataContext = viewModel;
             this.SetOwner(host);
             this.Show();
+        }
+
+        /// <summary>
+        /// Hide window instead of close
+        /// </summary>
+        /// <param name="ea">Closing event arguments</param>
+        protected override void OnClosing(CancelEventArgs ea)
+        {
+            ea.Cancel = true;
+            this.Hide();
         }
     }
 }

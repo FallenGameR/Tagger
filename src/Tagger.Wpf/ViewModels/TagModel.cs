@@ -6,9 +6,13 @@ using Utils.Prism;
 using Utils.Extensions;
 using System.Windows.Media;
 using Microsoft.Practices.Prism.Commands;
+using Utils.Diagnostics;
 
 namespace Tagger.ViewModels
 {
+    /// <summary>
+    /// View model for tag window
+    /// </summary>
     public class TagModel: ViewModelBase
     {
         #region Fields
@@ -23,13 +27,18 @@ namespace Tagger.ViewModels
 
         #endregion
 
-        public TagModel()
+        /// <summary>
+        /// Initializes new instance of tag view model
+        /// </summary>
+        /// <param name="context">Tag context that this settings view model belongs to</param>
+        public TagModel(TagContext context)
         {
+            Check.Require(context != null, "Context must not be null");
+
+            this.TagContext = context;
             this.Color = Colors.Green;
 
-            this.AttachTagCommand = new DelegateCommand<object>(AttachTag, CanAttachTag);
-            this.DetachTagCommand = new DelegateCommand<object>(DetachTag, CanDetachTag);
-            this.ShowSettingsCommand = new DelegateCommand<object>(ShowSettings, CanShowSettings);
+            this.ToggleSettingsCommand = new DelegateCommand<object>(this.ToggleSettings, this.CanToggleSettings);
         }
 
         #region Validation
@@ -93,6 +102,11 @@ namespace Tagger.ViewModels
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// Tag context 
+        /// </summary>
+        public TagContext TagContext { get; private set; }
 
         /// <summary>
         /// Top coordinate of tag window
@@ -162,75 +176,26 @@ namespace Tagger.ViewModels
 
         #endregion
 
-        #region Command - AttachTag
+        #region Command - ToggleSettings
 
         /// <summary>
-        /// Attaches tag window to host
+        /// Shows or hides settings window that is associated with the tag
         /// </summary>
-        public DelegateCommand<object> AttachTagCommand { get; private set; }
+        public DelegateCommand<object> ToggleSettingsCommand { get; private set; }
 
         /// <summary>
-        /// AttachTag command handler
+        /// ToggleSettings command handler
         /// </summary>
-        private void AttachTag(object parameter)
+        private void ToggleSettings(object parameter)
         {
+            this.TagContext.SettingsWindow.ToggleVisibility();
         }
 
         /// <summary>
-        /// Test that verifies if AttachTag command can be invoked
+        /// Test that verifies if ToggleSettings command can be invoked
         /// </summary>
         /// <returns>true if command could be invoked</returns>
-        private bool CanAttachTag(object parameter)
-        {
-            return true;
-        }
-
-        #endregion
-
-        #region Command - DetachTag
-
-        /// <summary>
-        /// Detaches tag window from the host
-        /// </summary>
-        public DelegateCommand<object> DetachTagCommand { get; private set; }
-
-        /// <summary>
-        /// DetachTag command handler
-        /// </summary>
-        private void DetachTag(object parameter)
-        {
-        }
-
-        /// <summary>
-        /// Test that verifies if DetachTag command can be invoked
-        /// </summary>
-        /// <returns>true if command could be invoked</returns>
-        private bool CanDetachTag(object parameter)
-        {
-            return true;
-        }
-
-        #endregion
-
-        #region Command - ShowSettings
-
-        /// <summary>
-        /// Shows settings window that are associated with the tag
-        /// </summary>
-        public DelegateCommand<object> ShowSettingsCommand { get; private set; }
-
-        /// <summary>
-        /// ShowSettings command handler
-        /// </summary>
-        private void ShowSettings(object parameter)
-        {
-        }
-
-        /// <summary>
-        /// Test that verifies if ShowSettings command can be invoked
-        /// </summary>
-        /// <returns>true if command could be invoked</returns>
-        private bool CanShowSettings(object parameter)
+        private bool CanToggleSettings(object parameter)
         {
             return true;
         }

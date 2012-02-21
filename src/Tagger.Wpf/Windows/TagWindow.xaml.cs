@@ -18,7 +18,7 @@ namespace Tagger.Wpf
         /// <summary>
         /// Listner that fires events on window moves
         /// </summary>
-        private WindowMovedListner windowMovedListner;
+        private WindowMovedListner m_WindowMovedListner;
 
         /// <summary>
         /// Constructor that is used by the studio designer
@@ -37,14 +37,14 @@ namespace Tagger.Wpf
             : this()
         {
             // Bind to view model
-            this.DataContext = viewModel;
+            this.ViewModel = viewModel;
 
             // Set window owner so that the tag would always be on top of it
             this.SetOwner( host );
 
             // Subscribe to the tagged window movements
-            this.windowMovedListner = new WindowMovedListner(host);
-            this.windowMovedListner.Moved += delegate { this.UpdateTagPosition(); };
+            this.m_WindowMovedListner = new WindowMovedListner(host);
+            this.m_WindowMovedListner.Moved += delegate { this.UpdateTagPosition(); };
 
             // Show tag window in the right position
             this.Show();
@@ -56,9 +56,9 @@ namespace Tagger.Wpf
         /// </summary>
         public void Dispose()
         {
-            if (this.windowMovedListner != null)
+            if (this.m_WindowMovedListner != null)
             {
-                this.windowMovedListner.Dispose();
+                this.m_WindowMovedListner.Dispose();
             }
         }
 
@@ -102,6 +102,16 @@ namespace Tagger.Wpf
         /// <param name="e"></param>
         private void Window_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            this.ViewModel.ToggleSettingsCommand.Execute(null);
+        }
+
+        /// <summary>
+        /// View model for the window
+        /// </summary>
+        private TagModel ViewModel
+        {
+            get { return (TagModel)this.DataContext; }
+            set { this.DataContext = value; }
         }
     }
 }

@@ -2,6 +2,7 @@
 using Utils.Extensions;
 using Microsoft.Practices.Prism.Commands;
 using System.Windows.Media;
+using Utils.Diagnostics;
 
 namespace Tagger.ViewModels
 {
@@ -15,14 +16,22 @@ namespace Tagger.ViewModels
         private int m_RightOffset;
 
         #endregion
-        
-        public SettingsModel()
+
+        /// <summary>
+        /// Initializes new instance of settings view model
+        /// </summary>
+        /// <param name="context">Tag context that this settings view model belongs to</param>
+        public SettingsModel(TagContext context)
         {
-            CreateTagCommand = new DelegateCommand<object>(CreateTag, CanCreateTag);
-            HideSettingsCommand = new DelegateCommand<object>(HideSettings, CanHideSettings);
-            ShowSettingsCommand = new DelegateCommand<object>(ShowSettings, CanShowSettings);
-            DeleteTagCommand = new DelegateCommand<object>(DeleteTag, CanDeleteTag);
-            CancelSettingsCommand = new DelegateCommand<object>(CancelSettings, CanCancelSettings);
+            Check.Require(context != null, "Context must not be null");
+
+            this.TagContext = context;
+
+            this.CreateTagCommand = new DelegateCommand<object>(this.CreateTag, this.CanCreateTag);
+            this.HideSettingsCommand = new DelegateCommand<object>(this.HideSettings, this.CanHideSettings);
+            this.ShowSettingsCommand = new DelegateCommand<object>(this.ShowSettings, this.CanShowSettings);
+            this.DeleteTagCommand = new DelegateCommand<object>(this.DeleteTag, this.CanDeleteTag);
+            this.CancelSettingsCommand = new DelegateCommand<object>(this.CancelSettings, this.CanCancelSettings);
         }
 
         #region Validation
@@ -62,6 +71,11 @@ namespace Tagger.ViewModels
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// Tag context 
+        /// </summary>
+        public TagContext TagContext { get; private set; }
 
         /// <summary>
         /// Text to render in tag
@@ -228,7 +242,7 @@ namespace Tagger.ViewModels
 
         public TagModel GetTagModel()
         {
-            return new TagModel
+            return new TagModel( this.TagContext )
             {
                 Text = "File browser",
                 FontFamily = new FontFamily("Segoe UI"),

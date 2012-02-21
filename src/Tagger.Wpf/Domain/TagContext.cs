@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows;
 using Tagger.ViewModels;
 using Tagger.Wpf;
 using Tagger.Wpf.Windows;
@@ -22,7 +21,7 @@ namespace Tagger
 
             this.HostWindow = host;
 
-            var settingsModel = new SettingsModel();
+            var settingsModel = new SettingsModel(this);
             this.SettingsWindow = new SettingsWindow(host, settingsModel);
 
             // TODO: Add visible property, bind it to settings
@@ -44,20 +43,5 @@ namespace Tagger
         /// Settings window that setup tag appearance
         /// </summary>
         public SettingsWindow SettingsWindow { get; private set; }
-
-        /// <summary>
-        /// Toggles tag window visibility
-        /// </summary>
-        public void ToggleTagVisibility()
-        {
-            if (this.TagWindow.Visibility == Visibility.Visible)
-            {
-                this.TagWindow.Hide();
-            }
-            else
-            {
-                this.TagWindow.Show();
-            }
-        }
     }
 }

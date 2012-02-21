@@ -29,5 +29,20 @@ namespace Utils.Extensions
         {
             new WindowInteropHelper(window).Owner = value;
         }
+
+        /// <summary>
+        /// Toggles window visibility
+        /// </summary>
+        public static void ToggleVisibility(this Window window)
+        {
+            if (window.Visibility == Visibility.Visible)
+            {
+                window.Hide();
+            }
+            else
+            {
+                window.Show();
+            }
+        }
     }
 }
