@@ -30,17 +30,17 @@ namespace Tagger.ViewModels
         {
             // Initialize fields
             this.m_GlobalHotkey = null;
-            this.RegisterHotkeyCommand = new DelegateCommand<object>(RegisterHotkey, CanRegisterHotkey);
-            this.UnregisterHotkeyCommand = new DelegateCommand<object>(UnregisterHotkey, CanUnregisterHotkey);
+            this.RegisterHotkeyCommand = new DelegateCommand<object>(this.RegisterHotkey, this.CanRegisterHotkey);
+            this.UnregisterHotkeyCommand = new DelegateCommand<object>(this.UnregisterHotkey, this.CanUnregisterHotkey);
 
             // Restore previous settings state
             this.ModifierKeys = (ModifierKeys)Settings.Default.Hotkey_Modifiers;
             this.Key = (Keys)Settings.Default.Hotkey_Keys;
 
             // Restore hotkey if possible
-            if (CanRegisterHotkey(null))
+            if (this.CanRegisterHotkey(null))
             {
-                RegisterHotkeyCommand.Execute(null);
+                this.RegisterHotkeyCommand.Execute(null);
             }
             else
             {
@@ -64,10 +64,10 @@ namespace Tagger.ViewModels
         {
             base.OnDisposeManaged();
 
-            if (m_GlobalHotkey != null)
+            if (this.m_GlobalHotkey != null)
             {
-                m_GlobalHotkey.Dispose();
-                m_GlobalHotkey = null;
+                this.m_GlobalHotkey.Dispose();
+                this.m_GlobalHotkey = null;
             }
         }
 
@@ -90,7 +90,7 @@ namespace Tagger.ViewModels
             // Unregister previous hotkey if needed
             if (this.m_GlobalHotkey != null)
             {
-                UnregisterHotkeyCommand.Execute(null);
+                this.UnregisterHotkeyCommand.Execute(null);
             }
 
             // Try to register new global hotkey and update status
@@ -106,7 +106,7 @@ namespace Tagger.ViewModels
             }
 
             // Update command can execute status
-            OnDelegateCommandsCanExecuteChanged();
+            this.OnDelegateCommandsCanExecuteChanged();
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace Tagger.ViewModels
             this.m_GlobalHotkey = null;
 
             this.Status = "Hotkey unregistered";
-            OnDelegateCommandsCanExecuteChanged();
+            this.OnDelegateCommandsCanExecuteChanged();
         }
 
         /// <summary>
