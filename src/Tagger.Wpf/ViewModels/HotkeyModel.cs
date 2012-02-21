@@ -2,12 +2,13 @@
 using System.Windows.Forms;
 using System.Windows.Input;
 using Microsoft.Practices.Prism.Commands;
-using Tagger.Wpf.Properties;
+using Tagger.Properties;
+using Tagger.Wpf;
 using Utils.Diagnostics;
 using Utils.Extensions;
 using Utils.Prism;
 
-namespace Tagger.Wpf
+namespace Tagger.ViewModels
 {
     /// <summary>
     /// View model for global windows hotkey setting

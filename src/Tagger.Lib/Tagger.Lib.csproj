@@ -8,7 +8,7 @@
     <ProjectGuid>{48F26F81-5E5C-452D-8AC8-E88E5B6DAA67}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tagger.Lib</RootNamespace>
+    <RootNamespace>Tagger</RootNamespace>
     <AssemblyName>Tagger.Lib</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

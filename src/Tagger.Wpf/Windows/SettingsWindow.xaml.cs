@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows;
-using Tagger.Wpf.ViewModels;
+using Tagger.ViewModels;
 using Utils.Extensions;
 
 namespace Tagger.Wpf.Windows

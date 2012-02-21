@@ -7,7 +7,7 @@ using Utils.Extensions;
 using System.Windows.Media;
 using Microsoft.Practices.Prism.Commands;
 
-namespace Tagger.Wpf.ViewModels
+namespace Tagger.ViewModels
 {
     public class TagModel: ViewModelBase
     {

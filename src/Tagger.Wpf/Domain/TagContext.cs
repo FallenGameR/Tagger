@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
+using Tagger.ViewModels;
 using Tagger.Wpf;
-using Tagger.Wpf.ViewModels;
 using Tagger.Wpf.Windows;
 using Utils.Diagnostics;
 

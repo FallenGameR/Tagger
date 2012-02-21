@@ -8,7 +8,7 @@
     <ProjectGuid>{408F59B0-A4D4-4F61-B825-08F52CB8474E}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tagger.Wpf</RootNamespace>
+    <RootNamespace>Tagger</RootNamespace>
     <AssemblyName>Tagger.Wpf</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
@@ -87,8 +87,8 @@
     <Compile Include="Domain\RegistrationManager.cs" />
     <Compile Include="Domain\TagContext.cs" />
     <Compile Include="PoC\HookViewModel.cs" />
-    <Compile Include="Models\SettingsModel.cs" />
-    <Compile Include="Models\TagModel.cs" />
+    <Compile Include="ViewModels\SettingsModel.cs" />
+    <Compile Include="ViewModels\TagModel.cs" />
     <Compile Include="PoC\HookControl.xaml.cs">
       <DependentUpon>HookControl.xaml</DependentUpon>
     </Compile>
@@ -106,7 +106,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\HotkeyModel.cs" />
+    <Compile Include="ViewModels\HotkeyModel.cs" />
     <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

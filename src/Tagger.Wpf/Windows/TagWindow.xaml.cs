@@ -2,9 +2,8 @@
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Interop;
+using Tagger.ViewModels;
 using Tagger.WinAPI;
-using Tagger.Wpf.ViewModels;
 using Utils.Diagnostics;
 using Utils.Extensions;
 using RECT = Tagger.WinAPI.NativeAPI.RECT;

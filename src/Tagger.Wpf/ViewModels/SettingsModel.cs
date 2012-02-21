@@ -3,7 +3,7 @@ using Utils.Extensions;
 using Microsoft.Practices.Prism.Commands;
 using System.Windows.Media;
 
-namespace Tagger.Wpf.ViewModels
+namespace Tagger.ViewModels
 {
     public class SettingsModel : ViewModelBase
     {

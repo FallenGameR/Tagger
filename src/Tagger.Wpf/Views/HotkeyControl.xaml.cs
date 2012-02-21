@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Input;
+using Tagger.ViewModels;
 
 namespace Tagger.Wpf.Views
 {
