@@ -57,6 +57,7 @@
     <Compile Include="GlobalHotkey\Hotkey.cs" />
     <Compile Include="ProcessId\WindowMovedListner.cs" />
     <Compile Include="Utils\Extensions\Strings.cs" />
+    <Compile Include="Utils\Extensions\Windows.cs" />
     <Compile Include="WinApi\Windows.cs" />
     <Compile Include="WinApi\GlobalHotkeys.cs" />
     <Compile Include="Utils\Extensions\Collections.cs" />

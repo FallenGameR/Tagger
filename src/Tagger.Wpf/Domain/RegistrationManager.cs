@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Media;
-using Tagger.Wpf.ViewModels;
 using Tagger.WinAPI;
-using Tagger.Wpf.Windows;
+using Utils.Extensions;
 
-namespace Tagger.Wpf
+namespace Tagger
 {
     /// <summary>
     /// Handles registration of tags
@@ -17,83 +12,67 @@ namespace Tagger.Wpf
     public static class RegistrationManager
     {
         /// <summary>
-        /// Dictionary of host window handles and corresponding tag windows
+        /// All known tag contexts
         /// </summary>
-        private static Dictionary<IntPtr, TagWindow> KnownTags = new Dictionary<IntPtr, TagWindow>();
+        private static List<TagContext> KnownTags = new List<TagContext>();
 
         /// <summary>
         /// Handles captured global windows hotkey
         /// </summary>
         public static void GlobalHotkeyHandle()
         {
-            var host = GetHostHandle();
+            var host = RegistrationManager.GetHostHandle();
+            var context = RegistrationManager.GetKnownTagContext(host);
 
-            if (RegistrationManager.KnownTags.ContainsKey(host))
+            if (context != null)
             {
-                RegistrationManager.ToggleTagVisibility(host);
+                context.ToggleTagVisibility();
             }
             else
             {
-                RegistrationManager.RegisterNewTag(host);
+                context = new TagContext(host);
+                RegistrationManager.KnownTags.Add(context);
             }
         }
 
         /// <summary>
-        /// Register new tag window
+        /// Find tag context based on host window handle
         /// </summary>
-        /// <param name="host">Host for tag window</param>
-        private static void RegisterNewTag(IntPtr host)
+        /// <param name="host">Window handle of the tagged window (the host)</param>
+        /// <returns>Existing context or null</returns>
+        private static TagContext GetKnownTagContext(IntPtr host)
         {
-            //var settings = new SettingsWindow
-            //{
-            //    DataContext = new SettingsModel(0),
-            //};
-            //settings.ShowDialog();
-
-            var tag = new TagWindow(host, new TagModel
-            {
-                Text = "File browser",
-                FontFamily = new FontFamily("Segoe UI"),
-                FontSize = 50
-            } );
-
-            RegistrationManager.KnownTags[host] = tag;
-            // Preserve settings on per window title basis
-            // Populate setting from the preserved state
+            return RegistrationManager.KnownTags.SingleOrDefault(c => c.HostWindow == host);
         }
 
         /// <summary>
-        /// Toggles tag window visibility for already known tag window
-        /// </summary>
-        /// <param name="host">Host for tag window</param>
-        private static void ToggleTagVisibility(IntPtr host)
-        {
-            if (RegistrationManager.KnownTags[host].Visibility == Visibility.Visible)
-            {
-                RegistrationManager.KnownTags[host].Hide();
-            }
-            else
-            {
-                RegistrationManager.KnownTags[host].Show();
-            }
-        }
-
-        /// <summary>
-        /// Gets handle of the host window
+        /// Gets handle of the host window based on the foremost window
         /// </summary>
         /// <returns>
-        /// If foreground window is not tag, method would return foreground window.
-        /// If foreground window is registered tag, method would return its host.
+        /// Host window handle; handles situation when tag or settings window are in the front
         /// </returns>
         private static IntPtr GetHostHandle()
         {
             var foremostWindow = NativeAPI.GetForegroundWindow();
-            var existingTagHost = RegistrationManager.KnownTags.Keys.SingleOrDefault(
-                host => foremostWindow == RegistrationManager.KnownTags[host].Handle);
 
-            return (existingTagHost == IntPtr.Zero)
-                ? foremostWindow
-                : existingTagHost;
+            // If tag window is foremost, return its owner
+            var tagMatch = RegistrationManager.KnownTags.SingleOrDefault(c => c.TagWindow.GetHandle() == foremostWindow);
+            if (tagMatch != null)
+            {
+                return tagMatch.TagWindow.GetOwner();
+            }
+
+            // If settings window is foremost, return corresponding tag owner
+            var settingsMatch = RegistrationManager.KnownTags.SingleOrDefault(c => c.SettingsWindow.GetHandle() == foremostWindow);
+            if (settingsMatch != null)
+            {
+                return settingsMatch.TagWindow.GetOwner();
+            }
+
+            // Else return foremost window handle
+            return foremostWindow;
         }
+
+        // TODO: Preserve settings on per window title basis, populate setting from the preserved state
     }
 }

@@ -6,6 +6,7 @@ using System.Windows.Interop;
 using Tagger.WinAPI;
 using Tagger.Wpf.ViewModels;
 using Utils.Diagnostics;
+using Utils.Extensions;
 using RECT = Tagger.WinAPI.NativeAPI.RECT;
 
 namespace Tagger.Wpf
@@ -40,7 +41,7 @@ namespace Tagger.Wpf
             this.DataContext = viewModel;
 
             // Set window owner so that the tag would always be on top of it
-            this.Host = host;
+            this.SetOwner( host );
 
             // Subscribe to the tagged window movements
             this.windowMovedListner = new WindowMovedListner(host);
@@ -82,14 +83,14 @@ namespace Tagger.Wpf
         private RECT GetHostClientArea()
         {
             RECT sizes;
-            bool success = NativeAPI.GetWindowRect(this.Host, out sizes);
+            bool success = NativeAPI.GetWindowRect(this.GetOwner(), out sizes);
 
             if (!success)
             {
                 throw new Win32Exception(Marshal.GetLastWin32Error());
             }
 
-            var zero = NativeAPI.SendMessage(this.Host, NativeAPI.WM_NCCALCSIZE, 0, ref sizes);
+            var zero = NativeAPI.SendMessage(this.GetOwner(), NativeAPI.WM_NCCALCSIZE, 0, ref sizes);
             Check.Ensure(zero == 0);
 
             return sizes;
@@ -102,23 +103,6 @@ namespace Tagger.Wpf
         /// <param name="e"></param>
         private void Window_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-        }
-
-        /// <summary>
-        /// Native handle corresponding to this tag window
-        /// </summary>
-        public IntPtr Handle
-        {
-            get { return new WindowInteropHelper(this).Handle; }
-        }
-
-        /// <summary>
-        /// Native handle for host window (the owner window this tag belongs to)
-        /// </summary>
-        private IntPtr Host
-        {
-            get { return new WindowInteropHelper(this).Owner; }
-            set { new WindowInteropHelper(this).Owner = value; }
         }
     }
 }

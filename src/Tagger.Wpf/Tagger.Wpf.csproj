@@ -85,6 +85,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Domain\RegistrationManager.cs" />
+    <Compile Include="Domain\TagContext.cs" />
     <Compile Include="PoC\HookViewModel.cs" />
     <Compile Include="Models\SettingsModel.cs" />
     <Compile Include="Models\TagModel.cs" />

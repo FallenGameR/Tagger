@@ -1,6 +1,7 @@
 ﻿using Utils.Prism;
 using Utils.Extensions;
 using Microsoft.Practices.Prism.Commands;
+using System.Windows.Media;
 
 namespace Tagger.Wpf.ViewModels
 {
@@ -15,7 +16,7 @@ namespace Tagger.Wpf.ViewModels
 
         #endregion
         
-        public SettingsModel(int processId)
+        public SettingsModel()
         {
             CreateTagCommand = new DelegateCommand<object>(CreateTag, CanCreateTag);
             HideSettingsCommand = new DelegateCommand<object>(HideSettings, CanHideSettings);
@@ -224,5 +225,15 @@ namespace Tagger.Wpf.ViewModels
         }
 
         #endregion
+
+        public TagModel GetTagModel()
+        {
+            return new TagModel
+            {
+                Text = "File browser",
+                FontFamily = new FontFamily("Segoe UI"),
+                FontSize = 50
+            };
+        }
     }
 }

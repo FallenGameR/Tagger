@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using Tagger.Wpf.ViewModels;
+using Utils.Extensions;
 
 namespace Tagger.Wpf.Windows
 {
@@ -18,9 +10,25 @@ namespace Tagger.Wpf.Windows
     /// </summary>
     public partial class SettingsWindow : Window
     {
+        /// <summary>
+        /// Constructor that is used by the studio designer
+        /// </summary>
         public SettingsWindow()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// Initializes and shows new instance of settings window 
+        /// </summary>
+        /// <param name="host">Host window the corresponding tag belong to</param>
+        /// <param name="viewModel">View model with all fields needed for settings window render</param>
+        public SettingsWindow(IntPtr host, SettingsModel viewModel)
+            : this()
+        {
+            this.DataContext = viewModel;
+            this.SetOwner(host);
+            this.Show();
         }
     }
 }
