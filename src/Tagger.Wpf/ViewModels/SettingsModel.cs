@@ -1,30 +1,41 @@
-﻿using Utils.Prism;
-using Utils.Extensions;
-using Microsoft.Practices.Prism.Commands;
-using System.Windows.Media;
-using Utils.Diagnostics;
+﻿using System;
 using System.Windows;
-using System;
+using Microsoft.Practices.Prism.Commands;
+using Utils.Diagnostics;
+using Utils.Extensions;
+using Utils.Prism;
 
 namespace Tagger.ViewModels
 {
+    /// <summary>
+    /// View model for the settings window
+    /// </summary>
     public class SettingsModel : ViewModelBase
     {
         /// <summary>
         /// Initializes new instance of settings view model
         /// </summary>
-        public SettingsModel(Window window, IntPtr host, TagRender tagRender)
+        public SettingsModel(Window settingsWindow, IntPtr host, TagRender tagRender)
         {
-            Check.Require(window != null, "Window must not be null");
+            Check.Require(settingsWindow != null, "Window must not be null");
             Check.Require(host != IntPtr.Zero, "Host must not be zero");
             Check.Require(tagRender != null, "Tag render object must not be null");
 
-            this.SettingsWindow = window;
+            this.SettingsWindow = settingsWindow;
+            this.HostWindow = host;
             this.TagRender = tagRender;
-            this.HideSettingsCommand = new DelegateCommand<object>(this.HideSettings, this.CanHideSettings);
+            this.HideSettingsCommand = new DelegateCommand<object>( obj => this.SettingsWindow.ToggleVisibility() );
 
+            this.InitializeWindow();
+        }
+
+        /// <summary>
+        /// Initializes settings window to use current view model
+        /// </summary>
+        private void InitializeWindow()
+        {
             this.SettingsWindow.DataContext = this;
-            this.SettingsWindow.SetOwner(host);
+            this.SettingsWindow.SetOwner(this.HostWindow);
             this.SettingsWindow.Show();
             this.SettingsWindow.Closing += (sender, args) =>
             {
@@ -33,44 +44,27 @@ namespace Tagger.ViewModels
             };
         }
 
-        #region Properties
-
-        /// <summary>
-        /// Tag render settings
-        /// </summary>
-        public TagRender TagRender { get; private set; }
-
         /// <summary>
         /// Settings window this view model controls
         /// </summary>
         public Window SettingsWindow { get; private set; }
 
-        #endregion
+        /// <summary>
+        /// Tag render settings
+        /// </summary>
+        /// <remarks>
+        /// Used in WPF bindings
+        /// </remarks>
+        public TagRender TagRender { get; private set; }
 
-        #region Command - HideSettings
+        /// <summary>
+        /// Host tagged window used that owns settings
+        /// </summary>
+        public IntPtr HostWindow { get; private set; }
 
         /// <summary>
         /// Hide settings window command
         /// </summary>
         public DelegateCommand<object> HideSettingsCommand { get; private set; }
-
-        /// <summary>
-        /// HideSettings command handler
-        /// </summary>
-        private void HideSettings(object parameter)
-        {
-            this.SettingsWindow.ToggleVisibility();
-        }
-
-        /// <summary>
-        /// Test that verifies if HideSettings command can be invoked
-        /// </summary>
-        /// <returns>true if command could be invoked</returns>
-        private bool CanHideSettings(object parameter)
-        {
-            return true;
-        }
-
-        #endregion
     }
 }
