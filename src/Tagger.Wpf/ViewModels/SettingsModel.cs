@@ -16,29 +16,34 @@ namespace Tagger.ViewModels
         /// <param name="context">Tag context that this settings view model belongs to</param>
         public SettingsModel(Window window, IntPtr host)
         {
-            //Check.Require(context != null, "Context must not be null");
+            Check.Require(window != null, "Window must not be null");
+            Check.Require(host != IntPtr.Zero, "Host must not be zero");
 
+            this.SettingsWindow = window;
             this.TagRender = new TagRender();
-
             this.HideSettingsCommand = new DelegateCommand<object>(this.HideSettings, this.CanHideSettings);
 
-            window.DataContext = this;
-            window.SetOwner(host);
-            window.Show();
-            window.Closing += (sender, args) =>
+            this.SettingsWindow.DataContext = this;
+            this.SettingsWindow.SetOwner(host);
+            this.SettingsWindow.Show();
+            this.SettingsWindow.Closing += (sender, args) =>
             {
                 args.Cancel = true;
-                window.Hide();
+                this.SettingsWindow.Hide();
             };
         }
 
         #region Properties
 
-
         /// <summary>
         /// Tag render settings
         /// </summary>
         public TagRender TagRender { get; private set; }
+
+        /// <summary>
+        /// Settings window this view model controls
+        /// </summary>
+        public Window SettingsWindow { get; private set; }
 
         #endregion
 
@@ -54,6 +59,7 @@ namespace Tagger.ViewModels
         /// </summary>
         private void HideSettings(object parameter)
         {
+            this.SettingsWindow.ToggleVisibility();
         }
 
         /// <summary>

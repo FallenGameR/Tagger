@@ -2,45 +2,41 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:markupExtensions="clr-namespace:Utils.Prism;assembly=Tagger.Lib"
+        xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
         FocusManager.FocusedElement="{markupExtensions:FirstFocusedElement}"
-        Height="200" Width="400"
+        SizeToContent="Height"
+        Width="400"
         Title="Settings">
     <StackPanel>
-    <Grid DataContext="{Binding Path=TagRender}" >
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+        <Grid DataContext="{Binding Path=TagRender}">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-        <Label Grid.Row="0" Grid.Column="0" Margin="3">Text</Label>
-        <TextBox Grid.Row="0" Grid.Column="1" Margin="3" 
-            Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Grid.Row="0" Grid.Column="0" Margin="3">Text</Label>
+            <TextBox Grid.Row="0" Grid.Column="1" Margin="3"
+                Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <Label Grid.Row="1" Grid.Column="0" Margin="3">Color</Label>
-        <TextBox Grid.Row="1" Grid.Column="1" Margin="3"
-             Text="{Binding Path=Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Grid.Row="1" Grid.Column="0" Margin="3">Color</Label>
+            <TextBox Grid.Row="1" Grid.Column="1" Margin="3"
+                 Text="{Binding Path=Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <Label Grid.Row="2" Grid.Column="0" Margin="3">Top offset</Label>
-        <TextBox Grid.Row="2" Grid.Column="1" Margin="3" 
-             Text="{Binding Path=TopOffset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <Label Grid.Row="2" Grid.Column="0" Margin="3">Top offset</Label>
+            <TextBox Grid.Row="2" Grid.Column="1" Margin="3" 
+                 Text="{Binding Path=OffsetTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-        <Label Grid.Row="3" Grid.Column="0" Margin="3">Right offset</Label>
-        <TextBox Grid.Row="3" Grid.Column="1" Margin="3"
-             Text="{Binding Path=RightOffset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-    </Grid>
-    <!-- TODO: Add invisible button that would be called on Enter or Escape key press -->
-    <StackPanel Visibility="Hidden"  Orientation="Horizontal" HorizontalAlignment="Right">
-        <Button Margin="3" Width="120" Command="{Binding Path=HideSettingsCommand}" IsDefault="True">OK</Button>
-        <Button Margin="3" Width="120" Command="{Binding Path=HideSettingsCommand}" IsCancel="True">Cancel</Button>
+            <Label Grid.Row="3" Grid.Column="0" Margin="3">Right offset</Label>
+            <TextBox Grid.Row="3" Grid.Column="1" Margin="3"
+                 Text="{Binding Path=OffsetRight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+        <Button Command="{Binding HideSettingsCommand}" IsDefault="True" IsCancel="True">OK</Button>
     </StackPanel>
-    </StackPanel>
-
 </Window>
