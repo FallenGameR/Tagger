@@ -37,6 +37,6 @@
             <TextBox Grid.Row="3" Grid.Column="1" Margin="3"
                  Text="{Binding Path=OffsetRight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
-        <Button Command="{Binding HideSettingsCommand}" IsDefault="True" IsCancel="True">OK</Button>
+        <Button Margin="3" Command="{Binding HideSettingsCommand}" IsDefault="True" IsCancel="True">OK</Button>
     </StackPanel>
 </Window>
