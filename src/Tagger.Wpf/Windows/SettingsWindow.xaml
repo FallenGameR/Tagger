@@ -16,6 +16,9 @@
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"/>
@@ -23,21 +26,37 @@
             </Grid.ColumnDefinitions>
 
             <Label Grid.Row="0" Grid.Column="0" Margin="3">Text</Label>
-            <TextBox Grid.Row="0" Grid.Column="1" Margin="3"
-                Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Grid.Row="0" Grid.Column="1" Margin="3" Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
             <Label Grid.Row="1" Grid.Column="0" Margin="3">Color</Label>
-            <TextBox Grid.Row="1" Grid.Column="1" Margin="3"
-                 Text="{Binding Path=Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Margin="3" Text="{Binding Path=Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
             <Label Grid.Row="2" Grid.Column="0" Margin="3">Top offset</Label>
-            <TextBox Grid.Row="2" Grid.Column="1" Margin="3" 
-                 Text="{Binding Path=OffsetTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Grid.Row="2" Grid.Column="1" Margin="3" Text="{Binding Path=OffsetTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <Label Grid.Row="3" Grid.Column="0" Margin="3">Right offset</Label>
-            <TextBox Grid.Row="3" Grid.Column="1" Margin="3"
-                 Text="{Binding Path=OffsetRight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Grid.Row="3" Grid.Column="1" Margin="3" Text="{Binding Path=OffsetRight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Label Grid.Row="4" Grid.Column="0" Margin="3">Font family</Label>
+            <TextBox Grid.Row="4" Grid.Column="1" Margin="3" Text="{Binding Path=FontFamily, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Label Grid.Row="5" Grid.Column="0" Margin="3">Font size</Label>
+            <TextBox Grid.Row="5" Grid.Column="1" Margin="3" Text="{Binding Path=FontSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Label Grid.Row="6" Grid.Column="0" Margin="3">Font color</Label>
+            <TextBox Grid.Row="6" Grid.Column="1" Margin="3" Text="{Binding Path=FontColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
-        <Button Margin="3" Command="{Binding HideSettingsCommand}" IsDefault="True" IsCancel="True">OK</Button>
+        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            
+            <Button Margin="3" Grid.Column="0" Command="{Binding HideSettingsCommand}" IsDefault="True" IsCancel="True">OK</Button>
+            <Button Margin="5" Grid.Column="1" IsEnabled="False">Save as default</Button>
+            <Button Margin="5" Grid.Column="2" IsEnabled="False">Load from default</Button>
+        </Grid>
     </StackPanel>
 </Window>

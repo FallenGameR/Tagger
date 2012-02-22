@@ -30,10 +30,12 @@
             Text="{Binding Path=Text, Mode=OneWay}"
             FontSize="{Binding Path=FontSize, Mode=OneWay}"
             FontFamily="{Binding Path=FontFamily, Mode=OneWay}"
-            Foreground="{Binding Path=FontColor, Mode=OneWay}"
             TextAlignment="Right"
             VerticalAlignment="Center"
-            Margin="5"
-            />
+            Margin="5">
+            <TextBlock.Foreground>
+                <SolidColorBrush Color="{Binding Path=FontColor, Mode=OneWay}" />
+            </TextBlock.Foreground>
+        </TextBlock>
     </Grid>
 </Window>

@@ -30,10 +30,13 @@ namespace Tagger
         /// </summary>
         public TagRender()
         {
-            this.Color = Colors.Green;
             this.Text = "File browser";
+            this.Color = Colors.Green;
             this.FontFamily = new FontFamily("Segoe UI");
             this.FontSize = 50;
+            this.FontColor = Colors.Black;
+            this.OffsetTop = 0;
+            this.OffsetRight = 0;
         }
 
         #region Properties
