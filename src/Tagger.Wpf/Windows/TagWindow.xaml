@@ -10,7 +10,6 @@
     MinWidth="140" 
     SizeToContent="WidthAndHeight" 
     Background="Transparent"
-    MouseRightButtonUp="Window_MouseRightButtonUp"
     >
     <Grid DataContext="{Binding Path=TagRender}">
         <Grid.ColumnDefinitions>

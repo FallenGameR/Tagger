@@ -13,14 +13,14 @@ namespace Tagger.ViewModels
         /// <summary>
         /// Initializes new instance of settings view model
         /// </summary>
-        /// <param name="context">Tag context that this settings view model belongs to</param>
-        public SettingsModel(Window window, IntPtr host)
+        public SettingsModel(Window window, IntPtr host, TagRender tagRender)
         {
             Check.Require(window != null, "Window must not be null");
             Check.Require(host != IntPtr.Zero, "Host must not be zero");
+            Check.Require(tagRender != null, "Tag render object must not be null");
 
             this.SettingsWindow = window;
-            this.TagRender = new TagRender();
+            this.TagRender = tagRender;
             this.HideSettingsCommand = new DelegateCommand<object>(this.HideSettings, this.CanHideSettings);
 
             this.SettingsWindow.DataContext = this;
@@ -72,10 +72,5 @@ namespace Tagger.ViewModels
         }
 
         #endregion
-
-        public TagModel GetTagModel(TagContext context)
-        {
-            return new TagModel( context, this.TagRender );
-        }
     }
 }

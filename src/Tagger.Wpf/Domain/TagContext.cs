@@ -20,12 +20,13 @@ namespace Tagger
             Check.Require(host != IntPtr.Zero, "Host should not be zero");
 
             this.HostWindow = host;
+            this.TagRender = new TagRender();
 
             this.SettingsWindow = new SettingsWindow();
-            this.SettingsModel = new SettingsModel(this.SettingsWindow, this.HostWindow);
+            this.SettingsModel = new SettingsModel(this.SettingsWindow, this.HostWindow, this.TagRender);
 
-            var tagModel = this.SettingsModel.GetTagModel(this);
-            this.TagWindow = new TagWindow(host, tagModel);
+            this.TagWindow = new TagWindow();
+            this.TagModel = new TagModel(this.TagWindow, this.HostWindow, this.TagRender, this);
 
             this.SettingsWindow.Focus();
         }
@@ -36,12 +37,17 @@ namespace Tagger
         public IntPtr HostWindow { get; private set; }
 
         /// <summary>
+        /// Tag render view model that is shared between settings and tag windows
+        /// </summary>
+        public TagRender TagRender { get; set; }
+
+        /// <summary>
         /// Settings window that setup tag appearance
         /// </summary>
         public SettingsWindow SettingsWindow { get; private set; }
 
         /// <summary>
-        /// Settings window view model that controls the window
+        /// Settings window view model that controls the settings window
         /// </summary>
         public SettingsModel SettingsModel { get; private set; }
 
@@ -50,5 +56,9 @@ namespace Tagger
         /// </summary>
         public TagWindow TagWindow { get; private set; }
 
+        /// <summary>
+        /// Tag window view model that controls the tag window
+        /// </summary>
+        public TagModel TagModel { get; private set; }
     }
 }
