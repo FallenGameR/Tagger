@@ -1,6 +1,6 @@
 3-clause BSD license | New BSD License | Modified BSD License
 
-Copyright (c) 2011, Alexander Kostikov
+Copyright (c) 2011, Alexander Kostikov (FallenGameR)
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
