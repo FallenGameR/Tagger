@@ -21,10 +21,10 @@ namespace Tagger
 
             this.HostWindow = host;
 
-            var settingsModel = new SettingsModel(this);
-            this.SettingsWindow = new SettingsWindow(host, settingsModel);
+            this.SettingsWindow = new SettingsWindow();
+            this.SettingsModel = new SettingsModel(this.SettingsWindow, this.HostWindow);
 
-            var tagModel = settingsModel.GetTagModel();
+            var tagModel = this.SettingsModel.GetTagModel(this);
             this.TagWindow = new TagWindow(host, tagModel);
         }
 
@@ -34,13 +34,19 @@ namespace Tagger
         public IntPtr HostWindow { get; private set; }
 
         /// <summary>
+        /// Settings window that setup tag appearance
+        /// </summary>
+        public SettingsWindow SettingsWindow { get; private set; }
+
+        /// <summary>
+        /// Settings window view model that controls the window
+        /// </summary>
+        public SettingsModel SettingsModel { get; private set; }
+
+        /// <summary>
         /// Tag window itself
         /// </summary>
         public TagWindow TagWindow { get; private set; }
 
-        /// <summary>
-        /// Settings window that setup tag appearance
-        /// </summary>
-        public SettingsWindow SettingsWindow { get; private set; }
     }
 }

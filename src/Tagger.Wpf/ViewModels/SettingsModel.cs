@@ -3,6 +3,8 @@ using Utils.Extensions;
 using Microsoft.Practices.Prism.Commands;
 using System.Windows.Media;
 using Utils.Diagnostics;
+using System.Windows;
+using System;
 
 namespace Tagger.ViewModels
 {
@@ -12,22 +14,26 @@ namespace Tagger.ViewModels
         /// Initializes new instance of settings view model
         /// </summary>
         /// <param name="context">Tag context that this settings view model belongs to</param>
-        public SettingsModel(TagContext context)
+        public SettingsModel(Window window, IntPtr host)
         {
-            Check.Require(context != null, "Context must not be null");
+            //Check.Require(context != null, "Context must not be null");
 
-            this.TagContext = context;
             this.TagRender = new TagRender();
 
             this.HideSettingsCommand = new DelegateCommand<object>(this.HideSettings, this.CanHideSettings);
+
+            window.DataContext = this;
+            window.SetOwner(host);
+            window.Show();
+            window.Closing += (sender, args) =>
+            {
+                args.Cancel = true;
+                window.Hide();
+            };
         }
 
         #region Properties
 
-        /// <summary>
-        /// Tag context 
-        /// </summary>
-        public TagContext TagContext { get; private set; }
 
         /// <summary>
         /// Tag render settings
@@ -61,9 +67,9 @@ namespace Tagger.ViewModels
 
         #endregion
 
-        public TagModel GetTagModel()
+        public TagModel GetTagModel(TagContext context)
         {
-            return new TagModel( this.TagContext, this.TagRender );
+            return new TagModel( context, this.TagRender );
         }
     }
 }
