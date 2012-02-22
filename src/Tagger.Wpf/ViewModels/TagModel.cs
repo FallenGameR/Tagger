@@ -35,11 +35,13 @@ namespace Tagger.ViewModels
             this.HostWindow = host;
             this.TagRender = tagRender;
             this.SettingsWindow = settingsWindow;
+            this.WindowMovedListner = new WindowMovedListner(this.HostWindow);
             this.ToggleSettingsCommand = new DelegateCommand<object>(obj => this.SettingsWindow.ToggleVisibility());
 
-            // Subscribe to host window movements
-            this.WindowMovedListner = new WindowMovedListner(this.HostWindow);
-            this.WindowMovedListner.Moved += delegate { this.UpdateTagWindowPosition(); };
+            // Subscriptions
+            this.WindowMovedListner.Moved += delegate { this.UpdateTagWindowPosition(this.TagWindow.Width); };
+            this.TagWindow.SizeChanged += (sender, args) => this.UpdateTagWindowPosition(args.NewSize.Width);
+            this.TagWindow.MouseRightButtonUp += delegate { this.ToggleSettingsCommand.Execute(null); };
 
             // Initialize tag window
             this.InitializeWindow();
@@ -53,12 +55,6 @@ namespace Tagger.ViewModels
             this.TagWindow.DataContext = this;
             this.TagWindow.SetOwner(this.HostWindow);
             this.TagWindow.Show();
-            this.UpdateTagWindowPosition();
-
-            this.TagWindow.MouseRightButtonUp += delegate
-            {
-                this.ToggleSettingsCommand.Execute(null);
-            };
         }
 
         /// <summary>
@@ -73,12 +69,13 @@ namespace Tagger.ViewModels
         /// <summary>
         /// Update tag window position based on host window position
         /// </summary>
-        private void UpdateTagWindowPosition()
+        /// <param name="width">Width of the tag window (need to specify explicitly for size changing events related to changed settings)</param>
+        private void UpdateTagWindowPosition(double width)
         {
             RECT clientArea = this.GetHostWindowClientArea();
 
             this.TagWindow.Top = clientArea.Top;
-            this.TagWindow.Left = clientArea.Right - this.TagWindow.Width;
+            this.TagWindow.Left = clientArea.Right - width;
         }
 
         /// <summary>

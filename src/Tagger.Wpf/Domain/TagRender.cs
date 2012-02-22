@@ -25,6 +25,9 @@ namespace Tagger
 
         #endregion
 
+        /// <summary>
+        /// Initializes new instance of TagRender
+        /// </summary>
         public TagRender()
         {
             this.Color = Colors.Green;

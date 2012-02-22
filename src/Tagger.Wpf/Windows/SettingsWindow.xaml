@@ -5,6 +5,7 @@
         xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
         FocusManager.FocusedElement="{markupExtensions:FirstFocusedElement}"
         SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
         Width="400"
         Title="Settings">
     <StackPanel>
