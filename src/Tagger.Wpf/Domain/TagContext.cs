@@ -26,7 +26,7 @@ namespace Tagger
             this.SettingsModel = new SettingsModel(this.SettingsWindow, this.HostWindow, this.TagRender);
 
             this.TagWindow = new TagWindow();
-            this.TagModel = new TagModel(this.TagWindow, this.HostWindow, this.TagRender, this);
+            this.TagModel = new TagModel(this.TagWindow, this.HostWindow, this.TagRender, this.SettingsWindow);
 
             this.SettingsWindow.Focus();
         }

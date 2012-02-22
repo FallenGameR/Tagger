@@ -37,6 +37,7 @@ namespace Tagger.ViewModels
             this.SettingsWindow.DataContext = this;
             this.SettingsWindow.SetOwner(this.HostWindow);
             this.SettingsWindow.Show();
+
             this.SettingsWindow.Closing += (sender, args) =>
             {
                 args.Cancel = true;
