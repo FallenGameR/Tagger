@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:markupExtensions="clr-namespace:Utils.Prism;assembly=Tagger.Lib"
         xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
+        xmlns:extToolkit="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit.Extended"
         FocusManager.FocusedElement="{markupExtensions:FirstFocusedElement}"
         SizeToContent="Height"
         WindowStartupLocation="CenterOwner"
@@ -32,10 +33,10 @@
             <TextBox Grid.Row="1" Grid.Column="1" Margin="3" Text="{Binding Path=Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
             <Label Grid.Row="2" Grid.Column="0" Margin="3">Top offset</Label>
-            <TextBox Grid.Row="2" Grid.Column="1" Margin="3" Text="{Binding Path=OffsetTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <extToolkit:IntegerUpDown Grid.Row="2" Grid.Column="1" Margin="3" Increment="1" Value="{Binding Path=OffsetTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <Label Grid.Row="3" Grid.Column="0" Margin="3">Right offset</Label>
-            <TextBox Grid.Row="3" Grid.Column="1" Margin="3" Text="{Binding Path=OffsetRight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <extToolkit:IntegerUpDown Grid.Row="3" Grid.Column="1" Margin="3" Increment="1" Value="{Binding Path=OffsetRight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <Label Grid.Row="4" Grid.Column="0" Margin="3">Font family</Label>
             <TextBox Grid.Row="4" Grid.Column="1" Margin="3" Text="{Binding Path=FontFamily, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>

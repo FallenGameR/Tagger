@@ -40,6 +40,7 @@ namespace Tagger.ViewModels
 
             // Subscriptions
             this.WindowMovedListner.Moved += delegate { this.UpdateTagWindowPosition(this.TagWindow.Width); };
+            this.TagRender.PropertyChanged += (sender, args) => this.UpdateTagWindowPosition(this.TagWindow.Width);
             this.TagWindow.SizeChanged += (sender, args) => this.UpdateTagWindowPosition(args.NewSize.Width);
             this.TagWindow.MouseRightButtonUp += delegate { this.ToggleSettingsCommand.Execute(null); };
 
@@ -74,8 +75,8 @@ namespace Tagger.ViewModels
         {
             RECT clientArea = this.GetHostWindowClientArea();
 
-            this.TagWindow.Top = clientArea.Top;
-            this.TagWindow.Left = clientArea.Right - width;
+            this.TagWindow.Top = clientArea.Top + this.TagRender.OffsetTop;
+            this.TagWindow.Left = clientArea.Right - width - this.TagRender.OffsetRight;
         }
 
         /// <summary>

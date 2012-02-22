@@ -12,21 +12,12 @@
     Background="Transparent"
     >
     <Grid DataContext="{Binding Path=TagRender}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="{Binding Path=OffsetRight, Mode=OneWay}" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="{Binding Path=OffsetTop, Mode=OneWay}" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <Rectangle Grid.Row="1" Grid.Column="0">
+        <Rectangle>
             <Rectangle.Fill>
                 <SolidColorBrush Color="{Binding Path=Color, Mode=OneWay}" />
             </Rectangle.Fill>
-        </Rectangle>
-        <TextBlock Grid.Row="1" Grid.Column="0"
+        </Rectangle>        
+        <TextBlock
             Text="{Binding Path=Text, Mode=OneWay}"
             FontSize="{Binding Path=FontSize, Mode=OneWay}"
             FontFamily="{Binding Path=FontFamily, Mode=OneWay}"
