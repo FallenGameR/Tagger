@@ -24,7 +24,6 @@ namespace Tagger
             var settingsModel = new SettingsModel(this);
             this.SettingsWindow = new SettingsWindow(host, settingsModel);
 
-            // TODO: Add visible property, bind it to settings
             var tagModel = settingsModel.GetTagModel();
             this.TagWindow = new TagWindow(host, tagModel);
         }

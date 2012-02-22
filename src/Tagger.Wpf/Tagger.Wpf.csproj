@@ -86,6 +86,7 @@
     </ApplicationDefinition>
     <Compile Include="Domain\RegistrationManager.cs" />
     <Compile Include="Domain\TagContext.cs" />
+    <Compile Include="Domain\TagRender.cs" />
     <Compile Include="PoC\HookViewModel.cs" />
     <Compile Include="ViewModels\SettingsModel.cs" />
     <Compile Include="ViewModels\TagModel.cs" />

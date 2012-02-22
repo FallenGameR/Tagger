@@ -5,7 +5,8 @@
         FocusManager.FocusedElement="{markupExtensions:FirstFocusedElement}"
         Height="200" Width="400"
         Title="Settings">
-    <Grid>
+    <StackPanel>
+    <Grid DataContext="{Binding Path=TagRender}" >
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition />
@@ -20,25 +21,26 @@
 
         <Label Grid.Row="0" Grid.Column="0" Margin="3">Text</Label>
         <TextBox Grid.Row="0" Grid.Column="1" Margin="3" 
-            Text="{Binding Path=Text, Mode=OneWayToSource}"/>
+            Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <Label Grid.Row="1" Grid.Column="0" Margin="3">Color</Label>
         <TextBox Grid.Row="1" Grid.Column="1" Margin="3"
-             Text="{Binding Path=Color, Mode=OneWayToSource}"/>
+             Text="{Binding Path=Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <Label Grid.Row="2" Grid.Column="0" Margin="3">Top offset</Label>
         <TextBox Grid.Row="2" Grid.Column="1" Margin="3" 
-             Text="{Binding Path=TopOffset, Mode=OneWayToSource}" />
+             Text="{Binding Path=TopOffset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <Label Grid.Row="3" Grid.Column="0" Margin="3">Right offset</Label>
         <TextBox Grid.Row="3" Grid.Column="1" Margin="3"
-             Text="{Binding Path=RightOffset, Mode=OneWayToSource}"/>
+             Text="{Binding Path=RightOffset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <!-- TODO: Add invisible button that would be called on Enter or Escape key press -->
-        <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Margin="3" Width="120" Command="{Binding Path=HideSettingsCommand}">OK</Button>
-            <Button Margin="3" Width="120" Command="{Binding Path=CancelSettingsCommand}">Cancel</Button>
-        </StackPanel>
     </Grid>
+    <!-- TODO: Add invisible button that would be called on Enter or Escape key press -->
+    <StackPanel Visibility="Hidden"  Orientation="Horizontal" HorizontalAlignment="Right">
+        <Button Margin="3" Width="120" Command="{Binding Path=HideSettingsCommand}" IsDefault="True">OK</Button>
+        <Button Margin="3" Width="120" Command="{Binding Path=HideSettingsCommand}" IsCancel="True">Cancel</Button>
+    </StackPanel>
+    </StackPanel>
 
 </Window>
