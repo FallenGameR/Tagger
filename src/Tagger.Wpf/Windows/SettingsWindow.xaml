@@ -39,8 +39,23 @@
             <extToolkit:IntegerUpDown Grid.Row="3" Grid.Column="1" Margin="3" Increment="1" Value="{Binding Path=OffsetRight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <Label Grid.Row="4" Grid.Column="0" Margin="3">Font family</Label>
-            <TextBox Grid.Row="4" Grid.Column="1" Margin="3" Text="{Binding Path=FontFamily, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <!-- http://www.bennedik.de/2007/10/wpf-fast-font-drop-down-list.html -->
+            <ComboBox Grid.Row="4" Grid.Column="1" Margin="3" IsEditable="True" >
+                <ComboBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ComboBox.ItemsPanel>
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" FontFamily="{Binding}" FontSize="15" Height="20"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
 
+            <!-- 
+            <TextBox Grid.Row="4" Grid.Column="1" Margin="3" Text="{Binding Path=FontFamily, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+-->
             <Label Grid.Row="5" Grid.Column="0" Margin="3">Font size</Label>
             <TextBox Grid.Row="5" Grid.Column="1" Margin="3" Text="{Binding Path=FontSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
