@@ -4,11 +4,22 @@
         xmlns:markupExtensions="clr-namespace:Utils.Prism;assembly=Tagger.Lib"
         xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
         xmlns:extToolkit="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit.Extended"
+        xmlns:media="clr-namespace:System.Windows.Media;assembly=PresentationCore"       
+        xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         FocusManager.FocusedElement="{markupExtensions:FirstFocusedElement}"
         SizeToContent="Height"
         WindowStartupLocation="CenterOwner"
         Width="400"
         Title="Settings">
+
+    <Window.Resources>
+        <CollectionViewSource Source="{Binding Source={x:Static media:Fonts.SystemFontFamilies}}" x:Key="fonts">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Source" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+    </Window.Resources>
+
     <StackPanel>
         <Grid DataContext="{Binding Path=TagRender}">
             <Grid.RowDefinitions>
@@ -39,8 +50,14 @@
             <extToolkit:IntegerUpDown Grid.Row="3" Grid.Column="1" Margin="3" Increment="1" Value="{Binding Path=OffsetRight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <Label Grid.Row="4" Grid.Column="0" Margin="3">Font family</Label>
-            <!-- http://www.bennedik.de/2007/10/wpf-fast-font-drop-down-list.html -->
-            <ComboBox Grid.Row="4" Grid.Column="1" Margin="3" IsEditable="True" >
+
+            <!-- VirtualizingStackPanel is used for the fast first render. See also http://www.bennedik.de/2007/10/wpf-fast-font-drop-down-list.html -->
+            <ComboBox 
+                Grid.Row="4" Grid.Column="1" 
+                Margin="3" IsEditable="True" 
+                ItemsSource="{Binding Source={StaticResource fonts}}" 
+                SelectedValue="{Binding Path=FontFamily, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                >
                 <ComboBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <VirtualizingStackPanel />
@@ -53,9 +70,6 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
 
-            <!-- 
-            <TextBox Grid.Row="4" Grid.Column="1" Margin="3" Text="{Binding Path=FontFamily, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
--->
             <Label Grid.Row="5" Grid.Column="0" Margin="3">Font size</Label>
             <TextBox Grid.Row="5" Grid.Column="1" Margin="3" Text="{Binding Path=FontSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
