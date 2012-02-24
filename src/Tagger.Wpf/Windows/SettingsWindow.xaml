@@ -38,31 +38,40 @@
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-
+            
             <Label Grid.Row="0" Grid.Column="0" Margin="3">Text</Label>
-            <TextBox Grid.Row="0" Grid.Column="1" Margin="3" 
-                     Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox 
+                Grid.Row="0" Grid.Column="1" Margin="3" 
+                Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
+            <!-- I wish there were an easy way of typing color name as well...
+            But my experiments with ComboBox failed - you can't redefine both ItemTemplate and DisplayMemberPath.
+            And you have to redefine ComboBox to fix that... -->
             <Label Grid.Row="1" Grid.Column="0" Margin="3">Color</Label>
-            <TextBox Grid.Row="1" Grid.Column="1" Margin="3" 
-                     Text="{Binding Path=Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <t:ColorPicker 
+                Grid.Row="1" Grid.Column="1" Margin="3" 
+                DisplayColorAndName="True" ShowRecentColors="True"
+                SelectedColor="{Binding Path=Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <Label Grid.Row="2" Grid.Column="0" Margin="3">Top offset</Label>
-            <t:IntegerUpDown Grid.Row="2" Grid.Column="1" Margin="3" 
-                             Increment="1" TextAlignment="Left" 
-                             Value="{Binding Path=OffsetTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <t:IntegerUpDown 
+                Grid.Row="2" Grid.Column="1" Margin="3" 
+                Increment="1" TextAlignment="Left" 
+                Value="{Binding Path=OffsetTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <Label Grid.Row="3" Grid.Column="0" Margin="3">Right offset</Label>
-            <t:IntegerUpDown Grid.Row="3" Grid.Column="1" Margin="3" 
-                             Increment="1" TextAlignment="Left" 
-                             Value="{Binding Path=OffsetRight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <t:IntegerUpDown 
+                Grid.Row="3" Grid.Column="1" Margin="3" 
+                Increment="1" TextAlignment="Left" 
+                Value="{Binding Path=OffsetRight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <!-- VirtualizingStackPanel is used for the fast first render, see also 
             http://www.bennedik.de/2007/10/wpf-fast-font-drop-down-list.html -->
             <Label Grid.Row="4" Grid.Column="0" Margin="3">Font family</Label>
-            <ComboBox Grid.Row="4" Grid.Column="1" Margin="3" IsEditable="True" 
-                      ItemsSource="{Binding Source={StaticResource fonts}}" 
-                      SelectedValue="{Binding Path=FontFamily, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <ComboBox 
+                Grid.Row="4" Grid.Column="1" Margin="3" IsEditable="True" 
+                ItemsSource="{Binding Source={StaticResource fonts}}" 
+                SelectedValue="{Binding Path=FontFamily, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ComboBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <VirtualizingStackPanel />
@@ -76,13 +85,16 @@
             </ComboBox>
 
             <Label Grid.Row="5" Grid.Column="0" Margin="3">Font size</Label>
-            <t:IntegerUpDown Grid.Row="5" Grid.Column="1" Margin="3" 
-                             Increment="1" TextAlignment="Left" 
-                             Value="{Binding Path=FontSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <t:IntegerUpDown 
+                Grid.Row="5" Grid.Column="1" Margin="3" 
+                Increment="1" TextAlignment="Left" 
+                Value="{Binding Path=FontSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <Label Grid.Row="6" Grid.Column="0" Margin="3">Font color</Label>
-            <TextBox Grid.Row="6" Grid.Column="1" Margin="3" 
-                     Text="{Binding Path=FontColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <t:ColorPicker
+                Grid.Row="6" Grid.Column="1" Margin="3" 
+                DisplayColorAndName="True" ShowRecentColors="True"
+                SelectedColor="{Binding Path=FontColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </Grid>
         
         <!-- Buttons grid -->
