@@ -5,6 +5,7 @@
         xmlns:markupExtensions="clr-namespace:Utils.Prism;assembly=Tagger.Lib"
         xmlns:media="clr-namespace:System.Windows.Media;assembly=PresentationCore"       
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        xmlns:av="http://schemas.codeplex.com/wpfcontrib/xaml/presentation"
         FocusManager.FocusedElement="{markupExtensions:FirstFocusedElement}"
         SizeToContent="Height"
         WindowStartupLocation="CenterOwner"
@@ -23,53 +24,44 @@
     <StackPanel>
 
         <!-- Settings grid -->
-        <Grid DataContext="{Binding Path=TagRender}">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
+        <av:AutoGrid DataContext="{Binding Path=TagRender}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             
-            <Label Grid.Row="0" Grid.Column="0" Margin="3">Text</Label>
+            <Label Margin="3">Text</Label>
             <TextBox 
-                Grid.Row="0" Grid.Column="1" Margin="3" 
+                Margin="3" 
                 Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
             <!-- I wish there were an easy way of typing color name as well...
             But my experiments with ComboBox failed - you can't redefine both ItemTemplate and DisplayMemberPath.
             And you have to redefine ComboBox to fix that... -->
-            <Label Grid.Row="1" Grid.Column="0" Margin="3">Color</Label>
+            <Label Margin="3">Color</Label>
             <t:ColorPicker 
-                Grid.Row="1" Grid.Column="1" Margin="3" 
+                Margin="3" 
                 DisplayColorAndName="True" ShowRecentColors="True"
                 SelectedColor="{Binding Path=Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-            <Label Grid.Row="2" Grid.Column="0" Margin="3">Top offset</Label>
+            <Label Margin="3">Top offset</Label>
             <t:IntegerUpDown 
-                Grid.Row="2" Grid.Column="1" Margin="3" 
-                Increment="1" TextAlignment="Left" 
+                Margin="3" TextAlignment="Left" 
+                Increment="1" 
                 Value="{Binding Path=OffsetTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-            <Label Grid.Row="3" Grid.Column="0" Margin="3">Right offset</Label>
+            <Label Margin="3">Right offset</Label>
             <t:IntegerUpDown 
-                Grid.Row="3" Grid.Column="1" Margin="3" 
-                Increment="1" TextAlignment="Left" 
+                Margin="3" TextAlignment="Left" 
+                Increment="1" 
                 Value="{Binding Path=OffsetRight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <!-- VirtualizingStackPanel is used for the fast first render, see also 
             http://www.bennedik.de/2007/10/wpf-fast-font-drop-down-list.html -->
-            <Label Grid.Row="4" Grid.Column="0" Margin="3">Font family</Label>
+            <Label Margin="3">Font family</Label>
             <ComboBox 
-                Grid.Row="4" Grid.Column="1" Margin="3" IsEditable="True" 
+                Margin="3" 
+                IsEditable="True" 
                 ItemsSource="{Binding Source={StaticResource fonts}}" 
                 SelectedValue="{Binding Path=FontFamily, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ComboBox.ItemsPanel>
@@ -84,30 +76,30 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
 
-            <Label Grid.Row="5" Grid.Column="0" Margin="3">Font size</Label>
+            <Label Margin="3">Font size</Label>
             <t:IntegerUpDown 
-                Grid.Row="5" Grid.Column="1" Margin="3" 
-                Increment="1" TextAlignment="Left" 
+                Margin="3" TextAlignment="Left" 
+                Increment="1" 
                 Value="{Binding Path=FontSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-            <Label Grid.Row="6" Grid.Column="0" Margin="3">Font color</Label>
+            <Label Margin="3">Font color</Label>
             <t:ColorPicker
-                Grid.Row="6" Grid.Column="1" Margin="3" 
+                Margin="3" 
                 DisplayColorAndName="True" ShowRecentColors="True"
                 SelectedColor="{Binding Path=FontColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-        </Grid>
-        
+        </av:AutoGrid>
+
         <!-- Buttons grid -->
-        <Grid>
+        <av:AutoGrid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             
-            <Button Margin="3" Grid.Column="0" Command="{Binding HideSettingsCommand}" IsDefault="True" IsCancel="True">OK</Button>
-            <Button Margin="5" Grid.Column="1" IsEnabled="False">Save as default</Button>
-            <Button Margin="5" Grid.Column="2" IsEnabled="False">Load from default</Button>
-        </Grid>
+            <Button Margin="3" Command="{Binding HideSettingsCommand}" IsDefault="True" IsCancel="True">OK</Button>
+            <Button Margin="5" IsEnabled="False">Save as default</Button>
+            <Button Margin="5" IsEnabled="False">Load from default</Button>
+        </av:AutoGrid>
     </StackPanel>
 </Window>
