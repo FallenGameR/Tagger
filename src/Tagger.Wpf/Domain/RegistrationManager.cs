@@ -73,7 +73,5 @@ namespace Tagger
             // Else return foremost window handle
             return foremostWindow;
         }
-
-        // TODO: Preserve settings on per window title basis, populate setting from the preserved state
     }
 }
