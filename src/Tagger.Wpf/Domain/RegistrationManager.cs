@@ -27,6 +27,7 @@ namespace Tagger
             if (context != null)
             {
                 context.TagWindow.ToggleVisibility();
+                NativeAPI.SetForegroundWindow(host);
             }
             else
             {

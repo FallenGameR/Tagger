@@ -4,6 +4,7 @@ using Microsoft.Practices.Prism.Commands;
 using Utils.Diagnostics;
 using Utils.Extensions;
 using Utils.Prism;
+using Tagger.WinAPI;
 
 namespace Tagger.ViewModels
 {
@@ -24,9 +25,9 @@ namespace Tagger.ViewModels
             this.SettingsWindow = settingsWindow;
             this.HostWindow = host;
             this.TagRender = tagRender;
-            this.HideSettingsCommand = new DelegateCommand<object>( obj => this.SettingsWindow.ToggleVisibility() );
-            this.SaveAsDefaultCommand = new DelegateCommand<object>( obj => this.TagRender.SaveAsDefault() );
-            this.LoadFromDefaultCommand = new DelegateCommand<object>( obj => this.TagRender.LoadFromDefault() );
+            this.HideSettingsCommand = new DelegateCommand<object>(this.HideSettingsHandler);
+            this.SaveAsDefaultCommand = new DelegateCommand<object>(obj => this.TagRender.SaveAsDefault());
+            this.LoadFromDefaultCommand = new DelegateCommand<object>(obj => this.TagRender.LoadFromDefault());
 
             this.InitializeWindow();
         }
@@ -45,6 +46,18 @@ namespace Tagger.ViewModels
                 args.Cancel = true;
                 this.SettingsWindow.Hide();
             };
+        }
+
+        /// <summary>
+        /// Handler for hide settings window command
+        /// </summary>
+        /// <remarks>
+        /// Restores focus back to the host window
+        /// </remarks>
+        private void HideSettingsHandler(object obj)
+        {
+            this.SettingsWindow.ToggleVisibility();
+            NativeAPI.SetForegroundWindow(this.HostWindow);
         }
 
         /// <summary>
