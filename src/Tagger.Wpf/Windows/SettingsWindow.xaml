@@ -35,7 +35,7 @@
             <Label Margin="3">Text</Label>
             <TextBox Margin="3" Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-            <Label Margin="3">Color</Label>
+            <Label Margin="3">Tag color</Label>
             <av:AutoGrid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -71,31 +71,12 @@
                                ShowRecentColors="True" />
 
             </av:AutoGrid>
-
-            <Label Margin="3">Top offset</Label>
-            <t:IntegerUpDown Width="60"
-                             Margin="3"
-                             HorizontalAlignment="Left"
-                             Increment="1"
-                             Value="{Binding Path=OffsetTop,
-                                             Mode=TwoWay,
-                                             UpdateSourceTrigger=PropertyChanged}" />
-
-            <Label Margin="3">Right offset</Label>
-            <t:IntegerUpDown Width="60"
-                             Margin="3"
-                             HorizontalAlignment="Left"
-                             Increment="1"
-                             TextAlignment="Left"
-                             Value="{Binding Path=OffsetRight,
-                                             Mode=TwoWay,
-                                             UpdateSourceTrigger=PropertyChanged}" />
-
+            
             <!--
                 VirtualizingStackPanel is used for the fast first render, see also
                 http://www.bennedik.de/2007/10/wpf-fast-font-drop-down-list.html
             -->
-            <Label Margin="3">Font family</Label>
+            <Label Margin="3">Font name</Label>
             <av:AutoGrid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -134,7 +115,6 @@
                                                  UpdateSourceTrigger=PropertyChanged}" />
             </av:AutoGrid>
 
-
             <Label Margin="3">Font color</Label>
             <av:AutoGrid>
                 <Grid.ColumnDefinitions>
@@ -170,6 +150,34 @@
                                                        UpdateSourceTrigger=PropertyChanged}"
                                ShowRecentColors="True" />
 
+            </av:AutoGrid>
+
+            <Label Margin="3">Offsets</Label>
+            <av:AutoGrid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <t:IntegerUpDown 
+                             Margin="3"
+                             HorizontalAlignment="Stretch"
+                             Increment="1"
+                             Value="{Binding Path=OffsetTop,
+                                             Mode=TwoWay,
+                                             UpdateSourceTrigger=PropertyChanged}" />
+                <Label Margin="3">from top</Label>
+
+                <t:IntegerUpDown 
+                             Margin="3"
+                             HorizontalAlignment="Stretch"
+                             Increment="1"
+                             Value="{Binding Path=OffsetRight,
+                                             Mode=TwoWay,
+                                             UpdateSourceTrigger=PropertyChanged}" />
+                <Label Margin="3">from right</Label>
             </av:AutoGrid>
         </av:AutoGrid>
 
