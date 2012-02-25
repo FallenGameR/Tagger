@@ -10,7 +10,7 @@
         Title="Settings"
         Width="400"
         Background="#FAFAFA"
-        FocusManager.FocusedElement="{markupExtensions:FirstFocusedElement}"
+        ResizeMode="NoResize"
         SizeToContent="Height"
         WindowStartupLocation="CenterOwner">
 
@@ -33,7 +33,13 @@
             </Grid.ColumnDefinitions>
 
             <Label Margin="3">Text</Label>
-            <TextBox Margin="3" Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox x:Name="TextTxt"
+                     Margin="3"
+                     TargetUpdated="TextTxt_TargetUpdated"
+                     Text="{Binding Path=Text,
+                                    Mode=TwoWay,
+                                    UpdateSourceTrigger=PropertyChanged,
+                                    NotifyOnTargetUpdated=True}" />
 
             <Label Margin="3">Tag color</Label>
             <av:AutoGrid>
@@ -71,7 +77,7 @@
                                ShowRecentColors="True" />
 
             </av:AutoGrid>
-            
+
             <!--
                 VirtualizingStackPanel is used for the fast first render, see also
                 http://www.bennedik.de/2007/10/wpf-fast-font-drop-down-list.html
@@ -161,22 +167,20 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <t:IntegerUpDown 
-                             Margin="3"
-                             HorizontalAlignment="Stretch"
-                             Increment="1"
-                             Value="{Binding Path=OffsetTop,
-                                             Mode=TwoWay,
-                                             UpdateSourceTrigger=PropertyChanged}" />
+                <t:IntegerUpDown Margin="3"
+                                 HorizontalAlignment="Stretch"
+                                 Increment="1"
+                                 Value="{Binding Path=OffsetTop,
+                                                 Mode=TwoWay,
+                                                 UpdateSourceTrigger=PropertyChanged}" />
                 <Label Margin="3">from top</Label>
 
-                <t:IntegerUpDown 
-                             Margin="3"
-                             HorizontalAlignment="Stretch"
-                             Increment="1"
-                             Value="{Binding Path=OffsetRight,
-                                             Mode=TwoWay,
-                                             UpdateSourceTrigger=PropertyChanged}" />
+                <t:IntegerUpDown Margin="3"
+                                 HorizontalAlignment="Stretch"
+                                 Increment="1"
+                                 Value="{Binding Path=OffsetRight,
+                                                 Mode=TwoWay,
+                                                 UpdateSourceTrigger=PropertyChanged}" />
                 <Label Margin="3">from right</Label>
             </av:AutoGrid>
         </av:AutoGrid>
