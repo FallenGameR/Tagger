@@ -25,6 +25,8 @@ namespace Tagger.ViewModels
             this.HostWindow = host;
             this.TagRender = tagRender;
             this.HideSettingsCommand = new DelegateCommand<object>( obj => this.SettingsWindow.ToggleVisibility() );
+            this.SaveAsDefaultCommand = new DelegateCommand<object>( obj => this.TagRender.SaveAsDefault() );
+            this.LoadFromDefaultCommand = new DelegateCommand<object>( obj => this.TagRender.LoadFromDefault() );
 
             this.InitializeWindow();
         }
@@ -67,5 +69,16 @@ namespace Tagger.ViewModels
         /// Hide settings window command
         /// </summary>
         public DelegateCommand<object> HideSettingsCommand { get; private set; }
+
+        /// <summary>
+        /// Command to save current settings as default for all new tags
+        /// </summary>
+        public DelegateCommand<object> SaveAsDefaultCommand { get; private set; }
+
+        /// <summary>
+        /// Command to load current settings from default values
+        /// </summary>
+        public DelegateCommand<object> LoadFromDefaultCommand { get; private set; }
+
     }
 }

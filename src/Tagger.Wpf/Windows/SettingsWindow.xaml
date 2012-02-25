@@ -23,7 +23,7 @@
         </CollectionViewSource>
     </Window.Resources>
 
-    <StackPanel>
+    <StackPanel Margin="3">
 
         <!--  Settings grid  -->
         <av:AutoGrid DataContext="{Binding Path=TagRender}">
@@ -186,7 +186,7 @@
         </av:AutoGrid>
 
         <!--  Buttons grid  -->
-        <av:AutoGrid>
+        <av:AutoGrid Margin="0,15,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -199,8 +199,8 @@
                     IsDefault="True">
                 OK
             </Button>
-            <Button Margin="5" IsEnabled="False">Save as default</Button>
-            <Button Margin="5" IsEnabled="False">Load from default</Button>
+            <Button Margin="5" Command="{Binding SaveAsDefaultCommand}">Save as default</Button>
+            <Button Margin="5" Command="{Binding LoadFromDefaultCommand}">Load from default</Button>
         </av:AutoGrid>
     </StackPanel>
 </Window>

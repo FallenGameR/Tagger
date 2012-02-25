@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Media;
 using Utils.Extensions;
 using Utils.Prism;
+using Tagger.Properties;
 
 namespace Tagger
 {
@@ -30,13 +31,7 @@ namespace Tagger
         /// </summary>
         public TagRender()
         {
-            this.Text = "File browser";
-            this.Color = Colors.Green;
-            this.FontFamily = new FontFamily("Segoe UI");
-            this.FontSize = 50;
-            this.FontColor = Colors.Black;
-            this.OffsetTop = 0;
-            this.OffsetRight = 0;
+            this.LoadFromDefault();
         }
 
         #region Properties
@@ -108,5 +103,34 @@ namespace Tagger
         }
 
         #endregion
+
+        /// <summary>
+        /// Save all render settings as default that would be used for every new tag
+        /// </summary>
+        public void SaveAsDefault()
+        {
+            Settings.Default.Tag_Text = this.Text;
+            Settings.Default.Tag_Color = this.Color.ToString();
+            Settings.Default.Tag_FontFamily = this.FontFamily.Source;
+            Settings.Default.Tag_FontSize = this.FontSize;
+            Settings.Default.Tag_FontColor = this.FontColor.ToString();
+            Settings.Default.Tag_OffsetTop = this.OffsetTop;
+            Settings.Default.Tag_OffsetRight = this.OffsetRight;
+            Settings.Default.Save();
+        }
+
+        /// <summary>
+        /// Load all render settings from default values stored in program settings
+        /// </summary>
+        public void LoadFromDefault()
+        {
+            this.Text = Settings.Default.Tag_Text;
+            this.Color = (Color)ColorConverter.ConvertFromString(Settings.Default.Tag_Color);
+            this.FontFamily = new FontFamily(Settings.Default.Tag_FontFamily);
+            this.FontSize = Settings.Default.Tag_FontSize;
+            this.FontColor = (Color)ColorConverter.ConvertFromString(Settings.Default.Tag_FontColor);
+            this.OffsetTop = Settings.Default.Tag_OffsetTop;
+            this.OffsetRight = Settings.Default.Tag_OffsetRight;
+        }
     }
 }
