@@ -20,8 +20,9 @@ namespace Tagger
     /// See Raymond Chen's "How can I get notified when some other window is destroyed?"
     /// for details - http://blogs.msdn.com/b/oldnewthing/archive/2011/10/26/10230020.aspx
     /// </remarks>
-    public sealed class ProcessListner : IDisposable
+    public sealed class WindowListner : IDisposable
     {
+        private IntPtr windowHandle;
         private AccessibleEventListener moveListner;
         private AutomationElement automationWindowElement;
         private AutomationEventHandler automationWindowCloseEventHandler;
@@ -30,23 +31,26 @@ namespace Tagger
         /// Initializes WindowMovedListner instance
         /// </summary>
         /// <param name="windowHandle">Window that we need to track</param>
-        public ProcessListner(IntPtr windowHandle)
+        public WindowListner(IntPtr windowHandle)
         {
+            Check.Require(windowHandle != IntPtr.Zero, "Window handle must not be zero");
+            this.windowHandle = windowHandle;
+
             // Listen for destruction event
             this.automationWindowElement = AutomationElement.FromHandle(windowHandle);
             this.automationWindowCloseEventHandler = new AutomationEventHandler(OnWindowCloseHandler);
             Automation.AddAutomationEventHandler(
-                WindowPattern.WindowClosedEvent, 
-                this.automationWindowElement, 
-                TreeScope.Element, 
+                WindowPattern.WindowClosedEvent,
+                this.automationWindowElement,
+                TreeScope.Element,
                 this.automationWindowCloseEventHandler);
-            
+
             // Listen for move events
             this.moveListner = new AccessibleEventListener
             {
                 MinimalEventType = AccessibleEventType.EVENT_OBJECT_LOCATIONCHANGE,
                 MaximalEventType = AccessibleEventType.EVENT_OBJECT_LOCATIONCHANGE,
-                ProcessId = (uint)ProcessListner.GetPidFromWindow(windowHandle),
+                ProcessId = (uint)WindowListner.GetPidFromWindow(windowHandle),
                 Enabled = true,
             };
             this.moveListner.EventOccurred += this.OnWindowMoveHandler;
@@ -67,22 +71,6 @@ namespace Tagger
         }
 
         /// <summary>
-        /// Handler for window close event
-        /// </summary>
-        /// <param name="sender">Object that raised the event</param>
-        /// <param name="ea">Event arguments</param>
-        private void OnWindowCloseHandler(object sender, AutomationEventArgs ea)
-        {
-            Check.Ensure(ea.EventId == WindowPattern.WindowClosedEvent, "We subscribed only to the closed event");
-
-            // Invoke event handler
-            if (this.Destroyed != null)
-            {
-                this.Destroyed(this, EventArgs.Empty);
-            }
-        }
-
-        /// <summary>
         /// Handler for window move event
         /// </summary>
         /// <param name="sender">Object that raised the event</param>
@@ -93,9 +81,25 @@ namespace Tagger
             if (ea.ObjectID != 0) { return; }
 
             // Invoke event handler
-            if (this.Moved != null)
+            if (this.ClientAreaChanged != null)
             {
-                this.Moved(this, EventArgs.Empty);
+                this.ClientAreaChanged(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Handler for window close event
+        /// </summary>
+        /// <param name="sender">Object that raised the event</param>
+        /// <param name="ea">Event arguments</param>
+        private void OnWindowCloseHandler(object sender, AutomationEventArgs ea)
+        {
+            Check.Ensure(ea.EventId == WindowPattern.WindowClosedEvent, "We subscribed only to the closed event");
+
+            // Invoke event handler
+            if (this.WindowDestroyed != null)
+            {
+                this.WindowDestroyed(this, EventArgs.Empty);
             }
         }
 
@@ -116,7 +120,7 @@ namespace Tagger
             int pid;
             NativeAPI.GetWindowThreadProcessId(windowHandle, out pid);
 
-            bool isConsoleApp = ProcessListner.IsConsoleApplication(pid);
+            bool isConsoleApp = WindowListner.IsConsoleApplication(pid);
             if (!isConsoleApp)
             {
                 return pid;
@@ -141,7 +145,7 @@ namespace Tagger
         }
 
         /// <summary>
-        /// Event that fires whenever host window is moved or resized
+        /// Event that fires whenever host window client area is changed
         /// </summary>
         /// <remarks>
         /// Event fires in the thread it was regestered from. Under the hood there is 
@@ -153,7 +157,7 @@ namespace Tagger
         /// 
         /// Couldn't find how the same could be done via UI Automation.
         /// </remarks>
-        public event EventHandler Moved;
+        public event EventHandler ClientAreaChanged;
 
         /// <summary>
         /// Event that fires whenever host window is destroyed
@@ -163,6 +167,6 @@ namespace Tagger
         /// event that gives event relevent for the window destruction. See class
         /// remarks for more info.
         /// </remarks>
-        public event EventHandler Destroyed;
+        public event EventHandler WindowDestroyed;
     }
 }

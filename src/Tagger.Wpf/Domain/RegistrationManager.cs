@@ -49,8 +49,8 @@ namespace Tagger
         private static void RegisterTag(IntPtr hostWindow)
         {
             // Create tag context objects
-            var hostListner = new ProcessListner(hostWindow);
-            hostListner.Destroyed += delegate { RegistrationManager.UnregisterTag(hostWindow); };
+            var hostListner = new WindowListner(hostWindow);
+            hostListner.WindowDestroyed += delegate { RegistrationManager.UnregisterTag(hostWindow); };
 
             var tagRender = new TagRender();
             var tagWindow = new TagWindow();
@@ -62,7 +62,7 @@ namespace Tagger
                 LoadFromDefaultCommand = new DelegateCommand<object>(obj => tagRender.LoadFromDefault()),
             };
             // Subscriptions
-            hostListner.Moved += delegate { tagModel.UpdateTagWindowPosition(tagWindow.Width); };
+            hostListner.ClientAreaChanged += delegate { tagModel.UpdateTagWindowPosition(tagWindow.Width); };
             tagRender.PropertyChanged += (sender, args) => tagModel.UpdateTagWindowPosition(tagWindow.Width);
             tagWindow.SizeChanged += (sender, args) => tagModel.UpdateTagWindowPosition(args.NewSize.Width);
             tagWindow.MouseRightButtonUp += delegate { tagModel.ToggleSettingsCommand.Execute(null); };

@@ -51,7 +51,7 @@ namespace Tagger
         /// <summary>
         /// Listner for events that happens in host process
         /// </summary>
-        public ProcessListner HostListner { get; internal set; }
+        public WindowListner HostListner { get; internal set; }
 
         /// <summary>
         /// Tag render view model that is shared between settings and tag windows
