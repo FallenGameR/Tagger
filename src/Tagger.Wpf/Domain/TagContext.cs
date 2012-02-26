@@ -15,33 +15,34 @@ namespace Tagger
         /// </summary>
         public void Dispose()
         {
-            // TODO: Dispose in reverse order - tagModel should unregister event handlers before tagRender is disposed
-
-            if (this.HostListner != null )
-            {
-                this.HostListner.Dispose();
-            }
-            if (this.TagRender != null)
-            {
-                this.TagRender.Dispose();
-            }
             if (this.TagWindow != null)
             {
-                // TODO: How to force it?
-                this.TagWindow.Close();
+                // TODO: How to force it?        
+                this.TagWindow.Dispatcher.Invoke((Action)delegate {this.TagWindow.Close();});
             }
             if (this.TagModel != null)
             {
-                this.TagModel.Dispose(); 
+                this.TagModel.Dispose();
+            }
+
+            if (this.SettingsModel != null)
+            {
+                this.SettingsModel.Dispose();
             }
             if (this.SettingsWindow != null)
             {
                 // TODO: How to force it?
-                this.SettingsWindow.Close();
+                this.SettingsWindow.Dispatcher.Invoke((Action)delegate { this.SettingsWindow.Close(); });
             }
-            if (this.SettingsModel != null)
+
+            if (this.TagRender != null)
             {
-                this.SettingsModel.Dispose();
+                this.TagRender.Dispose();
+            }
+
+            if (this.HostListner != null)
+            {
+                this.HostListner.Dispose();
             }
         }
 
@@ -69,6 +70,7 @@ namespace Tagger
         /// Tag window view model that controls the tag window
         /// </summary>
         public TagModel TagModel { get; internal set; }
+
         /// <summary>
         /// Settings window that setup tag appearance
         /// </summary>

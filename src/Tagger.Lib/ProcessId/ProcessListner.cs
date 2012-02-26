@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Windows.Automation;
 using ManagedWinapi.Accessibility;
 using Tagger.WinAPI;
+using Utils.Diagnostics;
 
 namespace Tagger
 {
@@ -12,11 +14,17 @@ namespace Tagger
     /// Would work only when invoked from a process that has at least one Window.
     /// SetWindowHook WinAPI function that is used under the hood need window
     /// message loop to perform cross process communication.
+    /// 
+    /// For tracking window destruction UIAutomation is used instead of hooking 
+    /// EVENT_OBJECT_DESTROY since hook needs additional filtering to be done.
+    /// See Raymond Chen's "How can I get notified when some other window is destroyed?"
+    /// for details - http://blogs.msdn.com/b/oldnewthing/archive/2011/10/26/10230020.aspx
     /// </remarks>
     public sealed class ProcessListner : IDisposable
     {
-        private AccessibleEventListener m_MoveListner;
-        private AccessibleEventListener m_DestroyListner;
+        private AccessibleEventListener moveListner;
+        private AutomationElement automationWindowElement;
+        private AutomationEventHandler automationWindowCloseEventHandler;
 
         /// <summary>
         /// Initializes WindowMovedListner instance
@@ -24,18 +32,71 @@ namespace Tagger
         /// <param name="windowHandle">Window that we need to track</param>
         public ProcessListner(IntPtr windowHandle)
         {
-            int pid = ProcessListner.GetPidFromWindow(windowHandle);
-            this.m_MoveListner = this.CreateMoveListner(pid);
-            this.m_DestroyListner = this.CreateDestroyListner(pid);
+            // Listen for destruction event
+            this.automationWindowElement = AutomationElement.FromHandle(windowHandle);
+            this.automationWindowCloseEventHandler = new AutomationEventHandler(OnWindowCloseHandler);
+            Automation.AddAutomationEventHandler(
+                WindowPattern.WindowClosedEvent, 
+                this.automationWindowElement, 
+                TreeScope.Element, 
+                this.automationWindowCloseEventHandler);
+            
+            // Listen for move events
+            this.moveListner = new AccessibleEventListener
+            {
+                MinimalEventType = AccessibleEventType.EVENT_OBJECT_LOCATIONCHANGE,
+                MaximalEventType = AccessibleEventType.EVENT_OBJECT_LOCATIONCHANGE,
+                ProcessId = (uint)ProcessListner.GetPidFromWindow(windowHandle),
+                Enabled = true,
+            };
+            this.moveListner.EventOccurred += this.OnWindowMoveHandler;
         }
 
         /// <summary>
-        /// Cleanup all disposable resources
+        /// Cleanup and dispose all listners
         /// </summary>
         public void Dispose()
         {
-            this.m_MoveListner.Dispose();
-            this.m_DestroyListner.Dispose();
+            this.moveListner.EventOccurred -= this.OnWindowMoveHandler;
+            this.moveListner.Dispose();
+
+            Automation.RemoveAutomationEventHandler(
+                WindowPattern.WindowClosedEvent,
+                this.automationWindowElement,
+                this.automationWindowCloseEventHandler);
+        }
+
+        /// <summary>
+        /// Handler for window close event
+        /// </summary>
+        /// <param name="sender">Object that raised the event</param>
+        /// <param name="ea">Event arguments</param>
+        private void OnWindowCloseHandler(object sender, AutomationEventArgs ea)
+        {
+            Check.Ensure(ea.EventId == WindowPattern.WindowClosedEvent, "We subscribed only to the closed event");
+
+            // Invoke event handler
+            if (this.Destroyed != null)
+            {
+                this.Destroyed(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Handler for window move event
+        /// </summary>
+        /// <param name="sender">Object that raised the event</param>
+        /// <param name="ea">Event arguments</param>
+        private void OnWindowMoveHandler(object sender, AccessibleEventArgs ea)
+        {
+            // Ignore events from cursor
+            if (ea.ObjectID != 0) { return; }
+
+            // Invoke event handler
+            if (this.Moved != null)
+            {
+                this.Moved(this, EventArgs.Empty);
+            }
         }
 
         /// <summary>
@@ -80,67 +141,6 @@ namespace Tagger
         }
 
         /// <summary>
-        /// Create listner that would listen to move events from windows of specified process
-        /// </summary>
-        /// <param name="pid">Process ID that owns tracked windows</param>
-        /// <returns>Listner object to handle lifetime</returns>
-        private AccessibleEventListener CreateMoveListner(int pid)
-        {
-            // Create listner for move event of the specified process
-            var listner = new AccessibleEventListener
-            {
-                MinimalEventType = AccessibleEventType.EVENT_OBJECT_LOCATIONCHANGE,
-                MaximalEventType = AccessibleEventType.EVENT_OBJECT_LOCATIONCHANGE,
-                ProcessId = (uint)pid,
-                Enabled = true,
-            };
-
-            // Setup event handler
-            listner.EventOccurred += (object sender, AccessibleEventArgs ea) =>
-            {
-                // Ignore events from cursor
-                if (ea.ObjectID != 0) { return; }
-
-                // Invoke event handler
-                if (this.Moved != null)
-                {
-                    this.Moved(this, EventArgs.Empty);
-                }
-            };
-
-            return listner;
-        }
-
-        /// <summary>
-        /// Create listner that would listen to destroy events from windows of specified process
-        /// </summary>
-        /// <param name="pid">Process ID that owns tracked windows</param>
-        /// <returns>Listner object to handle lifetime</returns>
-        private AccessibleEventListener CreateDestroyListner(int pid)
-        {
-            // Create listner for destroy event of the specified process
-            var listner = new AccessibleEventListener
-            {
-                MinimalEventType = AccessibleEventType.EVENT_OBJECT_DESTROY,
-                MaximalEventType = AccessibleEventType.EVENT_OBJECT_DESTROY,
-                ProcessId = (uint)pid,
-                Enabled = true,
-            };
-
-            // Setup event handler
-            listner.EventOccurred += (object sender, AccessibleEventArgs ea) =>
-            {
-                // Invoke event handler
-                if (this.Destroyed != null)
-                {
-                    this.Destroyed(this, EventArgs.Empty);
-                }
-            };
-
-            return listner;
-        }
-
-        /// <summary>
         /// Event that fires whenever host window is moved or resized
         /// </summary>
         /// <remarks>
@@ -150,12 +150,19 @@ namespace Tagger
         /// 
         /// To see C++ implementation go back in project history - 
         /// there used to be a PoC project for that.
+        /// 
+        /// Couldn't find how the same could be done via UI Automation.
         /// </remarks>
         public event EventHandler Moved;
 
         /// <summary>
         /// Event that fires whenever host window is destroyed
         /// </summary>
+        /// <remarks>
+        /// Implemented via UI Automation since there is build-in filtering for 
+        /// event that gives event relevent for the window destruction. See class
+        /// remarks for more info.
+        /// </remarks>
         public event EventHandler Destroyed;
     }
 }
