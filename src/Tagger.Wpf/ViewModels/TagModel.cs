@@ -11,23 +11,6 @@ namespace Tagger.ViewModels
     public class TagModel : ViewModelBase
     {
         /// <summary>
-        /// Update tag window position based on host window position
-        /// </summary>
-        /// <param name="width">Width of the tag window (need to specify explicitly for size changing events related to changed settings)</param>
-        internal void UpdateTagWindowPosition(double width)
-        {
-            var clientArea = WindowSizes.GetClientArea(this.TagWindow.GetOwner());
-
-            this.TagWindow.Top = clientArea.Top + this.TagRender.OffsetTop;
-            this.TagWindow.Left = clientArea.Right - width - this.TagRender.OffsetRight;
-        }
-
-        /// <summary>
-        /// Tag window itself
-        /// </summary>
-        public Window TagWindow { get; internal set; }
-
-        /// <summary>
         /// Tag render parameters
         /// </summary>
         /// <remarks>
@@ -54,6 +37,5 @@ namespace Tagger.ViewModels
         /// Command to load current settings from default values
         /// </summary>
         public DelegateCommand<object> LoadFromDefaultCommand { get; internal set; }
-
     }
 }

@@ -7,6 +7,7 @@ using Tagger.Wpf.Windows;
 using Tagger.ViewModels;
 using Tagger.Wpf;
 using Microsoft.Practices.Prism.Commands;
+using System.Windows.Threading;
 
 namespace Tagger
 {
@@ -56,20 +57,29 @@ namespace Tagger
             var tagWindow = new TagWindow();
             var tagModel = new TagModel
             {
-                TagWindow = tagWindow,
                 TagRender = tagRender,
                 SaveAsDefaultCommand = new DelegateCommand<object>(obj => tagRender.SaveAsDefault()),
                 LoadFromDefaultCommand = new DelegateCommand<object>(obj => tagRender.LoadFromDefault()),
             };
             // Subscriptions
-            hostListner.ClientAreaChanged += delegate { tagModel.UpdateTagWindowPosition(tagWindow.Width); };
-            tagRender.PropertyChanged += (sender, args) => tagModel.UpdateTagWindowPosition(tagWindow.Width);
-            tagWindow.SizeChanged += (sender, args) => tagModel.UpdateTagWindowPosition(args.NewSize.Width);
+            Action<double> updatePosition = (double width) =>
+            {
+                var clientArea = WindowSizes.GetClientArea(hostWindow);
+                tagWindow.Top = clientArea.Top + tagRender.OffsetTop;
+                tagWindow.Left = clientArea.Right - width - tagRender.OffsetRight;
+            };
+            // client area
+            hostListner.ClientAreaChanged += delegate { updatePosition(tagWindow.Width); };
+            // text width 
+            tagRender.PropertyChanged += delegate { updatePosition(tagWindow.Width); };
             tagWindow.MouseRightButtonUp += delegate { tagModel.ToggleSettingsCommand.Execute(null); };
             // Initialize tag window
             tagWindow.DataContext = tagModel;
             tagWindow.SetOwner(hostWindow);
             tagWindow.Show();
+            // To update the very first position right after the data binding that would
+            // define tag window size but before the render (render has lower priority in dispatcher queue)
+            tagWindow.Dispatcher.Invoke(updatePosition, DispatcherPriority.DataBind, tagWindow.Width); 
 
             var settingsWindow = new SettingsWindow();
             tagModel.HideSettingsCommand = new DelegateCommand<object>(delegate
