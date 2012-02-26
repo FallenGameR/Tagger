@@ -90,7 +90,6 @@
     <Compile Include="Domain\RegistrationManager.cs" />
     <Compile Include="Domain\TagContext.cs" />
     <Compile Include="Domain\TagRender.cs" />
-    <Compile Include="ViewModels\SettingsModel.cs" />
     <Compile Include="ViewModels\TagModel.cs" />
     <Compile Include="Views\HotkeyControl.xaml.cs">
       <DependentUpon>HotkeyControl.xaml</DependentUpon>

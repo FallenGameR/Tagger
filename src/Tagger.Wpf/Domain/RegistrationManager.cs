@@ -58,6 +58,8 @@ namespace Tagger
             {
                 TagWindow = tagWindow,
                 TagRender = tagRender,
+                SaveAsDefaultCommand = new DelegateCommand<object>(obj => tagRender.SaveAsDefault()),
+                LoadFromDefaultCommand = new DelegateCommand<object>(obj => tagRender.LoadFromDefault()),
             };
             // Subscriptions
             hostListner.Moved += delegate { tagModel.UpdateTagWindowPosition(tagWindow.Width); };
@@ -70,13 +72,7 @@ namespace Tagger
             tagWindow.Show();
 
             var settingsWindow = new SettingsWindow();
-            var settingsModel = new SettingsModel
-            {
-                TagRender = tagRender,
-                SaveAsDefaultCommand = new DelegateCommand<object>(obj => tagRender.SaveAsDefault()),
-                LoadFromDefaultCommand = new DelegateCommand<object>(obj => tagRender.LoadFromDefault()),
-            };
-            settingsModel.HideSettingsCommand = new DelegateCommand<object>(delegate
+            tagModel.HideSettingsCommand = new DelegateCommand<object>(delegate
             {
                 settingsWindow.ToggleVisibility();
                 NativeAPI.SetForegroundWindow(hostWindow);
@@ -88,7 +84,7 @@ namespace Tagger
                 settingsWindow.Hide();
             };
             // Initialize settings window
-            settingsWindow.DataContext = settingsModel;
+            settingsWindow.DataContext = tagModel;
             settingsWindow.SetOwner(hostWindow);
             settingsWindow.Show();
 
@@ -104,7 +100,6 @@ namespace Tagger
                 TagWindow = tagWindow,
                 TagModel = tagModel,
                 SettingsWindow = settingsWindow,
-                SettingsModel = settingsModel,
             };
 
             // Store it to manage lifetime

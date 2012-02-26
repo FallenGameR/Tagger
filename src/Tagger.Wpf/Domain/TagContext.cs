@@ -20,19 +20,16 @@ namespace Tagger
                 // TODO: How to force it?        
                 this.TagWindow.Dispatcher.Invoke((Action)delegate {this.TagWindow.Close();});
             }
-            if (this.TagModel != null)
-            {
-                this.TagModel.Dispose();
-            }
 
-            if (this.SettingsModel != null)
-            {
-                this.SettingsModel.Dispose();
-            }
             if (this.SettingsWindow != null)
             {
                 // TODO: How to force it?
                 this.SettingsWindow.Dispatcher.Invoke((Action)delegate { this.SettingsWindow.Close(); });
+            }
+
+            if (this.TagModel != null)
+            {
+                this.TagModel.Dispose();
             }
 
             if (this.TagRender != null)
@@ -75,10 +72,5 @@ namespace Tagger
         /// Settings window that setup tag appearance
         /// </summary>
         public SettingsWindow SettingsWindow { get; internal set; }
-
-        /// <summary>
-        /// Settings window view model that controls the settings window
-        /// </summary>
-        public SettingsModel SettingsModel { get; internal set; }
     }
 }
