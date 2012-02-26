@@ -27,11 +27,6 @@ namespace Tagger
                 this.SettingsWindow.Dispatcher.Invoke((Action)delegate { this.SettingsWindow.Close(); });
             }
 
-            if (this.TagModel != null)
-            {
-                this.TagModel.Dispose();
-            }
-
             if (this.TagRender != null)
             {
                 this.TagRender.Dispose();
@@ -62,11 +57,6 @@ namespace Tagger
         /// Tag window itself
         /// </summary>
         public TagWindow TagWindow { get; internal set; }
-
-        /// <summary>
-        /// Tag window view model that controls the tag window
-        /// </summary>
-        public TagModel TagModel { get; internal set; }
 
         /// <summary>
         /// Settings window that setup tag appearance

@@ -6,6 +6,7 @@ using System.Windows.Media;
 using Utils.Extensions;
 using Utils.Prism;
 using Tagger.Properties;
+using Microsoft.Practices.Prism.Commands;
 
 namespace Tagger
 {
@@ -132,5 +133,25 @@ namespace Tagger
             this.OffsetTop = Settings.Default.Tag_OffsetTop;
             this.OffsetRight = Settings.Default.Tag_OffsetRight;
         }
+
+        /// <summary>
+        /// Shows or hides settings window that is associated with the tag
+        /// </summary>
+        public DelegateCommand<object> ToggleSettingsCommand { get; internal set; }
+
+        /// <summary>
+        /// Hide settings window command
+        /// </summary>
+        public DelegateCommand<object> HideSettingsCommand { get; internal set; }
+
+        /// <summary>
+        /// Command to save current settings as default for all new tags
+        /// </summary>
+        public DelegateCommand<object> SaveAsDefaultCommand { get; internal set; }
+
+        /// <summary>
+        /// Command to load current settings from default values
+        /// </summary>
+        public DelegateCommand<object> LoadFromDefaultCommand { get; internal set; }
     }
 }

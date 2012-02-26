@@ -53,14 +53,12 @@ namespace Tagger
             var hostListner = new WindowListner(hostWindow);
             hostListner.WindowDestroyed += delegate { RegistrationManager.UnregisterTag(hostWindow); };
 
-            var tagRender = new TagRender();
             var tagWindow = new TagWindow();
-            var tagModel = new TagModel
-            {
-                TagRender = tagRender,
-                SaveAsDefaultCommand = new DelegateCommand<object>(obj => tagRender.SaveAsDefault()),
-                LoadFromDefaultCommand = new DelegateCommand<object>(obj => tagRender.LoadFromDefault()),
-            };
+            var settingsWindow = new SettingsWindow();
+
+            var tagRender = new TagRender();
+            tagRender.SaveAsDefaultCommand = new DelegateCommand<object>(obj => tagRender.SaveAsDefault());
+            tagRender.LoadFromDefaultCommand = new DelegateCommand<object>(obj => tagRender.LoadFromDefault());
             // Subscriptions
             Action<double> updatePosition = (double width) =>
             {
@@ -72,17 +70,16 @@ namespace Tagger
             hostListner.ClientAreaChanged += delegate { updatePosition(tagWindow.Width); };
             // text width 
             tagRender.PropertyChanged += delegate { updatePosition(tagWindow.Width); };
-            tagWindow.MouseRightButtonUp += delegate { tagModel.ToggleSettingsCommand.Execute(null); };
+            tagWindow.MouseRightButtonUp += delegate { tagRender.ToggleSettingsCommand.Execute(null); };
             // Initialize tag window
-            tagWindow.DataContext = tagModel;
+            tagWindow.DataContext = tagRender;
             tagWindow.SetOwner(hostWindow);
             tagWindow.Show();
             // To update the very first position right after the data binding that would
             // define tag window size but before the render (render has lower priority in dispatcher queue)
-            tagWindow.Dispatcher.Invoke(updatePosition, DispatcherPriority.DataBind, tagWindow.Width); 
+            tagWindow.Dispatcher.Invoke(updatePosition, DispatcherPriority.DataBind, tagWindow.Width);
 
-            var settingsWindow = new SettingsWindow();
-            tagModel.HideSettingsCommand = new DelegateCommand<object>(delegate
+            tagRender.HideSettingsCommand = new DelegateCommand<object>(delegate
             {
                 settingsWindow.ToggleVisibility();
                 NativeAPI.SetForegroundWindow(hostWindow);
@@ -94,12 +91,12 @@ namespace Tagger
                 settingsWindow.Hide();
             };
             // Initialize settings window
-            settingsWindow.DataContext = tagModel;
+            settingsWindow.DataContext = tagRender;
             settingsWindow.SetOwner(hostWindow);
             settingsWindow.Show();
 
             // Perform cross window commands initialization
-            tagModel.ToggleSettingsCommand = new DelegateCommand<object>(o => settingsWindow.ToggleVisibility());
+            tagRender.ToggleSettingsCommand = new DelegateCommand<object>(o => settingsWindow.ToggleVisibility());
 
             // Create new tag context object 
             var context = new TagContext
@@ -108,7 +105,6 @@ namespace Tagger
                 HostListner = hostListner,
                 TagRender = tagRender,
                 TagWindow = tagWindow,
-                TagModel = tagModel,
                 SettingsWindow = settingsWindow,
             };
 
