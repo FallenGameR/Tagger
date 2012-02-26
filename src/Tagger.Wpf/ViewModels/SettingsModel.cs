@@ -14,34 +14,12 @@ namespace Tagger.ViewModels
     public class SettingsModel : ViewModelBase
     {
         /// <summary>
-        /// Handler for hide settings window command
-        /// </summary>
-        /// <remarks>
-        /// Restores focus back to the host window
-        /// </remarks>
-        internal void HideSettingsHandler(object obj)
-        {
-            this.SettingsWindow.ToggleVisibility();
-            NativeAPI.SetForegroundWindow(this.HostWindow);
-        }
-
-        /// <summary>
-        /// Settings window this view model controls
-        /// </summary>
-        public Window SettingsWindow { get; internal set; }
-
-        /// <summary>
         /// Tag render settings
         /// </summary>
         /// <remarks>
         /// Used in WPF bindings
         /// </remarks>
         public TagRender TagRender { get; internal set; }
-
-        /// <summary>
-        /// Host tagged window used that owns settings
-        /// </summary>
-        public IntPtr HostWindow { get; internal set; }
 
         /// <summary>
         /// Hide settings window command

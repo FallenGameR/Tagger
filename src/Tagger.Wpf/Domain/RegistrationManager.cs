@@ -72,13 +72,15 @@ namespace Tagger
             var settingsWindow = new SettingsWindow();
             var settingsModel = new SettingsModel
             {
-                SettingsWindow = settingsWindow,
-                HostWindow = hostWindow,
                 TagRender = tagRender,
                 SaveAsDefaultCommand = new DelegateCommand<object>(obj => tagRender.SaveAsDefault()),
                 LoadFromDefaultCommand = new DelegateCommand<object>(obj => tagRender.LoadFromDefault()),
             };
-            settingsModel.HideSettingsCommand = new DelegateCommand<object>(settingsModel.HideSettingsHandler);
+            settingsModel.HideSettingsCommand = new DelegateCommand<object>(delegate
+            {
+                settingsWindow.ToggleVisibility();
+                NativeAPI.SetForegroundWindow(hostWindow);
+            });
             // Subscriptions
             settingsWindow.Closing += (sender, args) =>
             {
