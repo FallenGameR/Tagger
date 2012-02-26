@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Tagger.WinAPI;
 using Utils.Extensions;
+using Tagger.Wpf.Windows;
+using Tagger.ViewModels;
+using Tagger.Wpf;
 
 namespace Tagger
 {
@@ -21,18 +24,76 @@ namespace Tagger
         /// </summary>
         public static void GlobalHotkeyHandle()
         {
+            // Get foremost host
             var host = RegistrationManager.GetHostHandle();
-            var context = RegistrationManager.GetKnownTagContext(host);
+            if (host == IntPtr.Zero) { return; }
 
+            // Togle visibility if there is a tag for such host already registered
+            var context = RegistrationManager.GetKnownTagContext(host);
             if (context != null)
             {
                 context.TagWindow.ToggleVisibility();
                 NativeAPI.SetForegroundWindow(host);
+                return;
             }
-            else
+
+            // Register new tag
+            RegistrationManager.RegisterTag(host);
+        }
+
+        /// <summary>
+        /// Registeres new tag
+        /// </summary>
+        /// <param name="hostWindow">Window host that is tagged</param>
+        private static void RegisterTag(IntPtr hostWindow)
+        {
+            // Create tag context objects
+            var hostListner = new ProcessListner(hostWindow);
+            hostListner.Destroyed += delegate { RegistrationManager.UnregisterTag(hostWindow); };
+
+            var tagRender = new TagRender();
+            var tagWindow = new TagWindow();
+            var tagModel = new TagModel(tagWindow, hostWindow, tagRender, hostListner);
+            tagWindow.Show();
+
+            var settingsWindow = new SettingsWindow();
+            var settingsModel = new SettingsModel(settingsWindow, hostWindow, tagRender);
+            settingsWindow.Show();
+
+            // Perform settings window injection
+            // NOTE: That way we can show the tag as fast as possible (that is good for perceived responsiveness)
+            //       and do not need to switch foreground window manually when settings window would appear
+            tagModel.SettingsWindow = settingsWindow;
+
+            // Create new tag context object 
+            var context = new TagContext
             {
-                context = new TagContext(host);
+                HostWindow = hostWindow,
+                HostListner = hostListner,
+                TagRender = tagRender,
+                TagWindow = tagWindow,
+                TagModel = tagModel,
+                SettingsWindow = settingsWindow,
+                SettingsModel = settingsModel,
+            };
+
+            // Store it to manage lifetime
+            lock( RegistrationManager.KnownTags )
+            {
                 RegistrationManager.KnownTags.Add(context);
+            }
+        }
+
+        private static void UnregisterTag(IntPtr hostWindow)
+        {
+            lock (RegistrationManager.KnownTags)
+            {
+                var match = RegistrationManager.KnownTags.SingleOrDefault(c => c.HostWindow == hostWindow);
+                if (match != null)
+                {
+                    match.Dispose();
+                    RegistrationManager.KnownTags.Remove(match);
+                }
             }
         }
 

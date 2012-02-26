@@ -29,17 +29,8 @@ namespace Tagger.ViewModels
             this.SaveAsDefaultCommand = new DelegateCommand<object>(obj => this.TagRender.SaveAsDefault());
             this.LoadFromDefaultCommand = new DelegateCommand<object>(obj => this.TagRender.LoadFromDefault());
 
-            this.InitializeWindow();
-        }
-
-        /// <summary>
-        /// Initializes settings window to use current view model
-        /// </summary>
-        private void InitializeWindow()
-        {
             this.SettingsWindow.DataContext = this;
             this.SettingsWindow.SetOwner(this.HostWindow);
-            this.SettingsWindow.Show();
 
             this.SettingsWindow.Closing += (sender, args) =>
             {

@@ -2,63 +2,83 @@
 using Tagger.ViewModels;
 using Tagger.Wpf;
 using Tagger.Wpf.Windows;
-using Utils.Diagnostics;
 
 namespace Tagger
 {
     /// <summary>
     /// Context of a tag
     /// </summary>
-    public class TagContext
+    public sealed class TagContext : IDisposable
     {
         /// <summary>
-        /// Initializes new instance of tag context, shows tag and settings windows
+        /// Clean up all resources
         /// </summary>
-        /// <param name="host">Window host that is tagged</param>
-        public TagContext(IntPtr host)
+        public void Dispose()
         {
-            Check.Require(host != IntPtr.Zero, "Host should not be zero");
+            if (this.TagWindow != null)
+            {
+                // TODO: How to force it?        
+                this.TagWindow.Dispatcher.Invoke((Action)delegate {this.TagWindow.Close();});
+            }
+            if (this.TagModel != null)
+            {
+                this.TagModel.Dispose();
+            }
 
-            this.HostWindow = host;
-            this.TagRender = new TagRender();
+            if (this.SettingsModel != null)
+            {
+                this.SettingsModel.Dispose();
+            }
+            if (this.SettingsWindow != null)
+            {
+                // TODO: How to force it?
+                this.SettingsWindow.Dispatcher.Invoke((Action)delegate { this.SettingsWindow.Close(); });
+            }
 
-            this.SettingsWindow = new SettingsWindow();
-            this.SettingsModel = new SettingsModel(this.SettingsWindow, this.HostWindow, this.TagRender);
+            if (this.TagRender != null)
+            {
+                this.TagRender.Dispose();
+            }
 
-            this.TagWindow = new TagWindow();
-            this.TagModel = new TagModel(this.TagWindow, this.HostWindow, this.TagRender, this.SettingsWindow);
-
-            this.SettingsWindow.Focus();
+            if (this.HostListner != null)
+            {
+                this.HostListner.Dispose();
+            }
         }
 
         /// <summary>
         /// Window handle that is tagged
         /// </summary>
-        public IntPtr HostWindow { get; private set; }
+        public IntPtr HostWindow { get; internal set; }
+
+        /// <summary>
+        /// Listner for events that happens in host process
+        /// </summary>
+        public ProcessListner HostListner { get; internal set; }
 
         /// <summary>
         /// Tag render view model that is shared between settings and tag windows
         /// </summary>
-        public TagRender TagRender { get; set; }
-
-        /// <summary>
-        /// Settings window that setup tag appearance
-        /// </summary>
-        public SettingsWindow SettingsWindow { get; private set; }
-
-        /// <summary>
-        /// Settings window view model that controls the settings window
-        /// </summary>
-        public SettingsModel SettingsModel { get; private set; }
+        public TagRender TagRender { get; internal set; }
 
         /// <summary>
         /// Tag window itself
         /// </summary>
-        public TagWindow TagWindow { get; private set; }
+        public TagWindow TagWindow { get; internal set; }
 
         /// <summary>
         /// Tag window view model that controls the tag window
         /// </summary>
-        public TagModel TagModel { get; private set; }
+        public TagModel TagModel { get; internal set; }
+
+        /// <summary>
+        /// Settings window that setup tag appearance
+        /// </summary>
+        public SettingsWindow SettingsWindow { get; internal set; }
+
+        /// <summary>
+        /// Settings window view model that controls the settings window
+        /// </summary>
+        public SettingsModel SettingsModel { get; internal set; }
     }
 }

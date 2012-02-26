@@ -50,12 +50,14 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationClient" />
+    <Reference Include="UIAutomationTypes" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GlobalHotkey\HotkeyEventArgs.cs" />
     <Compile Include="GlobalHotkey\Hotkey.cs" />
-    <Compile Include="ProcessId\WindowMovedListner.cs" />
+    <Compile Include="ProcessId\ProcessListner.cs" />
     <Compile Include="Utils\Extensions\Strings.cs" />
     <Compile Include="Utils\Extensions\Windows.cs" />
     <Compile Include="WinApi\Windows.cs" />
