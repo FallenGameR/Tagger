@@ -17,47 +17,10 @@ namespace Tagger.ViewModels
     public class TagModel : ViewModelBase
     {
         /// <summary>
-        /// Initializes new instance of tag view model
-        /// </summary>
-        /// <param name="tagWindow">Tag window itself</param>
-        /// <param name="host">Host window the tag belongs to</param>
-        /// <param name="tagRender">Tag render parameters</param>
-        /// <param name="settingsWindow">Tag settings window that is used to change render parameters</param>
-        /// <param name="processListner">Listner for events in process that created host window</param>
-        public TagModel(Window tagWindow, IntPtr host, TagRender tagRender, ProcessListner hostListner)
-        {
-            Check.Require(tagWindow != null, "Tag window must not be null");
-            Check.Require(host != IntPtr.Zero, "Host window must not be null");
-            Check.Require(tagRender != null, "Tag render parameters must not be null");
-
-            // Initialize properties
-            this.TagWindow = tagWindow;
-            this.HostWindow = host;
-            this.TagRender = tagRender;
-            this.ToggleSettingsCommand = new DelegateCommand<object>(delegate
-            {
-                if (this.SettingsWindow != null)
-                {
-                    this.SettingsWindow.ToggleVisibility();
-                }
-            });
-
-            // Subscriptions
-            hostListner.Moved += delegate { this.UpdateTagWindowPosition(this.TagWindow.Width); };
-            this.TagRender.PropertyChanged += (sender, args) => this.UpdateTagWindowPosition(this.TagWindow.Width);
-            this.TagWindow.SizeChanged += (sender, args) => this.UpdateTagWindowPosition(args.NewSize.Width);
-            this.TagWindow.MouseRightButtonUp += delegate { this.ToggleSettingsCommand.Execute(null); };
-
-            // Initialize tag window
-            this.TagWindow.DataContext = this;
-            this.TagWindow.SetOwner(this.HostWindow);
-        }
-
-        /// <summary>
         /// Update tag window position based on host window position
         /// </summary>
         /// <param name="width">Width of the tag window (need to specify explicitly for size changing events related to changed settings)</param>
-        private void UpdateTagWindowPosition(double width)
+        internal void UpdateTagWindowPosition(double width)
         {
             RECT clientArea = this.GetHostWindowClientArea();
 
@@ -90,12 +53,12 @@ namespace Tagger.ViewModels
         /// <summary>
         /// Tag window itself
         /// </summary>
-        public Window TagWindow { get; set; }
+        public Window TagWindow { get; internal set; }
 
         /// <summary>
         /// Host window this tag belongs to
         /// </summary>
-        public IntPtr HostWindow { get; set; }
+        public IntPtr HostWindow { get; internal set; }
 
         /// <summary>
         /// Tag render parameters
@@ -103,7 +66,7 @@ namespace Tagger.ViewModels
         /// <remarks>
         /// Used by WPF bindings
         /// </remarks>
-        public TagRender TagRender { get; private set; }
+        public TagRender TagRender { get; internal set; }
 
         /// <summary>
         /// Tag context 
@@ -113,6 +76,6 @@ namespace Tagger.ViewModels
         /// <summary>
         /// Shows or hides settings window that is associated with the tag
         /// </summary>
-        public DelegateCommand<object> ToggleSettingsCommand { get; private set; }
+        public DelegateCommand<object> ToggleSettingsCommand { get; internal set; }
     }
 }

@@ -6,6 +6,7 @@ using Utils.Extensions;
 using Tagger.Wpf.Windows;
 using Tagger.ViewModels;
 using Tagger.Wpf;
+using Microsoft.Practices.Prism.Commands;
 
 namespace Tagger
 {
@@ -53,11 +54,48 @@ namespace Tagger
 
             var tagRender = new TagRender();
             var tagWindow = new TagWindow();
-            var tagModel = new TagModel(tagWindow, hostWindow, tagRender, hostListner);
+            var tagModel = new TagModel
+            {
+                TagWindow = tagWindow,
+                HostWindow = hostWindow,
+                TagRender = tagRender,
+            };
+            tagModel.ToggleSettingsCommand = new DelegateCommand<object>(delegate
+            {// TODO: This can be simplified via junctions
+                if (tagModel.SettingsWindow != null)
+                {
+                    tagModel.SettingsWindow.ToggleVisibility();
+                }
+            });
+            // Subscriptions
+            hostListner.Moved += delegate { tagModel.UpdateTagWindowPosition(tagWindow.Width); };
+            tagRender.PropertyChanged += (sender, args) => tagModel.UpdateTagWindowPosition(tagWindow.Width);
+            tagWindow.SizeChanged += (sender, args) => tagModel.UpdateTagWindowPosition(args.NewSize.Width);
+            tagWindow.MouseRightButtonUp += delegate { tagModel.ToggleSettingsCommand.Execute(null); };
+            // Initialize tag window
+            tagWindow.DataContext = tagModel;
+            tagWindow.SetOwner(hostWindow);
             tagWindow.Show();
 
             var settingsWindow = new SettingsWindow();
-            var settingsModel = new SettingsModel(settingsWindow, hostWindow, tagRender);
+            var settingsModel = new SettingsModel
+            {
+                SettingsWindow = settingsWindow,
+                HostWindow = hostWindow,
+                TagRender = tagRender,
+                SaveAsDefaultCommand = new DelegateCommand<object>(obj => tagRender.SaveAsDefault()),
+                LoadFromDefaultCommand = new DelegateCommand<object>(obj => tagRender.LoadFromDefault()),
+            };
+            settingsModel.HideSettingsCommand = new DelegateCommand<object>(settingsModel.HideSettingsHandler);
+            // Subscriptions
+            settingsWindow.Closing += (sender, args) =>
+            {
+                args.Cancel = true;
+                settingsWindow.Hide();
+            };
+            // Initialize settings window
+            settingsWindow.DataContext = settingsModel;
+            settingsWindow.SetOwner(hostWindow);
             settingsWindow.Show();
 
             // Perform settings window injection
