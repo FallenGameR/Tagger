@@ -22,7 +22,7 @@ namespace Tagger.ViewModels
         /// <param name="width">Width of the tag window (need to specify explicitly for size changing events related to changed settings)</param>
         internal void UpdateTagWindowPosition(double width)
         {
-            RECT clientArea = this.GetHostWindowClientArea();
+            var clientArea = TagModel.GetClientArea(this.TagWindow.GetOwner());
 
             this.TagWindow.Top = clientArea.Top + this.TagRender.OffsetTop;
             this.TagWindow.Left = clientArea.Right - width - this.TagRender.OffsetRight;
@@ -31,22 +31,23 @@ namespace Tagger.ViewModels
         /// <summary>
         /// Gets host window client area rectangle
         /// </summary>
+        /// <param name="windowHandle">Handl to the window that we are interested in</param>
         /// <returns>
         /// Rectangle used to render host window content
         /// </returns>
-        private RECT GetHostWindowClientArea()
+        private static RECT GetClientArea(IntPtr windowHandle)
         {
+            // Get window rectange
             RECT sizes;
-            bool success = NativeAPI.GetWindowRect(this.TagWindow.GetOwner(), out sizes);
-
+            bool success = NativeAPI.GetWindowRect(windowHandle, out sizes);
             if (!success)
             {
                 throw new Win32Exception(Marshal.GetLastWin32Error());
             }
 
-            var zero = NativeAPI.SendMessage(this.TagWindow.GetOwner(), NativeAPI.WM_NCCALCSIZE, 0, ref sizes);
+            // For the window rectangle determine actual client area
+            var zero = NativeAPI.SendMessage(windowHandle, NativeAPI.WM_NCCALCSIZE, 0, ref sizes);
             Check.Ensure(zero == 0);
-
             return sizes;
         }
 
@@ -56,22 +57,12 @@ namespace Tagger.ViewModels
         public Window TagWindow { get; internal set; }
 
         /// <summary>
-        /// Host window this tag belongs to
-        /// </summary>
-        public IntPtr HostWindow { get; internal set; }
-
-        /// <summary>
         /// Tag render parameters
         /// </summary>
         /// <remarks>
         /// Used by WPF bindings
         /// </remarks>
         public TagRender TagRender { get; internal set; }
-
-        /// <summary>
-        /// Tag context 
-        /// </summary>
-        public Window SettingsWindow { get; internal set; }
 
         /// <summary>
         /// Shows or hides settings window that is associated with the tag

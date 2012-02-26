@@ -57,16 +57,8 @@ namespace Tagger
             var tagModel = new TagModel
             {
                 TagWindow = tagWindow,
-                HostWindow = hostWindow,
                 TagRender = tagRender,
             };
-            tagModel.ToggleSettingsCommand = new DelegateCommand<object>(delegate
-            {// TODO: This can be simplified via junctions
-                if (tagModel.SettingsWindow != null)
-                {
-                    tagModel.SettingsWindow.ToggleVisibility();
-                }
-            });
             // Subscriptions
             hostListner.Moved += delegate { tagModel.UpdateTagWindowPosition(tagWindow.Width); };
             tagRender.PropertyChanged += (sender, args) => tagModel.UpdateTagWindowPosition(tagWindow.Width);
@@ -98,10 +90,8 @@ namespace Tagger
             settingsWindow.SetOwner(hostWindow);
             settingsWindow.Show();
 
-            // Perform settings window injection
-            // NOTE: That way we can show the tag as fast as possible (that is good for perceived responsiveness)
-            //       and do not need to switch foreground window manually when settings window would appear
-            tagModel.SettingsWindow = settingsWindow;
+            // Perform cross window commands initialization
+            tagModel.ToggleSettingsCommand = new DelegateCommand<object>(o => settingsWindow.ToggleVisibility());
 
             // Create new tag context object 
             var context = new TagContext
