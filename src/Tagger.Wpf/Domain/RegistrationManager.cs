@@ -87,15 +87,15 @@ namespace Tagger
         private static void UnregisterTag(IntPtr hostWindow)
         {
             // TODO: Figure out how to get dispose event securelly
-            lock( RegistrationManager.KnownTags )
-            {
-                var match = RegistrationManager.KnownTags.SingleOrDefault(c => c.HostWindow == hostWindow);
-                if( match != null )
-                {
-                    match.Dispose();
-                    RegistrationManager.KnownTags.Remove(match);
-                }
-            }
+            //lock( RegistrationManager.KnownTags )
+            //{
+            //    var match = RegistrationManager.KnownTags.SingleOrDefault(c => c.HostWindow == hostWindow);
+            //    if( match != null )
+            //    {
+            //        match.Dispose();
+            //        RegistrationManager.KnownTags.Remove(match);
+            //    }
+            //}
         }
 
         /// <summary>
