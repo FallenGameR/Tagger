@@ -48,11 +48,17 @@ namespace Tagger
         private static void RegisterTag(IntPtr hostWindow)
         {
             // Create tag context objects
+            var hostListner = new ProcessListner(hostWindow);
+            hostListner.Destroyed += delegate { RegistrationManager.UnregisterTag(hostWindow); };
+
             var tagRender = new TagRender();
             var tagWindow = new TagWindow();
-            var tagModel = new TagModel(tagWindow, hostWindow, tagRender);
+            var tagModel = new TagModel(tagWindow, hostWindow, tagRender, hostListner);
+            tagWindow.Show();
+
             var settingsWindow = new SettingsWindow();
             var settingsModel = new SettingsModel(settingsWindow, hostWindow, tagRender);
+            settingsWindow.Show();
 
             // Perform settings window injection
             // NOTE: That way we can show the tag as fast as possible (that is good for perceived responsiveness)
@@ -63,6 +69,7 @@ namespace Tagger
             var context = new TagContext
             {
                 HostWindow = hostWindow,
+                HostListner = hostListner,
                 TagRender = tagRender,
                 TagWindow = tagWindow,
                 TagModel = tagModel,
@@ -71,7 +78,24 @@ namespace Tagger
             };
 
             // Store it to manage lifetime
-            RegistrationManager.KnownTags.Add(context);
+            lock( RegistrationManager.KnownTags )
+            {
+                RegistrationManager.KnownTags.Add(context);
+            }
+        }
+
+        private static void UnregisterTag(IntPtr hostWindow)
+        {
+            // TODO: Figure out how to get dispose event securelly
+            lock( RegistrationManager.KnownTags )
+            {
+                var match = RegistrationManager.KnownTags.SingleOrDefault(c => c.HostWindow == hostWindow);
+                if( match != null )
+                {
+                    match.Dispose();
+                    RegistrationManager.KnownTags.Remove(match);
+                }
+            }
         }
 
         /// <summary>
