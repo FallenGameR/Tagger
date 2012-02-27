@@ -4,6 +4,7 @@ using System.Windows.Automation;
 using ManagedWinapi.Accessibility;
 using Tagger.WinAPI;
 using Utils.Diagnostics;
+using Utils.Extensions;
 
 namespace Tagger
 {
@@ -61,9 +62,18 @@ namespace Tagger
         /// </summary>
         public void Dispose()
         {
+            // All clients are forecefully unsubsribed so that garbage collection would succeed 
+            // even if we used lambda expressions and anonymous delegates as event handlers.
+            // There isn't any scence to preserve subscription since we dispose original event 
+            // sources latter in this method - there would not be any new events anyway.
+            this.ClientAreaChanged.GetInvocationList().Action(d => this.ClientAreaChanged -= (EventHandler) d);
+            this.WindowDestroyed.GetInvocationList().Action(d => this.WindowDestroyed -= (EventHandler)d);
+
+            // Cleanup window move listner
             this.moveListner.EventOccurred -= this.OnWindowMoveHandler;
             this.moveListner.Dispose();
 
+            // Cleanup window destroy listner
             Automation.RemoveAutomationEventHandler(
                 WindowPattern.WindowClosedEvent,
                 this.automationWindowElement,

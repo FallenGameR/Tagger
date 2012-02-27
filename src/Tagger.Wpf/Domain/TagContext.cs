@@ -8,6 +8,29 @@ namespace Tagger
     /// <summary>
     /// Context of a tag
     /// </summary>
+    /// <remarks>
+    /// Note regarding event unsubscription. I've investigated possibility of a memory leak
+    /// here and it looks like there should be none. We have several tag-related classes that
+    /// subscribe on each other and are referenced from RegistrsationManager as TagContext 
+    /// instance. We have two external events we rely on that could possibly store another 
+    /// reference on tag related classes:
+    /// - AccessibleEventListener that wraps WinAPI Hook and 
+    /// - AutomationEventHandler that wraps UI Automation callback. 
+    /// 
+    /// Both these events are gracefully unsubscribed from in WindowListner class. Plus there 
+    /// is an implicit event reference from RegistrsationManager via WindowListner instance
+    /// (host destruction subscription). To handle correct unreferencing WindowListner 
+    /// unregisters all subscribers in Dispose. 
+    /// 
+    /// Thus for garbage collection to succeed on tag deletion we need:
+    /// - call dispose on WindowListner instance
+    /// - unreference tag context from KnownTags collection
+    /// 
+    /// Here is some additional reading regarding events:
+    /// http://www.codeproject.com/Articles/29922/Weak-Events-in-C
+    /// http://diditwith.net/PermaLink,guid,aacdb8ae-7baa-4423-a953-c18c1c7940ab.aspx
+    /// http://msdn.microsoft.com/en-us/library/ms228976.aspx
+    /// </remarks>
     public sealed class TagContext : IDisposable
     {
         /// <summary>
