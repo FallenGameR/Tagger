@@ -8,6 +8,8 @@ using Tagger.ViewModels;
 using Tagger.Wpf;
 using Microsoft.Practices.Prism.Commands;
 using System.Windows.Threading;
+using System.Reflection;
+using System.ComponentModel;
 
 namespace Tagger
 {
@@ -53,12 +55,9 @@ namespace Tagger
             var hostListner = new WindowListner(hostWindow);
             hostListner.WindowDestroyed += delegate { RegistrationManager.UnregisterTag(hostWindow); };
 
-            var tagWindow = new TagWindow();
-            var settingsWindow = new SettingsWindow();
-
             var tagRender = new TagRender();
-            tagRender.SaveAsDefaultCommand = new DelegateCommand<object>(obj => tagRender.SaveAsDefault());
-            tagRender.LoadFromDefaultCommand = new DelegateCommand<object>(obj => tagRender.LoadFromDefault());
+            var tagWindow = new TagWindow();
+
             // Subscriptions
             Action<double> updatePosition = (double width) =>
             {
@@ -70,15 +69,19 @@ namespace Tagger
             hostListner.ClientAreaChanged += delegate { updatePosition(tagWindow.Width); };
             // text width 
             tagRender.PropertyChanged += delegate { updatePosition(tagWindow.Width); };
+            // 
             tagWindow.MouseRightButtonUp += delegate { tagRender.ToggleSettingsCommand.Execute(null); };
+
             // Initialize tag window
+            // To update the very first position right after the data binding that would
+            // define tag window size but before the render (render has lower priority in dispatcher queue)
             tagWindow.DataContext = tagRender;
             tagWindow.SetOwner(hostWindow);
             tagWindow.Show();
-            // To update the very first position right after the data binding that would
-            // define tag window size but before the render (render has lower priority in dispatcher queue)
             tagWindow.Dispatcher.Invoke(updatePosition, DispatcherPriority.DataBind, tagWindow.Width);
 
+            //
+            var settingsWindow = new SettingsWindow();
             tagRender.HideSettingsCommand = new DelegateCommand<object>(delegate
             {
                 settingsWindow.ToggleVisibility();

@@ -13,7 +13,7 @@ namespace Tagger
     /// <summary>
     /// View model needed to render tag window
     /// </summary>
-    public class TagRender: ViewModelBase
+    public class TagRender : ViewModelBase
     {
         #region Fields
 
@@ -32,7 +32,14 @@ namespace Tagger
         /// </summary>
         public TagRender()
         {
-            this.LoadFromDefault();
+            // Initialize commands (settings related commands are just stubs - we'll inject them latter)
+            this.SaveAsDefaultCommand = new DelegateCommand<object>(o => this.SaveAsDefault());
+            this.LoadFromDefaultCommand = new DelegateCommand<object>(o => this.LoadFromDefault());
+            this.ToggleSettingsCommand = new DelegateCommand<object>(delegate { });
+            this.HideSettingsCommand = new DelegateCommand<object>(delegate { });
+
+            // Load properties from default values
+            this.LoadFromDefaultCommand.Execute(null);
         }
 
         #region Properties
@@ -147,11 +154,11 @@ namespace Tagger
         /// <summary>
         /// Command to save current settings as default for all new tags
         /// </summary>
-        public DelegateCommand<object> SaveAsDefaultCommand { get; internal set; }
+        public DelegateCommand<object> SaveAsDefaultCommand { get; private set; }
 
         /// <summary>
         /// Command to load current settings from default values
         /// </summary>
-        public DelegateCommand<object> LoadFromDefaultCommand { get; internal set; }
+        public DelegateCommand<object> LoadFromDefaultCommand { get; private set; }
     }
 }
