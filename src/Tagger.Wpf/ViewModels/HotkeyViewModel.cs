@@ -20,7 +20,7 @@ namespace Tagger.ViewModels
         private ModifierKeys m_ModifierKeys;
         private Keys m_Key;
         private string m_Status;
-        private Hotkey m_GlobalHotkey;
+        private GlobalHotkey m_GlobalHotkey;
 
         #endregion
 
@@ -96,7 +96,7 @@ namespace Tagger.ViewModels
             // Try to register new global hotkey and update status
             try
             {
-                this.m_GlobalHotkey = new Hotkey(this.ModifierKeys, this.Key);
+                this.m_GlobalHotkey = new GlobalHotkey(this.ModifierKeys, this.Key);
                 this.m_GlobalHotkey.KeyPressed += (s, a) => RegistrationManager.GlobalHotkeyHandle();
                 this.Status = "Registered hotkey: " + HotkeyText;
             }

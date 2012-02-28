@@ -55,9 +55,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GlobalHotkey\HotkeyEventArgs.cs" />
-    <Compile Include="GlobalHotkey\Hotkey.cs" />
-    <Compile Include="ProcessId\ProcessListner.cs" />
+    <Compile Include="Domain\WindowSizes.cs" />
+    <Compile Include="Utils\HotkeyEventArgs.cs" />
+    <Compile Include="Domain\GlobalHotkey.cs" />
+    <Compile Include="Domain\WindowListner.cs" />
     <Compile Include="Utils\Extensions\Strings.cs" />
     <Compile Include="Utils\Extensions\Windows.cs" />
     <Compile Include="WinApi\Windows.cs" />
@@ -66,13 +67,13 @@
     <Compile Include="Utils\Diagnostics\Checks.cs" />
     <Compile Include="Utils\Diagnostics\DesignByContractException.cs" />
     <Compile Include="Utils\Diagnostics\ProgramException.cs" />
-    <Compile Include="ProcessId\PortableExecutableReader.cs" />
+    <Compile Include="Domain\PortableExecutableReader.cs" />
     <Compile Include="Utils\Prism\FirstFocusedElementExtension.cs" />
     <Compile Include="Utils\Extensions\Reflection.cs" />
-    <Compile Include="ProcessId\WctHandle.cs" />
+    <Compile Include="Utils\WctHandle.cs" />
     <Compile Include="WinApi\PortableExecutable.cs" />
     <Compile Include="WinApi\WaitChainTraversal.cs" />
-    <Compile Include="ProcessId\ConhostFinder.cs" />
+    <Compile Include="Domain\ConhostFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\Prism\ViewModelBase.cs" />
   </ItemGroup>

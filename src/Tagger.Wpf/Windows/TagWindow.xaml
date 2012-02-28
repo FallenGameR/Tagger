@@ -1,29 +1,29 @@
-﻿<Window 
-    x:Class="Tagger.Wpf.TagWindow"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    ShowInTaskbar="False"        
-    WindowStyle="None" 
-    AllowsTransparency="True"
-    ResizeMode="NoResize" 
-    MinHeight="50" 
-    MinWidth="140" 
-    SizeToContent="WidthAndHeight" 
-    Background="Transparent"
-    >
-    <Grid DataContext="{Binding Path=TagRender}">
+﻿<Window x:Class="Tagger.Wpf.TagWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        MinWidth="140"
+        MinHeight="50"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        SizeToContent="WidthAndHeight"
+        WindowStyle="None">
+    <Grid>
         <Rectangle>
             <Rectangle.Fill>
                 <SolidColorBrush Color="{Binding Path=Color, Mode=OneWay}" />
             </Rectangle.Fill>
-        </Rectangle>        
-        <TextBlock
-            Text="{Binding Path=Text, Mode=OneWay}"
-            FontSize="{Binding Path=FontSize, Mode=OneWay}"
-            FontFamily="{Binding Path=FontFamily, Mode=OneWay}"
-            TextAlignment="Right"
-            VerticalAlignment="Center"
-            Margin="5">
+        </Rectangle>
+        <TextBlock Margin="5"
+                   VerticalAlignment="Center"
+                   FontFamily="{Binding Path=FontFamily,
+                                        Mode=OneWay}"
+                   FontSize="{Binding Path=FontSize,
+                                      Mode=OneWay}"
+                   Text="{Binding Path=Text,
+                                  Mode=OneWay}"
+                   TextAlignment="Right">
             <TextBlock.Foreground>
                 <SolidColorBrush Color="{Binding Path=FontColor, Mode=OneWay}" />
             </TextBlock.Foreground>

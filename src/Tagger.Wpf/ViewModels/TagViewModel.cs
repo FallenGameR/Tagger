@@ -6,13 +6,14 @@ using System.Windows.Media;
 using Utils.Extensions;
 using Utils.Prism;
 using Tagger.Properties;
+using Microsoft.Practices.Prism.Commands;
 
 namespace Tagger
 {
     /// <summary>
     /// View model needed to render tag window
     /// </summary>
-    public class TagRender: ViewModelBase
+    public class TagViewModel : ViewModelBase
     {
         #region Fields
 
@@ -29,9 +30,16 @@ namespace Tagger
         /// <summary>
         /// Initializes new instance of TagRender
         /// </summary>
-        public TagRender()
+        public TagViewModel()
         {
-            this.LoadFromDefault();
+            // Initialize commands (settings related commands are just stubs - we'll inject them latter)
+            this.SaveAsDefaultCommand = new DelegateCommand<object>(o => this.SaveAsDefault());
+            this.LoadFromDefaultCommand = new DelegateCommand<object>(o => this.LoadFromDefault());
+            this.ToggleSettingsCommand = new DelegateCommand<object>(delegate { });
+            this.HideSettingsCommand = new DelegateCommand<object>(delegate { });
+
+            // Load properties from default values
+            this.LoadFromDefaultCommand.Execute(null);
         }
 
         #region Properties
@@ -132,5 +140,25 @@ namespace Tagger
             this.OffsetTop = Settings.Default.Tag_OffsetTop;
             this.OffsetRight = Settings.Default.Tag_OffsetRight;
         }
+
+        /// <summary>
+        /// Shows or hides settings window that is associated with the tag
+        /// </summary>
+        public DelegateCommand<object> ToggleSettingsCommand { get; internal set; }
+
+        /// <summary>
+        /// Hide settings window command
+        /// </summary>
+        public DelegateCommand<object> HideSettingsCommand { get; internal set; }
+
+        /// <summary>
+        /// Command to save current settings as default for all new tags
+        /// </summary>
+        public DelegateCommand<object> SaveAsDefaultCommand { get; private set; }
+
+        /// <summary>
+        /// Command to load current settings from default values
+        /// </summary>
+        public DelegateCommand<object> LoadFromDefaultCommand { get; private set; }
     }
 }

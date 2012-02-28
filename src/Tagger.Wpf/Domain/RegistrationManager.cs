@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Tagger.WinAPI;
 using Utils.Extensions;
-using Tagger.Wpf.Windows;
-using Tagger.ViewModels;
-using Tagger.Wpf;
 
 namespace Tagger
 {
@@ -47,37 +44,10 @@ namespace Tagger
         /// <param name="hostWindow">Window host that is tagged</param>
         private static void RegisterTag(IntPtr hostWindow)
         {
-            // Create tag context objects
-            var hostListner = new ProcessListner(hostWindow);
-            hostListner.Destroyed += delegate { RegistrationManager.UnregisterTag(hostWindow); };
+            var context = new TagContext();
+            context.AttachToHost(hostWindow);
+            context.HostWindowListner.WindowDestroyed += delegate { RegistrationManager.UnregisterTag(hostWindow); };
 
-            var tagRender = new TagRender();
-            var tagWindow = new TagWindow();
-            var tagModel = new TagModel(tagWindow, hostWindow, tagRender, hostListner);
-            tagWindow.Show();
-
-            var settingsWindow = new SettingsWindow();
-            var settingsModel = new SettingsModel(settingsWindow, hostWindow, tagRender);
-            settingsWindow.Show();
-
-            // Perform settings window injection
-            // NOTE: That way we can show the tag as fast as possible (that is good for perceived responsiveness)
-            //       and do not need to switch foreground window manually when settings window would appear
-            tagModel.SettingsWindow = settingsWindow;
-
-            // Create new tag context object 
-            var context = new TagContext
-            {
-                HostWindow = hostWindow,
-                HostListner = hostListner,
-                TagRender = tagRender,
-                TagWindow = tagWindow,
-                TagModel = tagModel,
-                SettingsWindow = settingsWindow,
-                SettingsModel = settingsModel,
-            };
-
-            // Store it to manage lifetime
             lock( RegistrationManager.KnownTags )
             {
                 RegistrationManager.KnownTags.Add(context);
