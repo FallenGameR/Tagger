@@ -13,7 +13,7 @@ namespace Tagger
     /// <summary>
     /// View model needed to render tag window
     /// </summary>
-    public class TagRender : ViewModelBase
+    public class TagViewModel : ViewModelBase
     {
         #region Fields
 
@@ -30,7 +30,7 @@ namespace Tagger
         /// <summary>
         /// Initializes new instance of TagRender
         /// </summary>
-        public TagRender()
+        public TagViewModel()
         {
             // Initialize commands (settings related commands are just stubs - we'll inject them latter)
             this.SaveAsDefaultCommand = new DelegateCommand<object>(o => this.SaveAsDefault());

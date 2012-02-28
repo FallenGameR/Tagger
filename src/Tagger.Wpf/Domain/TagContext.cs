@@ -74,7 +74,7 @@ namespace Tagger
         /// <summary>
         /// Tag render view model that is shared between settings and tag windows
         /// </summary>
-        public TagRender TagRender { get; internal set; }
+        public TagViewModel TagRender { get; internal set; }
 
         /// <summary>
         /// Tag window itself

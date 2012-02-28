@@ -55,7 +55,7 @@ namespace Tagger
             var hostListner = new WindowListner(hostWindow);
             hostListner.WindowDestroyed += delegate { RegistrationManager.UnregisterTag(hostWindow); };
 
-            var tagRender = new TagRender();
+            var tagRender = new TagViewModel();
             var tagWindow = new TagWindow();
 
             // Subscriptions
