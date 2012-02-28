@@ -1,7 +1,11 @@
 ﻿using System;
-using Tagger.ViewModels;
+using System.ComponentModel;
+using Microsoft.Practices.Prism.Commands;
+using Tagger.WinAPI;
 using Tagger.Wpf;
 using Tagger.Wpf.Windows;
+using Utils.Diagnostics;
+using Utils.Extensions;
 
 namespace Tagger
 {
@@ -34,56 +38,140 @@ namespace Tagger
     public sealed class TagContext : IDisposable
     {
         /// <summary>
+        /// Initializes new instance of TagContext
+        /// </summary>
+        /// <remarks>
+        /// Windows objects are created, initialized and ready to connect to a host window
+        /// </remarks>
+        public TagContext()
+        {
+            this.TagViewModel = new TagViewModel();
+            this.TagWindow = new TagWindow { DataContext = this.TagViewModel };
+            this.SettingsWindow = new SettingsWindow { DataContext = this.TagViewModel };
+
+            this.TagViewModel.ToggleSettingsCommand = new DelegateCommand<object>(o => this.SettingsWindow.ToggleVisibility());
+            this.TagViewModel.HideSettingsCommand = new DelegateCommand<object>(this.HideSettingsAndRefocus);
+            this.TagViewModel.PropertyChanged += (s, e) => this.RedrawTagPosition(this.TagWindow.Width);
+
+            this.TagWindow.MouseRightButtonUp += (s, e) => this.TagViewModel.ToggleSettingsCommand.Execute(null);
+            this.TagWindow.SizeChanged += (s, e) => this.RedrawTagPosition(e.NewSize.Width);
+
+            this.SettingsWindow.Closing += this.SettingsClosingHandler;
+        }
+
+        /// <summary>
         /// Clean up all resources
         /// </summary>
         public void Dispose()
         {
-            if (this.TagWindow != null)
-            {
-                // TODO: How to force it?        
-                this.TagWindow.Dispatcher.Invoke((Action)delegate {this.TagWindow.Close();});
-            }
+            // Cancel hide on close for settings window
+            this.SettingsWindow.Closing -= this.SettingsClosingHandler;
 
-            if (this.SettingsWindow != null)
-            {
-                // TODO: How to force it?
-                this.SettingsWindow.Dispatcher.Invoke((Action)delegate { this.SettingsWindow.Close(); });
-            }
+            // Hide and then close both views
+            this.SettingsWindow.Dispatcher.Invoke((Action)delegate { this.SettingsWindow.Hide(); });
+            this.TagWindow.Dispatcher.Invoke((Action)delegate { this.TagWindow.Hide(); });
+            this.TagWindow.Dispatcher.Invoke((Action)delegate { this.TagWindow.Close(); });
+            this.SettingsWindow.Dispatcher.Invoke((Action)delegate { this.SettingsWindow.Close(); });
 
-            if (this.TagRender != null)
-            {
-                this.TagRender.Dispose();
-            }
+            // Dispose underlying view model
+            this.TagViewModel.Dispose();
 
-            if (this.HostListner != null)
+            // Dispose window listner
+            if (this.HostWindowListner != null)
             {
-                this.HostListner.Dispose();
+                this.HostWindowListner.Dispose();
             }
         }
 
         /// <summary>
-        /// Window handle that is tagged
+        /// Attach tag to a host window
         /// </summary>
-        public IntPtr HostWindow { get; internal set; }
+        /// <param name="hostWindow">Window handle to the host window</param>
+        /// <remarks>
+        /// Checks ensure that this method is called only once per tag context
+        /// </remarks>
+        public void AttachToHost(IntPtr hostWindow)
+        {
+            Check.Require(hostWindow != IntPtr.Zero, "Injected host window must not be zero");
+            Check.Require(this.HostWindow == default(IntPtr), "Host window must not be initialized");
+
+            this.HostWindow = hostWindow;
+
+            this.TagWindow.SetOwner(this.HostWindow);
+            this.TagWindow.Show();
+
+            this.SettingsWindow.SetOwner(this.HostWindow);
+            this.SettingsWindow.Show();
+
+            this.HostWindowListner = new WindowListner(this.HostWindow);
+            this.HostWindowListner.ClientAreaChanged += (s, e) => this.RedrawTagPosition(this.TagWindow.Width);
+        }
 
         /// <summary>
-        /// Listner for events that happens in host process
+        /// Hide settings window instead of close
         /// </summary>
-        public WindowListner HostListner { get; internal set; }
+        /// <remarks>
+        /// To actually close the settings window we need to unsubscribe from such handler
+        /// </remarks>
+        private void SettingsClosingHandler(object sender, CancelEventArgs ea)
+        {
+            ea.Cancel = true;
+            this.SettingsWindow.Hide();
+        }
+
+        /// <summary>
+        /// Redraw tag window position when it's needed
+        /// </summary>
+        /// <param name="tagWindowWidth">Width of the tag window</param>
+        private void RedrawTagPosition(double tagWindowWidth)
+        {
+            if (this.HostWindow == IntPtr.Zero)
+            {
+                return;
+            }
+
+            var clientArea = WindowSizes.GetClientArea(this.HostWindow);
+            this.TagWindow.Top = clientArea.Top + this.TagViewModel.OffsetTop;
+            this.TagWindow.Left = clientArea.Right - tagWindowWidth - this.TagViewModel.OffsetRight;
+        }
+
+        /// <summary>
+        /// Hide settings window and make host window focused
+        /// </summary>
+        private void HideSettingsAndRefocus(object sender)
+        {
+            if (this.HostWindow == IntPtr.Zero)
+            {
+                return;
+            }
+
+            this.SettingsWindow.ToggleVisibility();
+            NativeAPI.SetForegroundWindow(this.HostWindow);
+        }
 
         /// <summary>
         /// Tag render view model that is shared between settings and tag windows
         /// </summary>
-        public TagViewModel TagRender { get; internal set; }
+        public TagViewModel TagViewModel { get; private set; }
 
         /// <summary>
         /// Tag window itself
         /// </summary>
-        public TagWindow TagWindow { get; internal set; }
+        public TagWindow TagWindow { get; private set; }
 
         /// <summary>
         /// Settings window that setup tag appearance
         /// </summary>
-        public SettingsWindow SettingsWindow { get; internal set; }
+        public SettingsWindow SettingsWindow { get; private set; }
+
+        /// <summary>
+        /// Window handle that is tagged
+        /// </summary>
+        public IntPtr HostWindow { get; private set; }
+
+        /// <summary>
+        /// Listner for events that happens in host process
+        /// </summary>
+        public WindowListner HostWindowListner { get; private set; }
     }
 }
