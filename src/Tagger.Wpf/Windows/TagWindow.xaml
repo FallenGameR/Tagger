@@ -15,7 +15,7 @@
                 <SolidColorBrush Color="{Binding Path=Color, Mode=OneWay}" />
             </Rectangle.Fill>
         </Rectangle>
-        <TextBlock Margin="5"
+        <TextBlock Margin="20,5"
                    VerticalAlignment="Center"
                    FontFamily="{Binding Path=FontFamily,
                                         Mode=OneWay}"
@@ -23,7 +23,7 @@
                                       Mode=OneWay}"
                    Text="{Binding Path=Text,
                                   Mode=OneWay}"
-                   TextAlignment="Right">
+                   TextAlignment="Center">
             <TextBlock.Foreground>
                 <SolidColorBrush Color="{Binding Path=FontColor, Mode=OneWay}" />
             </TextBlock.Foreground>
