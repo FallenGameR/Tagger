@@ -71,6 +71,8 @@ namespace Tagger
             tagRender.PropertyChanged += delegate { updatePosition(tagWindow.Width); };
             // 
             tagWindow.MouseRightButtonUp += delegate { tagRender.ToggleSettingsCommand.Execute(null); };
+            // Restored
+            tagWindow.SizeChanged += (sender, args) => updatePosition(args.NewSize.Width);
 
             // Initialize tag window
             // To update the very first position right after the data binding that would
@@ -78,7 +80,7 @@ namespace Tagger
             tagWindow.DataContext = tagRender;
             tagWindow.SetOwner(hostWindow);
             tagWindow.Show();
-            tagWindow.Dispatcher.Invoke(updatePosition, DispatcherPriority.DataBind, tagWindow.Width);
+            //tagWindow.Dispatcher.Invoke(updatePosition, DispatcherPriority.DataBind, tagWindow.Width);
 
             //
             var settingsWindow = new SettingsWindow();
