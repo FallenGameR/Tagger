@@ -38,10 +38,12 @@ namespace Tagger
             RegistrationManager.RegisterTag(host);
         }
 
+
+
         /// <summary>
         /// Registeres new tag
         /// </summary>
-        /// <param name="hostWindow">Window host that is tagged</param>
+        /// <param name="hostWindow">Handle to the window host that is tagged</param>
         private static void RegisterTag(IntPtr hostWindow)
         {
             var context = new TagContext();
@@ -54,6 +56,10 @@ namespace Tagger
             }
         }
 
+        /// <summary>
+        /// Unregisters existing tag and clean it up
+        /// </summary>
+        /// <param name="hostWindow">Handle to the window host that is tagged</param>
         private static void UnregisterTag(IntPtr hostWindow)
         {
             lock (RegistrationManager.KnownTags)

@@ -20,6 +20,9 @@ namespace Tagger
     /// EVENT_OBJECT_DESTROY since hook needs additional filtering to be done.
     /// See Raymond Chen's "How can I get notified when some other window is destroyed?"
     /// for details - http://blogs.msdn.com/b/oldnewthing/archive/2011/10/26/10230020.aspx
+    /// 
+    /// On dispose unregisters all handlers from all its events. That's an unusual 
+    /// behaviour but it allows to garbage collect tag context without additional clutter.
     /// </remarks>
     public sealed class WindowListner : IDisposable
     {

@@ -172,6 +172,10 @@ namespace Tagger
         /// <summary>
         /// Listner for events that happens in host process
         /// </summary>
+        /// <remarks>
+        /// On dispose unregisters all handlers from all its events. That's an unusual 
+        /// behaviour but it allows to garbage collect tag context without additional clutter.
+        /// </remarks>
         public WindowListner HostWindowListner { get; private set; }
     }
 }

@@ -113,9 +113,18 @@ namespace Tagger
         #endregion
 
         /// <summary>
+        /// Get grouping label for the tag
+        /// </summary>
+        /// <returns>Tag label that is used to make tag groups</returns>
+        public TagLabel GetLabel()
+        {
+            return new TagLabel(this);
+        }
+
+        /// <summary>
         /// Save all render settings as default that would be used for every new tag
         /// </summary>
-        public void SaveAsDefault()
+        private void SaveAsDefault()
         {
             Settings.Default.Tag_Text = this.Text;
             Settings.Default.Tag_Color = this.Color.ToString();
@@ -130,7 +139,7 @@ namespace Tagger
         /// <summary>
         /// Load all render settings from default values stored in program settings
         /// </summary>
-        public void LoadFromDefault()
+        private void LoadFromDefault()
         {
             this.Text = Settings.Default.Tag_Text;
             this.Color = (Color)ColorConverter.ConvertFromString(Settings.Default.Tag_Color);
