@@ -8,10 +8,9 @@
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         xmlns:t="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit.Extended"
         Title="Settings"
-        Width="400"
         Background="#FAFAFA"
         ResizeMode="NoResize"
-        SizeToContent="Height"
+        SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterOwner">
 
     <!--  Resources - sorted fonts available  -->
@@ -29,7 +28,8 @@
         <av:AutoGrid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="240" />
+                <ColumnDefinition Width="80" />
             </Grid.ColumnDefinitions>
 
             <Label Margin="3">Text</Label>
@@ -41,130 +41,111 @@
                                     UpdateSourceTrigger=PropertyChanged,
                                     NotifyOnTargetUpdated=True}" />
 
+            <Grid>
+                <ComboBox Margin="3" />
+                <TextBlock Margin="0,0,10,0"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           IsHitTestVisible="False"
+                           Text="Existing" />
+            </Grid>
+
             <Label Margin="3">Tag color</Label>
-            <av:AutoGrid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="60" />
-                </Grid.ColumnDefinitions>
+            <ComboBox Margin="3"
+                      IsEditable="True"
+                      ItemsSource="{x:Static local:SettingsWindow.ColorNames}"
+                      Text="{Binding Path=Color,
+                                     Mode=TwoWay,
+                                     UpdateSourceTrigger=PropertyChanged}">
+                <ComboBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ComboBox.ItemsPanel>
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="40"
+                                    Margin="0,1"
+                                    Background="{Binding}" />
+                            <TextBlock Margin="8,1" Text="{Binding}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <t:ColorPicker Margin="3"
+                           ClipToBounds="False"
+                           FlowDirection="LeftToRight"
+                           SelectedColor="{Binding Path=Color,
+                                                   Mode=TwoWay,
+                                                   UpdateSourceTrigger=PropertyChanged}" />
 
-                <ComboBox Margin="3"
-                          IsEditable="True"
-                          ItemsSource="{x:Static local:SettingsWindow.ColorNames}"
-                          Text="{Binding Path=Color,
-                                         Mode=TwoWay,
-                                         UpdateSourceTrigger=PropertyChanged}">
-                    <ComboBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <VirtualizingStackPanel />
-                        </ItemsPanelTemplate>
-                    </ComboBox.ItemsPanel>
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Border Width="40"
-                                        Margin="0,1"
-                                        Background="{Binding}" />
-                                <TextBlock Margin="8,1" Text="{Binding}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <t:ColorPicker Margin="3"
-                               SelectedColor="{Binding Path=Color,
-                                                       Mode=TwoWay,
-                                                       UpdateSourceTrigger=PropertyChanged}"
-                               ShowRecentColors="True" />
-
-            </av:AutoGrid>
+            <Label Margin="3">Font color</Label>
+            <ComboBox Margin="3"
+                      IsEditable="True"
+                      ItemsSource="{x:Static local:SettingsWindow.ColorNames}"
+                      Text="{Binding Path=FontColor,
+                                     Mode=TwoWay,
+                                     UpdateSourceTrigger=PropertyChanged}">
+                <ComboBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ComboBox.ItemsPanel>
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="40"
+                                    Margin="0,1"
+                                    Background="{Binding}" />
+                            <TextBlock Margin="8,1" Text="{Binding}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <t:ColorPicker Margin="3" SelectedColor="{Binding Path=FontColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <!--
                 VirtualizingStackPanel is used for the fast first render, see also
                 http://www.bennedik.de/2007/10/wpf-fast-font-drop-down-list.html
             -->
             <Label Margin="3">Font name</Label>
-            <av:AutoGrid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="60" />
-                </Grid.ColumnDefinitions>
+            <ComboBox Margin="3"
+                      IsEditable="True"
+                      ItemsSource="{Binding Source={StaticResource fonts}}"
+                      SelectedValue="{Binding Path=FontFamily,
+                                              Mode=TwoWay,
+                                              UpdateSourceTrigger=PropertyChanged}">
+                <ComboBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ComboBox.ItemsPanel>
 
-                <ComboBox Margin="3"
-                          IsEditable="True"
-                          ItemsSource="{Binding Source={StaticResource fonts}}"
-                          SelectedValue="{Binding Path=FontFamily,
-                                                  Mode=TwoWay,
-                                                  UpdateSourceTrigger=PropertyChanged}">
-                    <ComboBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <VirtualizingStackPanel />
-                        </ItemsPanelTemplate>
-                    </ComboBox.ItemsPanel>
-
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Height="20"
-                                       FontFamily="{Binding}"
-                                       FontSize="15"
-                                       Text="{Binding}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-
-                <t:IntegerUpDown Margin="3"
-                                 HorizontalAlignment="Stretch"
-                                 VerticalContentAlignment="Top"
-                                 Increment="1"
-                                 TextAlignment="Left"
-                                 Value="{Binding Path=FontSize,
-                                                 Mode=TwoWay,
-                                                 UpdateSourceTrigger=PropertyChanged}" />
-            </av:AutoGrid>
-
-            <Label Margin="3">Font color</Label>
-            <av:AutoGrid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="60" />
-                </Grid.ColumnDefinitions>
-
-                <ComboBox Margin="3"
-                          IsEditable="True"
-                          ItemsSource="{x:Static local:SettingsWindow.ColorNames}"
-                          Text="{Binding Path=FontColor,
-                                         Mode=TwoWay,
-                                         UpdateSourceTrigger=PropertyChanged}">
-                    <ComboBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <VirtualizingStackPanel />
-                        </ItemsPanelTemplate>
-                    </ComboBox.ItemsPanel>
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Border Width="40"
-                                        Margin="0,1"
-                                        Background="{Binding}" />
-                                <TextBlock Margin="8,1" Text="{Binding}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <t:ColorPicker Margin="3"
-                               SelectedColor="{Binding Path=FontColor,
-                                                       Mode=TwoWay,
-                                                       UpdateSourceTrigger=PropertyChanged}"
-                               ShowRecentColors="True" />
-
-            </av:AutoGrid>
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Height="20"
+                                   FontFamily="{Binding}"
+                                   FontSize="15"
+                                   Text="{Binding}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <t:IntegerUpDown Margin="3"
+                             HorizontalAlignment="Stretch"
+                             VerticalContentAlignment="Top"
+                             Increment="1"
+                             Value="{Binding Path=FontSize,
+                                             Mode=TwoWay,
+                                             UpdateSourceTrigger=PropertyChanged}" />
 
             <Label Margin="3">Offsets</Label>
-            <av:AutoGrid>
+            <av:AutoGrid Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="80" />
                 </Grid.ColumnDefinitions>
 
                 <t:IntegerUpDown Margin="3"
@@ -173,7 +154,7 @@
                                  Value="{Binding Path=OffsetTop,
                                                  Mode=TwoWay,
                                                  UpdateSourceTrigger=PropertyChanged}" />
-                <Label Margin="3">from top</Label>
+                <Label Margin="3">top</Label>
 
                 <t:IntegerUpDown Margin="3"
                                  HorizontalAlignment="Stretch"
@@ -181,12 +162,12 @@
                                  Value="{Binding Path=OffsetRight,
                                                  Mode=TwoWay,
                                                  UpdateSourceTrigger=PropertyChanged}" />
-                <Label Margin="3">from right</Label>
+                <Label Margin="3">right</Label>
             </av:AutoGrid>
         </av:AutoGrid>
 
         <!--  Buttons grid  -->
-        <av:AutoGrid Margin="0,15,0,0">
+        <av:AutoGrid Margin="0,18,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -199,8 +180,8 @@
                     IsDefault="True">
                 OK
             </Button>
-            <Button Margin="5" Command="{Binding SaveAsDefaultCommand}">Save as default</Button>
-            <Button Margin="5" Command="{Binding LoadFromDefaultCommand}">Load from default</Button>
+            <Button Margin="4,6" Command="{Binding SaveAsDefaultCommand}">Save as default</Button>
+            <Button Margin="4,6" Command="{Binding LoadFromDefaultCommand}">Load from default</Button>
         </av:AutoGrid>
     </StackPanel>
 </Window>

@@ -4,7 +4,6 @@
         xmlns:views="clr-namespace:Tagger.Wpf.Views"
         Title="Tagger hotkey setup"
         Background="#FAFAFA"
-        Loaded="Window_Loaded"
         SizeToContent="WidthAndHeight"
         StateChanged="Window_StateChanged"
         WindowStartupLocation="CenterScreen">
