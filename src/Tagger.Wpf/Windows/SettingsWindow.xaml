@@ -42,9 +42,27 @@
                                     NotifyOnTargetUpdated=True}" />
 
             <Grid>
-                <ComboBox x:Name="ExistingTagsComboBox"
-                          Margin="3"
-                          DisplayMemberPath="Text" />
+                <ComboBox x:Name="ExistingTagsComboBox" Margin="3">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Height="18"
+                                        Margin="0,0,0,2"
+                                        Orientation="Horizontal">
+                                <Border Width="50"
+                                        VerticalAlignment="Stretch"
+                                        BorderBrush="Black"
+                                        BorderThickness="1"
+                                        CornerRadius="2">
+                                    <Border.Background>
+                                        <SolidColorBrush Color="{Binding Color}" />
+                                    </Border.Background>
+                                </Border>
+                                <TextBlock Margin="8,0,0,0" Text="{Binding Text}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+
+                </ComboBox>
                 <TextBlock Margin="0,0,10,0"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"

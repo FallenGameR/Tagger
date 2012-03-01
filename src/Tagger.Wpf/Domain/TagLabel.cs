@@ -69,6 +69,10 @@ namespace Tagger
         /// <summary>
         /// Color of the tag (the background color, not font color)
         /// </summary>
-        public Color Color { get; private set; }
+        private Color m_Color;
+        public Color Color { 
+            get {return m_Color;}
+            private set { m_Color = value; }
+        }
     }
 }
