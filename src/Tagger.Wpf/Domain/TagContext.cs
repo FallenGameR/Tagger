@@ -60,7 +60,7 @@ namespace Tagger
             this.TagWindow.SizeChanged += (s, e) => this.RedrawTagPosition(e.NewSize.Width);
 
             this.SettingsWindow.Closing += this.SettingsClosingHandler;
-            this.SettingsWindow.ExistingTagsComboBox.MouseLeftButtonDown += delegate
+            this.SettingsWindow.ExistingTagsComboBox.PreviewMouseDown += delegate
             {
                 itemsCounter.Next();
                 this.SettingsWindow.ExistingTagsComboBox.ItemsSource = RegistrationManager.GetTagLabels().ToList();
@@ -135,8 +135,6 @@ namespace Tagger
         /// <param name="tagWindowWidth">Width of the tag window</param>
         private void RedrawTagPosition(double tagWindowWidth)
         {
-            counter.Next();
-
             if (this.HostWindow == IntPtr.Zero)
             {
                 return;
@@ -146,19 +144,23 @@ namespace Tagger
             var newTop = clientArea.Top + this.TagViewModel.OffsetTop;
             var newLeft = clientArea.Right - tagWindowWidth - this.TagViewModel.OffsetRight;
 
-            //if (this.TagWindow.Top != newTop || this.TagWindow.Left != newLeft)
-            //{
-            //    this.TagWindow.Top = newTop;
-            //    this.TagWindow.Left = newLeft;
-            //}
-
-            if (this.TagWindow.Top != newTop )
+            if ((this.TagWindow.Top != newTop) && (this.TagWindow.Left != newLeft))
             {
+                counter.Next();
+                this.TagWindow.Top = newTop;
+                this.TagWindow.Left = newLeft;
+                return;                
+            }
+
+            if (this.TagWindow.Top != newTop)
+            {
+                counter.Next();
                 this.TagWindow.Top = newTop;
             }
 
             if (this.TagWindow.Left != newLeft)
             {
+                counter.Next();
                 this.TagWindow.Left = newLeft;
             }
         }
