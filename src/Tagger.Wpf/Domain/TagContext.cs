@@ -57,6 +57,10 @@ namespace Tagger
             this.TagWindow.SizeChanged += (s, e) => this.RedrawTagPosition(e.NewSize.Width);
 
             this.SettingsWindow.Closing += this.SettingsClosingHandler;
+            this.SettingsWindow.ExistingTagsComboBox.DropDownOpened += delegate
+            {
+                this.SettingsWindow.ExistingTagsComboBox.ItemsSource = RegistrationManager.GetTagLabels().ToList();
+            };
         }
 
         /// <summary>

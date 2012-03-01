@@ -38,7 +38,14 @@ namespace Tagger
             RegistrationManager.RegisterTag(host);
         }
 
-
+        /// <summary>
+        /// Gets all distinct tag labels from all registered tags
+        /// </summary>
+        /// <returns>Distinct tag labels enumeration</returns>
+        public static IEnumerable<TagLabel> GetTagLabels()
+        {
+            return RegistrationManager.KnownTags.Select(c => c.TagViewModel.GetLabel()).Distinct();
+        }
 
         /// <summary>
         /// Registeres new tag
