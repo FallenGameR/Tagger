@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\WindowSizes.cs" />
+    <Compile Include="Utils\ConsoleManager.cs" />
     <Compile Include="Utils\Counter.cs" />
     <Compile Include="Utils\HotkeyEventArgs.cs" />
     <Compile Include="Domain\GlobalHotkey.cs" />
