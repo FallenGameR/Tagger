@@ -40,12 +40,16 @@ namespace Tagger
             this.DestroyHandle();
         }
 
+        private Counter counter = new Counter("Wndproc");
+
         /// <summary>
         /// Window procedure used to get hot key event
         /// </summary>
         /// <param name="message">Message received</param>
         protected override void WndProc(ref Message message)
         {
+            counter.Next();
+
             // Default event processing
             base.WndProc(ref message);
 

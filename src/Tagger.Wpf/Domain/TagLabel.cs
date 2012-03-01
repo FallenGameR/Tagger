@@ -12,6 +12,9 @@ namespace Tagger
     /// </remarks>
     public class TagLabel : IEquatable<TagLabel>
     {
+        private Counter hashCounter = new Counter("hash code");
+        private Counter eqCounter = new Counter("eq counter");
+
         /// <summary>
         /// Initializes new instance of TagLabel
         /// </summary>
@@ -30,6 +33,7 @@ namespace Tagger
         /// <returns>Numeric hash code that intended to be used in hash tables</returns>
         public override int GetHashCode()
         {
+            hashCounter.Next();
             return this.Text.GetHashCode() ^ this.Color.GetHashCode();
         }
 
@@ -52,6 +56,7 @@ namespace Tagger
         /// <returns>true if tag labels are semantically equal, false otherwise</returns>
         public bool Equals(TagLabel other)
         {
+            eqCounter.Next();
             return this.Text == other.Text
                 && this.Color == other.Color;
         }
