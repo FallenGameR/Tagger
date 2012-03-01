@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using Microsoft.Practices.Prism.Commands;
 using Tagger.WinAPI;
 using Tagger.Wpf;
@@ -37,6 +38,8 @@ namespace Tagger
     /// </remarks>
     public sealed class TagContext : IDisposable
     {
+        private Counter itemsCounter = new Counter("DataBinding");
+
         /// <summary>
         /// Initializes new instance of TagContext
         /// </summary>
@@ -59,6 +62,7 @@ namespace Tagger
             this.SettingsWindow.Closing += this.SettingsClosingHandler;
             this.SettingsWindow.ExistingTagsComboBox.DropDownOpened += delegate
             {
+                itemsCounter.Next();
                 this.SettingsWindow.ExistingTagsComboBox.ItemsSource = RegistrationManager.GetTagLabels().ToList();
             };
         }
@@ -123,12 +127,16 @@ namespace Tagger
             this.SettingsWindow.Hide();
         }
 
+        private Counter counter = new Counter("redraw");
+
         /// <summary>
         /// Redraw tag window position when it's needed
         /// </summary>
         /// <param name="tagWindowWidth">Width of the tag window</param>
         private void RedrawTagPosition(double tagWindowWidth)
         {
+            counter.Next();
+
             if (this.HostWindow == IntPtr.Zero)
             {
                 return;
