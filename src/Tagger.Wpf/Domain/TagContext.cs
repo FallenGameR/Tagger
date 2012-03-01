@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using Microsoft.Practices.Prism.Commands;
 using Tagger.WinAPI;
 using Tagger.Wpf;
@@ -57,7 +58,7 @@ namespace Tagger
             this.TagWindow.SizeChanged += (s, e) => this.RedrawTagPosition(e.NewSize.Width);
 
             this.SettingsWindow.Closing += this.SettingsClosingHandler;
-            this.SettingsWindow.ExistingTagsComboBox.DropDownOpened += delegate
+            this.SettingsWindow.ExistingTagsComboBox.MouseLeftButtonDown += delegate
             {
                 this.SettingsWindow.ExistingTagsComboBox.ItemsSource = RegistrationManager.GetTagLabels().ToList();
             };
@@ -135,8 +136,24 @@ namespace Tagger
             }
 
             var clientArea = WindowSizes.GetClientArea(this.HostWindow);
-            this.TagWindow.Top = clientArea.Top + this.TagViewModel.OffsetTop;
-            this.TagWindow.Left = clientArea.Right - tagWindowWidth - this.TagViewModel.OffsetRight;
+            var newTop = clientArea.Top + this.TagViewModel.OffsetTop;
+            var newLeft = clientArea.Right - tagWindowWidth - this.TagViewModel.OffsetRight;
+
+            //if (this.TagWindow.Top != newTop || this.TagWindow.Left != newLeft)
+            //{
+            //    this.TagWindow.Top = newTop;
+            //    this.TagWindow.Left = newLeft;
+            //}
+
+            if (this.TagWindow.Top != newTop )
+            {
+                this.TagWindow.Top = newTop;
+            }
+
+            if (this.TagWindow.Left != newLeft)
+            {
+                this.TagWindow.Left = newLeft;
+            }
         }
 
         /// <summary>
