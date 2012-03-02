@@ -39,6 +39,7 @@ namespace Tagger
     public sealed class TagContext : IDisposable
     {
         private Counter itemsCounter = new Counter("DataBinding");
+        private Counter counter = new Counter("redraw");
 
         /// <summary>
         /// Initializes new instance of TagContext
@@ -134,8 +135,6 @@ namespace Tagger
             this.SettingsWindow.Hide();
         }
 
-        private Counter counter = new Counter("redraw");
-
         /// <summary>
         /// Redraw tag window position when it's needed
         /// </summary>
@@ -151,23 +150,18 @@ namespace Tagger
             var newTop = clientArea.Top + this.TagViewModel.OffsetTop;
             var newLeft = clientArea.Right - tagWindowWidth - this.TagViewModel.OffsetRight;
 
-            if ((this.TagWindow.Top != newTop) && (this.TagWindow.Left != newLeft))
+            if ((this.TagWindow.Top != newTop) || (this.TagWindow.Left != newLeft))
             {
                 counter.Next();
-                this.TagWindow.Top = newTop;
-                this.TagWindow.Left = newLeft;
-                return;                
             }
 
             if (this.TagWindow.Top != newTop)
             {
-                counter.Next();
                 this.TagWindow.Top = newTop;
             }
 
             if (this.TagWindow.Left != newLeft)
             {
-                counter.Next();
                 this.TagWindow.Left = newLeft;
             }
         }

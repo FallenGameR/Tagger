@@ -15,6 +15,8 @@ namespace Tagger
     /// </remarks>    
     public sealed class GlobalHotkey : NativeWindow, IDisposable
     {
+        private Counter counter = new Counter("Wndproc");
+
         /// <summary>
         /// Creates invisible receiver window
         /// </summary>
@@ -39,8 +41,6 @@ namespace Tagger
             NativeAPI.UnregisterHotKey(this.Handle, 0);            
             this.DestroyHandle();
         }
-
-        private Counter counter = new Counter("Wndproc");
 
         /// <summary>
         /// Window procedure used to get hot key event
