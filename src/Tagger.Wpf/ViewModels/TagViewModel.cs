@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Media;
+﻿using System.Windows.Media;
+using Microsoft.Practices.Prism.Commands;
+using Tagger.Properties;
 using Utils.Extensions;
 using Utils.Prism;
-using Tagger.Properties;
-using Microsoft.Practices.Prism.Commands;
 
 namespace Tagger
 {

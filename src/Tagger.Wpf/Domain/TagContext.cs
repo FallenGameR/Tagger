@@ -65,6 +65,13 @@ namespace Tagger
                 itemsCounter.Next();
                 this.SettingsWindow.ExistingTagsComboBox.ItemsSource = RegistrationManager.GetTagLabels().ToList();
             };
+            this.SettingsWindow.ExistingTagsComboBox.SelectionChanged += delegate
+            {
+                var tagLabel = (TagLabel)this.SettingsWindow.ExistingTagsComboBox.SelectedValue;
+                this.TagViewModel.Text = tagLabel.Text;
+                this.TagViewModel.Color = tagLabel.Color;
+                this.SettingsWindow.ExistingTagsComboBox.SelectedValue = null;
+            };
         }
 
         /// <summary>
