@@ -39,9 +39,18 @@ namespace Tagger
         }
 
         /// <summary>
+        /// Gets all distinct tag labels from all registered tags
+        /// </summary>
+        /// <returns>Distinct tag labels enumeration</returns>
+        public static IEnumerable<TagLabel> GetTagLabels()
+        {
+            return RegistrationManager.KnownTags.Select(c => c.TagViewModel.GetLabel()).Distinct();
+        }
+
+        /// <summary>
         /// Registeres new tag
         /// </summary>
-        /// <param name="hostWindow">Window host that is tagged</param>
+        /// <param name="hostWindow">Handle to the window host that is tagged</param>
         private static void RegisterTag(IntPtr hostWindow)
         {
             var context = new TagContext();
@@ -54,6 +63,10 @@ namespace Tagger
             }
         }
 
+        /// <summary>
+        /// Unregisters existing tag and clean it up
+        /// </summary>
+        /// <param name="hostWindow">Handle to the window host that is tagged</param>
         private static void UnregisterTag(IntPtr hostWindow)
         {
             lock (RegistrationManager.KnownTags)

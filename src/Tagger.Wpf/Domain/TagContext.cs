@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using Microsoft.Practices.Prism.Commands;
 using Tagger.WinAPI;
 using Tagger.Wpf;
@@ -37,6 +38,9 @@ namespace Tagger
     /// </remarks>
     public sealed class TagContext : IDisposable
     {
+        private Counter itemsCounter = new Counter("DataBinding");
+        private Counter counter = new Counter("redraw");
+
         /// <summary>
         /// Initializes new instance of TagContext
         /// </summary>
@@ -57,6 +61,18 @@ namespace Tagger
             this.TagWindow.SizeChanged += (s, e) => this.RedrawTagPosition(e.NewSize.Width);
 
             this.SettingsWindow.Closing += this.SettingsClosingHandler;
+            this.SettingsWindow.ExistingTagsComboBox.PreviewMouseDown += delegate
+            {
+                itemsCounter.Next();
+                this.SettingsWindow.ExistingTagsComboBox.ItemsSource = RegistrationManager.GetTagLabels().ToList();
+            };
+            this.SettingsWindow.ExistingTagsComboBox.SelectionChanged += delegate
+            {
+                var tagLabel = (TagLabel)this.SettingsWindow.ExistingTagsComboBox.SelectedValue;
+                this.TagViewModel.Text = tagLabel.Text;
+                this.TagViewModel.Color = tagLabel.Color;
+                this.SettingsWindow.ExistingTagsComboBox.SelectedValue = null;
+            };
         }
 
         /// <summary>
@@ -131,8 +147,23 @@ namespace Tagger
             }
 
             var clientArea = WindowSizes.GetClientArea(this.HostWindow);
-            this.TagWindow.Top = clientArea.Top + this.TagViewModel.OffsetTop;
-            this.TagWindow.Left = clientArea.Right - tagWindowWidth - this.TagViewModel.OffsetRight;
+            var newTop = clientArea.Top + this.TagViewModel.OffsetTop;
+            var newLeft = clientArea.Right - tagWindowWidth - this.TagViewModel.OffsetRight;
+
+            if ((this.TagWindow.Top != newTop) || (this.TagWindow.Left != newLeft))
+            {
+                counter.Next();
+            }
+
+            if (this.TagWindow.Top != newTop)
+            {
+                this.TagWindow.Top = newTop;
+            }
+
+            if (this.TagWindow.Left != newLeft)
+            {
+                this.TagWindow.Left = newLeft;
+            }
         }
 
         /// <summary>
@@ -172,6 +203,10 @@ namespace Tagger
         /// <summary>
         /// Listner for events that happens in host process
         /// </summary>
+        /// <remarks>
+        /// On dispose unregisters all handlers from all its events. That's an unusual 
+        /// behaviour but it allows to garbage collect tag context without additional clutter.
+        /// </remarks>
         public WindowListner HostWindowListner { get; private set; }
     }
 }
