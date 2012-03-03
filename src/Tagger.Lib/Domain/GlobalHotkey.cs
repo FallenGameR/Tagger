@@ -42,6 +42,8 @@ namespace Tagger
             this.DestroyHandle();
         }
 
+        private Counter counter = new Counter("Wndproc");
+
         /// <summary>
         /// Window procedure used to get hot key event
         /// </summary>

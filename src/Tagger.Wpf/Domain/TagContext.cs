@@ -135,12 +135,16 @@ namespace Tagger
             this.SettingsWindow.Hide();
         }
 
+        private Counter counter = new Counter("redraw");
+
         /// <summary>
         /// Redraw tag window position when it's needed
         /// </summary>
         /// <param name="tagWindowWidth">Width of the tag window</param>
         private void RedrawTagPosition(double tagWindowWidth)
         {
+            counter.Next();
+
             if (this.HostWindow == IntPtr.Zero)
             {
                 return;
