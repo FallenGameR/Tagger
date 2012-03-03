@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows.Automation;
+using System.Windows.Threading;
 using ManagedWinapi.Accessibility;
 using Tagger.WinAPI;
 using Utils.Diagnostics;
@@ -30,6 +31,7 @@ namespace Tagger
         private AccessibleEventListener moveListner;
         private AutomationElement automationWindowElement;
         private AutomationEventHandler automationWindowCloseEventHandler;
+        private DispatcherTimer fallbackStrategyTimer;
 
         /// <summary>
         /// Initializes WindowMovedListner instance
@@ -58,6 +60,12 @@ namespace Tagger
                 Enabled = true,
             };
             this.moveListner.EventOccurred += this.OnWindowMoveHandler;
+
+            // Use fallback strategy that manually redraws tag position once in 1/3 of a second
+            this.fallbackStrategyTimer = new DispatcherTimer();
+            this.fallbackStrategyTimer.Interval = TimeSpan.FromMilliseconds(300);
+            this.fallbackStrategyTimer.Tick += this.FallbackStrategyHandler;
+            this.fallbackStrategyTimer.Start();
         }
 
         /// <summary>
@@ -71,6 +79,9 @@ namespace Tagger
             // sources latter in this method - there would not be any new events anyway.
             this.ClientAreaChanged.GetInvocationList().Action(d => this.ClientAreaChanged -= (EventHandler) d);
             this.WindowDestroyed.GetInvocationList().Action(d => this.WindowDestroyed -= (EventHandler)d);
+
+            // Stop falback strategy timer
+            this.fallbackStrategyTimer.Stop();
 
             // Cleanup window move listner
             this.moveListner.EventOccurred -= this.OnWindowMoveHandler;
@@ -93,6 +104,32 @@ namespace Tagger
             // Ignore events from cursor
             if (ea.ObjectID != 0) { return; }
 
+            // Stop fallback strategy timer if enabled
+            if (this.fallbackStrategyTimer.IsEnabled)
+            {
+                this.fallbackStrategyTimer.Stop();
+            }
+
+            // Invoke event handler
+            if (this.ClientAreaChanged != null)
+            {
+                this.ClientAreaChanged(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Fallback strategy handler
+        /// </summary>
+        /// <remarks>
+        /// There are cases where SetWindowsHook would silently fail. It would return a valid
+        /// handle but would never report any move error. Repro is - try to set up a tag on 
+        /// a console window that started to execute very long IO intensive task (like copying
+        /// large folder). For such cases fallback strategy is used - manually redraw tag position
+        /// each 1/3 of a second. If there would be at least one event from SetWindowsHook, the 
+        /// fallback strategy is suppressed and never used again for this tag to preserve resources.
+        /// </remarks>
+        private void FallbackStrategyHandler(object sender, EventArgs e)
+        {
             // Invoke event handler
             if (this.ClientAreaChanged != null)
             {
