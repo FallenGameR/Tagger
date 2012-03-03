@@ -42,9 +42,17 @@ namespace Tagger
         /// Gets all distinct tag labels from all registered tags
         /// </summary>
         /// <returns>Distinct tag labels enumeration</returns>
-        public static IEnumerable<TagLabel> GetTagLabels()
+        /// <remarks>Default tag is excluded since it is not interesting to the user</remarks>
+        public static IEnumerable<TagLabel> GetExistingTags()
         {
-            return RegistrationManager.KnownTags.Select(c => c.TagViewModel.GetLabel()).Distinct();
+            var defaultLabel = new TagLabel(new TagViewModel());
+            var distinct = RegistrationManager.KnownTags.Select(c => c.TagViewModel.GetLabel()).Distinct();
+            return
+                from label in distinct
+                where !label.Equals(defaultLabel)
+                orderby label.Text
+                orderby label.Color
+                select label;
         }
 
         /// <summary>
