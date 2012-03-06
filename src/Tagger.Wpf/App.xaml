@@ -1,6 +1,6 @@
 ﻿<Application x:Class="Tagger.Wpf.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="Windows\MainWindow.xaml">
+             StartupUri="Windows\HotkeyWindow.xaml">
     <Application.Resources />
 </Application>
