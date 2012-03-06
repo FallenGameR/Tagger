@@ -38,9 +38,6 @@ namespace Tagger
     /// </remarks>
     public sealed class TagContext : IDisposable
     {
-        private Counter itemsCounter = new Counter("DataBinding");
-        private Counter counter = new Counter("redraw");
-
         /// <summary>
         /// Initializes new instance of TagContext
         /// </summary>
@@ -63,7 +60,6 @@ namespace Tagger
             this.SettingsWindow.Closing += this.SettingsClosingHandler;
             this.SettingsWindow.ExistingTagsComboBox.DropDownOpened += delegate
             {
-                itemsCounter.Next();
                 this.SettingsWindow.ExistingTagsComboBox.ItemsSource = RegistrationManager.GetExistingTags().ToList();
             };
             this.SettingsWindow.ExistingTagsComboBox.SelectionChanged += delegate
@@ -149,11 +145,6 @@ namespace Tagger
             var clientArea = WindowSizes.GetClientArea(this.HostWindow);
             var newTop = clientArea.Top + this.TagViewModel.OffsetTop;
             var newLeft = clientArea.Right - tagWindowWidth - this.TagViewModel.OffsetRight;
-
-            if ((this.TagWindow.Top != newTop) || (this.TagWindow.Left != newLeft))
-            {
-                counter.Next();
-            }
 
             if (this.TagWindow.Top != newTop)
             {

@@ -15,8 +15,6 @@ namespace Tagger
     /// </remarks>    
     public sealed class GlobalHotkey : NativeWindow, IDisposable
     {
-        private Counter counter = new Counter("Wndproc");
-
         /// <summary>
         /// Creates invisible receiver window
         /// </summary>
@@ -48,8 +46,6 @@ namespace Tagger
         /// <param name="message">Message received</param>
         protected override void WndProc(ref Message message)
         {
-            counter.Next();
-
             // Default event processing
             base.WndProc(ref message);
 

@@ -96,8 +96,9 @@
 
             <Expander Grid.ColumnSpan="3"
                       Margin="0,5,0,0"
+                      FlowDirection="RightToLeft"
                       Header="Advanced">
-                <av:AutoGrid Margin="0,5,0,0">
+                <av:AutoGrid Margin="0,5,0,0" FlowDirection="LeftToRight">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="100" />
                         <ColumnDefinition Width="240" />

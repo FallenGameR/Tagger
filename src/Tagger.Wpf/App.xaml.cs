@@ -10,7 +10,6 @@ namespace Tagger.Wpf
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            ConsoleManager.Show();
         }
     }
 }
