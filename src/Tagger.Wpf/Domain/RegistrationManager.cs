@@ -51,7 +51,7 @@ namespace Tagger
                 from label in distinct
                 where !label.Equals(defaultLabel)
                 orderby label.Text
-                orderby label.Color
+                orderby label.Color.ToString()
                 select label;
         }
 
