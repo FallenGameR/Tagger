@@ -44,7 +44,7 @@ namespace Tagger.ViewModels
             }
             else
             {
-                this.Status = "No hotkey registered";
+                this.Status = "None";
             }
 
             // Save settings on program deactivation (app exit included)
@@ -74,6 +74,7 @@ namespace Tagger.ViewModels
                 // Set view model properties
                 this.ModifierKeys = Keyboard.Modifiers;
                 this.Key = key;
+                this.RegisterHotkey(null);
 
                 // The text box grabs all input
                 e.Handled = true;

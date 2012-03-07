@@ -23,11 +23,7 @@
                  Margin="3"
                  Text="{Binding Path=HotkeyText,
                                 Mode=OneWay}" />
-        <Button Grid.Row="0"
-                Grid.Column="2"
-                Margin="3"
-                Command="{Binding RegisterHotkeyCommand}"
-                Content="Register" />
+        <Label Grid.Row="0" Grid.Column="2" />
 
         <Label Grid.Row="1" Grid.Column="0" />
         <TextBox Grid.Row="1"
