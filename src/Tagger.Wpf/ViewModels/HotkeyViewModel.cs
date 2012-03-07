@@ -19,7 +19,7 @@ namespace Tagger.ViewModels
         #region Fields
 
         private System.Windows.Input.ModifierKeys m_ModifierKeys;
-        private System.Windows.Forms.Keys m_Key;
+        private System.Windows.Input.Key m_Key;
         private string m_Status;
         private GlobalHotkey m_GlobalHotkey;
 
@@ -36,8 +36,8 @@ namespace Tagger.ViewModels
 
             // Restore previous settings state
             this.ModifierKeys = (System.Windows.Input.ModifierKeys)Settings.Default.Hotkey_Modifiers;
-            this.Key = (System.Windows.Forms.Keys)Settings.Default.Hotkey_Keys;
-
+            this.Key = (System.Windows.Input.Key)System.Windows.Input.KeyInterop.KeyFromVirtualKey(Settings.Default.Hotkey_Keys);
+            
             // Restore hotkey if possible
             if (this.CanRegisterHotkey(null))
             {
@@ -74,7 +74,7 @@ namespace Tagger.ViewModels
 
                 // Set view model properties
                 this.ModifierKeys = System.Windows.Input.Keyboard.Modifiers;
-                this.Key = (System.Windows.Forms.Keys)System.Windows.Input.KeyInterop.VirtualKeyFromKey(key);
+                this.Key = key;
 
                 // The text box grabs all input
                 e.Handled = true;
@@ -150,7 +150,7 @@ namespace Tagger.ViewModels
         /// <returns>true if command could be invoked</returns>
         private bool CanRegisterHotkey(object parameter)
         {
-            return this.Key != System.Windows.Forms.Keys.None;
+            return this.Key != System.Windows.Input.Key.None;
         }
 
         #endregion
@@ -210,7 +210,7 @@ namespace Tagger.ViewModels
         /// <summary>
         /// Key used in hotkey
         /// </summary>
-        public System.Windows.Forms.Keys Key
+        public System.Windows.Input.Key Key
         {
             get
             {

@@ -18,12 +18,13 @@ namespace Tagger
         /// <summary>
         /// Creates invisible receiver window
         /// </summary>
-        public GlobalHotkey(ModifierKeys modifier, Keys key)
+        public GlobalHotkey(ModifierKeys modifier, Key key)
         {
             this.CreateHandle(new CreateParams());
 
+            var virtualKey = KeyInterop.VirtualKeyFromKey(key);
             var noRepeatModifier = (uint)modifier | NativeAPI.NoRepeat;
-            var success = NativeAPI.RegisterHotKey(this.Handle, 0, noRepeatModifier, (uint)key);
+            var success = NativeAPI.RegisterHotKey(this.Handle, 0, noRepeatModifier, (uint)virtualKey);
 
             if (!success)
             {
