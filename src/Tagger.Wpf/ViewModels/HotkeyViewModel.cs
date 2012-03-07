@@ -106,8 +106,6 @@ namespace Tagger.ViewModels
             this.OnDelegateCommandsCanExecuteChanged();
         }
 
-        #region Command - UnregisterHotkey
-
         /// <summary>
         /// Unregister previously registered global hotkey
         /// </summary>
@@ -123,6 +121,8 @@ namespace Tagger.ViewModels
             this.GlobalHotkey.Dispose();
             this.GlobalHotkey = null;
             this.Status = "None";
+
+            this.OnDelegateCommandsCanExecuteChanged();
         }
 
         /// <summary>
@@ -133,8 +133,6 @@ namespace Tagger.ViewModels
         {
             return this.GlobalHotkey != null;
         }
-
-        #endregion
 
         #region Properties
 
