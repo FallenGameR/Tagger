@@ -7,6 +7,7 @@ using Tagger.Wpf;
 using Tagger.Wpf.Windows;
 using Utils.Diagnostics;
 using Utils.Extensions;
+using System.Windows.Input;
 
 namespace Tagger
 {
@@ -61,6 +62,13 @@ namespace Tagger
             this.SettingsWindow.ExistingTagsComboBox.DropDownOpened += delegate
             {
                 this.SettingsWindow.ExistingTagsComboBox.ItemsSource = RegistrationManager.GetExistingTags().ToList();
+            };
+            this.SettingsWindow.ExistingTagsComboBox.PreviewKeyDown += (sender, args) =>
+            {
+                if ((args.Key == Key.Space) || (args.Key == Key.Down) || (args.Key == Key.PageDown))
+                {
+                    this.SettingsWindow.ExistingTagsComboBox.IsDropDownOpen = !this.SettingsWindow.ExistingTagsComboBox.IsDropDownOpen;
+                }
             };
             this.SettingsWindow.ExistingTagsComboBox.SelectionChanged += delegate
             {
