@@ -3,11 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:markupExtensions="clr-namespace:Utils.Prism;assembly=Tagger.Lib"
              Width="500"
-             Height="70"
+             Height="35"
              FocusManager.FocusedElement="{markupExtensions:FirstFocusedElement}">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -16,22 +15,18 @@
             <ColumnDefinition Width="100" />
         </Grid.ColumnDefinitions>
 
-        <Label Grid.Row="0" Grid.Column="0">Shortcut key</Label>
+        <Label Grid.Row="0"
+               Grid.Column="0"
+               Margin="3">
+            Shortcut key
+        </Label>
         <TextBox x:Name="ShortcutTxt"
                  Grid.Row="0"
                  Grid.Column="1"
                  Margin="3"
-                 Text="{Binding Path=HotkeyText,
-                                Mode=OneWay}" />
-        <Label Grid.Row="0" Grid.Column="2" />
-
-        <Label Grid.Row="1" Grid.Column="0" />
-        <TextBox Grid.Row="1"
-                 Grid.Column="1"
-                 Margin="3"
                  Text="{Binding Path=Status,
                                 Mode=OneWay}" />
-        <Button Grid.Row="1"
+        <Button Grid.Row="0"
                 Grid.Column="2"
                 Margin="3"
                 Command="{Binding UnregisterHotkeyCommand}"
