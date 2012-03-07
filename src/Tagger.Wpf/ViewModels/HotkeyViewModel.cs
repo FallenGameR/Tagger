@@ -15,8 +15,6 @@ namespace Tagger.ViewModels
     /// </summary>
     public class HotkeyViewModel : ViewModelBase
     {
-        private ModifierKeys m_ModifierKeys;
-        private Key m_Key;
         private string m_Status;
 
         private static bool IsModifierKey(Key key)
@@ -148,36 +146,12 @@ namespace Tagger.ViewModels
         /// <summary>
         /// Modifier keys used for hotkey 
         /// </summary>
-        public ModifierKeys ModifierKeys
-        {
-            get
-            {
-                return this.m_ModifierKeys;
-            }
-            set
-            {
-                this.m_ModifierKeys = value;
-                OnPropertyChanged(this.Property(() => ModifierKeys));
-                OnDelegateCommandsCanExecuteChanged();
-            }
-        }
+        public ModifierKeys ModifierKeys { get; set; }
 
         /// <summary>
         /// Key used in hotkey
         /// </summary>
-        public Key Key
-        {
-            get
-            {
-                return this.m_Key;
-            }
-            set
-            {
-                this.m_Key = value;
-                OnPropertyChanged(this.Property(() => Key));
-                OnDelegateCommandsCanExecuteChanged();
-            }
-        }
+        public Key Key { get; set; }
 
         /// <summary>
         /// String representation of hotkey used
