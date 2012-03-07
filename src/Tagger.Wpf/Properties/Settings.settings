@@ -12,7 +12,7 @@
       <Value Profile="(Default)">Describe Me</Value>
     </Setting>
     <Setting Name="Tag_Color" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Green</Value>
+      <Value Profile="(Default)">OliveDrab</Value>
     </Setting>
     <Setting Name="Tag_FontFamily" Type="System.String" Scope="User">
       <Value Profile="(Default)">Segoe UI</Value>

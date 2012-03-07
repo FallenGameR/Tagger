@@ -61,7 +61,7 @@ namespace Tagger.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Green")]
+        [global::System.Configuration.DefaultSettingValueAttribute("OliveDrab")]
         public string Tag_Color {
             get {
                 return ((string)(this["Tag_Color"]));
