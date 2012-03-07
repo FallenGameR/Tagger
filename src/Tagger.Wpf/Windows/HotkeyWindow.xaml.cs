@@ -1,6 +1,6 @@
-﻿using System.Windows;
-using System.Windows.Interop;
-using System;
+﻿using System;
+using System.Windows;
+using Tagger.ViewModels;
 
 namespace Tagger.Wpf
 {
@@ -16,6 +16,8 @@ namespace Tagger.Wpf
 
             this.Loaded += delegate { RegistrationManager.RegisterException(this); };
             this.Closed += delegate { App.Current.Shutdown(); };
+
+            new HotkeyViewModel().BindToView(this.TagHotkeyControl); 
         }      
 
         private void Window_StateChanged(object sender, EventArgs e)

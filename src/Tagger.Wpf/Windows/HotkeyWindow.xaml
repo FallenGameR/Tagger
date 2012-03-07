@@ -9,6 +9,6 @@
         WindowStartupLocation="CenterScreen">
     <StackPanel>
         <views:TrayIconControl />
-        <views:HotkeyControl />
+        <views:HotkeyControl x:Name="TagHotkeyControl" />
     </StackPanel>
 </Window>

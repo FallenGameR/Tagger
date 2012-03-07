@@ -1,5 +1,4 @@
 ﻿using System.Windows.Controls;
-using Tagger.ViewModels;
 
 namespace Tagger.Wpf.Views
 {
@@ -11,7 +10,6 @@ namespace Tagger.Wpf.Views
         public HotkeyControl()
         {
             InitializeComponent();
-            new HotkeyViewModel().BindToView(this); 
         }
     }
 }
