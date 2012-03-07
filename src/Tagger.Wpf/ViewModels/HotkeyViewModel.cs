@@ -7,6 +7,8 @@ using Tagger.Wpf;
 using Utils.Diagnostics;
 using Utils.Extensions;
 using Utils.Prism;
+using System.Windows;
+using Tagger.Wpf.Views;
 
 namespace Tagger.ViewModels
 {
@@ -57,6 +59,40 @@ namespace Tagger.ViewModels
         }
 
         #endregion
+
+        public void BindToView(HotkeyControl control)
+        {
+            control.DataContext = this;
+            App.Current.Exit += delegate { this.Dispose(); };
+
+            control.ShortcutTxt.PreviewKeyDown += (object sender, System.Windows.Input.KeyEventArgs e) =>
+            {
+                // Fetch the actual shortcut key
+                var key = (e.Key == System.Windows.Input.Key.System) ? e.SystemKey : e.Key;
+
+                // Ignore modifier keys
+                if (IsModifierKey(key)) { return; }
+
+                // Set view model properties
+                this.ModifierKeys = Keyboard.Modifiers;
+                this.Key = (System.Windows.Forms.Keys)KeyInterop.VirtualKeyFromKey(key);
+
+                // The text box grabs all input
+                e.Handled = true;
+            };
+        }
+
+        private static bool IsModifierKey(Key key)
+        {
+            return key == System.Windows.Input.Key.LeftShift
+                || key == System.Windows.Input.Key.RightShift
+                || key == System.Windows.Input.Key.LeftCtrl
+                || key == System.Windows.Input.Key.RightCtrl
+                || key == System.Windows.Input.Key.LeftAlt
+                || key == System.Windows.Input.Key.RightAlt
+                || key == System.Windows.Input.Key.LWin
+                || key == System.Windows.Input.Key.RWin;
+        }
 
         #region IDisposable Members
 
