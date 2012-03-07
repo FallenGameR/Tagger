@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
 using Tagger.ViewModels;
+using System.Windows.Input;
+using Tagger.Properties;
 
 namespace Tagger.Wpf
 {
@@ -17,7 +19,24 @@ namespace Tagger.Wpf
             this.Loaded += delegate { RegistrationManager.RegisterException(this); };
             this.Closed += delegate { App.Current.Shutdown(); };
 
-            new HotkeyViewModel().BindToView(this.TagHotkeyControl); 
+            var tagViewModel = new HotkeyViewModel();
+            tagViewModel.BindToView(this.TagHotkeyControl);
+
+            // Restore previous settings state
+            tagViewModel.ModifierKeys = (ModifierKeys)Settings.Default.Hotkey_Modifiers;
+            tagViewModel.Key = (Key)Settings.Default.Hotkey_Keys;
+
+            // Restore registration state
+            tagViewModel.RegisterHotkey();
+
+            // Save settings on program deactivation (app exit included)
+            App.Current.Deactivated += delegate
+            {
+                Settings.Default.Hotkey_Modifiers = (int)tagViewModel.ModifierKeys;
+                Settings.Default.Hotkey_Keys = (int)tagViewModel.Key;
+                Settings.Default.Save();
+            };
+
         }      
 
         private void Window_StateChanged(object sender, EventArgs e)

@@ -15,40 +15,27 @@ namespace Tagger.ViewModels
     /// </summary>
     public class HotkeyViewModel : ViewModelBase
     {
-        #region Fields
-
         private ModifierKeys m_ModifierKeys;
         private Key m_Key;
         private string m_Status;
-        private GlobalHotkey m_GlobalHotkey;
 
-        #endregion
-
-        #region Constructors
+        private static bool IsModifierKey(Key key)
+        {
+            return key == Key.LeftShift
+                || key == Key.RightShift
+                || key == Key.LeftCtrl
+                || key == Key.RightCtrl
+                || key == Key.LeftAlt
+                || key == Key.RightAlt
+                || key == Key.LWin
+                || key == Key.RWin;
+        }
 
         public HotkeyViewModel()
         {
-            // Initialize fields
-            this.m_GlobalHotkey = null;
+            this.GlobalHotkey = null;
             this.UnregisterHotkeyCommand = new DelegateCommand<object>(this.UnregisterHotkey, this.CanUnregisterHotkey);
-
-            // Restore previous settings state
-            this.ModifierKeys = (ModifierKeys)Settings.Default.Hotkey_Modifiers;
-            this.Key = (Key)Settings.Default.Hotkey_Keys;
-            
-            // Restore hotkey if possible
-            this.RegisterHotkey();
-
-            // Save settings on program deactivation (app exit included)
-            App.Current.Deactivated += delegate
-            {
-                Settings.Default.Hotkey_Modifiers = (int)this.ModifierKeys;
-                Settings.Default.Hotkey_Keys = (int)this.Key;
-                Settings.Default.Save();
-            };
         }
-
-        #endregion
 
         public void BindToView(HotkeyControl control)
         {
@@ -73,28 +60,16 @@ namespace Tagger.ViewModels
             };
         }
 
-        private static bool IsModifierKey(Key key)
-        {
-            return key == Key.LeftShift
-                || key == Key.RightShift
-                || key == Key.LeftCtrl
-                || key == Key.RightCtrl
-                || key == Key.LeftAlt
-                || key == Key.RightAlt
-                || key == Key.LWin
-                || key == Key.RWin;
-        }
-
         #region IDisposable Members
 
         protected override void OnDisposeManaged()
         {
             base.OnDisposeManaged();
 
-            if (this.m_GlobalHotkey != null)
+            if (this.GlobalHotkey != null)
             {
-                this.m_GlobalHotkey.Dispose();
-                this.m_GlobalHotkey = null;
+                this.GlobalHotkey.Dispose();
+                this.GlobalHotkey = null;
             }
         }
 
@@ -103,7 +78,7 @@ namespace Tagger.ViewModels
         /// <summary>
         /// RegisterHotkey command handler
         /// </summary>
-        private void RegisterHotkey()
+        public void RegisterHotkey()
         {
             if (this.Key == Key.None )
             {
@@ -112,7 +87,7 @@ namespace Tagger.ViewModels
             }
 
             // Unregister previous hotkey if needed
-            if (this.m_GlobalHotkey != null)
+            if (this.GlobalHotkey != null)
             {
                 this.UnregisterHotkeyCommand.Execute(null);
             }
@@ -120,8 +95,8 @@ namespace Tagger.ViewModels
             // Try to register new global hotkey and update status
             try
             {
-                this.m_GlobalHotkey = new GlobalHotkey(this.ModifierKeys, this.Key);
-                this.m_GlobalHotkey.KeyPressed += (s, a) => RegistrationManager.GlobalHotkeyHandle();
+                this.GlobalHotkey = new GlobalHotkey(this.ModifierKeys, this.Key);
+                this.GlobalHotkey.KeyPressed += (s, a) => RegistrationManager.GlobalHotkeyHandle();
                 this.Status = this.HotkeyText;
             }
             catch (Win32Exception winEx)
@@ -147,11 +122,9 @@ namespace Tagger.ViewModels
         {
             Check.Require(this.CanUnregisterHotkey(parameter));
 
-            this.m_GlobalHotkey.Dispose();
-            this.m_GlobalHotkey = null;
-
+            this.GlobalHotkey.Dispose();
+            this.GlobalHotkey = null;
             this.Status = "None";
-            this.OnDelegateCommandsCanExecuteChanged();
         }
 
         /// <summary>
@@ -160,12 +133,17 @@ namespace Tagger.ViewModels
         /// <returns>true if command could be invoked</returns>
         private bool CanUnregisterHotkey(object parameter)
         {
-            return this.m_GlobalHotkey != null;
+            return this.GlobalHotkey != null;
         }
 
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// Global hotkey object that is used to watch for hotkey event
+        /// </summary>
+        private GlobalHotkey GlobalHotkey { get; set; }
 
         /// <summary>
         /// Modifier keys used for hotkey 
