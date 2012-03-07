@@ -133,11 +133,11 @@ namespace Tagger.ViewModels
             {
                 this.m_GlobalHotkey = new GlobalHotkey(this.ModifierKeys, this.Key);
                 this.m_GlobalHotkey.KeyPressed += (s, a) => RegistrationManager.GlobalHotkeyHandle();
-                this.Status = "Registered hotkey: " + HotkeyText;
+                this.Status = this.HotkeyText;
             }
             catch (Win32Exception winEx)
             {
-                this.Status = "Failed to register hotkey: " + winEx.Message;
+                this.Status = string.Format( "Failed to register '{0}' - {1}", this.HotkeyText, winEx.Message);
             }
 
             // Update command can execute status
@@ -167,12 +167,12 @@ namespace Tagger.ViewModels
         /// </summary>
         private void UnregisterHotkey(object parameter)
         {
-            Check.Require(CanUnregisterHotkey(parameter));
+            Check.Require(this.CanUnregisterHotkey(parameter));
 
             this.m_GlobalHotkey.Dispose();
             this.m_GlobalHotkey = null;
 
-            this.Status = "Hotkey unregistered";
+            this.Status = "None";
             this.OnDelegateCommandsCanExecuteChanged();
         }
 
@@ -202,7 +202,6 @@ namespace Tagger.ViewModels
             {
                 this.m_ModifierKeys = value;
                 OnPropertyChanged(this.Property(() => ModifierKeys));
-                OnPropertyChanged(this.Property(() => HotkeyText));
                 OnDelegateCommandsCanExecuteChanged();
             }
         }
@@ -220,7 +219,6 @@ namespace Tagger.ViewModels
             {
                 this.m_Key = value;
                 OnPropertyChanged(this.Property(() => Key));
-                OnPropertyChanged(this.Property(() => HotkeyText));
                 OnDelegateCommandsCanExecuteChanged();
             }
         }

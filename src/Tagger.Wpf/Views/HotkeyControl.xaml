@@ -6,9 +6,6 @@
              Height="35"
              FocusManager.FocusedElement="{markupExtensions:FirstFocusedElement}">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="120" />
             <ColumnDefinition Width="*" />
@@ -21,7 +18,6 @@
             Shortcut key
         </Label>
         <TextBox x:Name="ShortcutTxt"
-                 Grid.Row="0"
                  Grid.Column="1"
                  Margin="3"
                  Text="{Binding Path=Status,
