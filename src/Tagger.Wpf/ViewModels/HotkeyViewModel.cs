@@ -1,14 +1,13 @@
 ﻿using System.ComponentModel;
-using System.Windows.Forms;
-using System.Windows.Input;
+//using System.Windows.Forms;
+//using System.Windows.Input;
 using Microsoft.Practices.Prism.Commands;
 using Tagger.Properties;
 using Tagger.Wpf;
+using Tagger.Wpf.Views;
 using Utils.Diagnostics;
 using Utils.Extensions;
 using Utils.Prism;
-using System.Windows;
-using Tagger.Wpf.Views;
 
 namespace Tagger.ViewModels
 {
@@ -19,8 +18,8 @@ namespace Tagger.ViewModels
     {
         #region Fields
 
-        private ModifierKeys m_ModifierKeys;
-        private Keys m_Key;
+        private System.Windows.Input.ModifierKeys m_ModifierKeys;
+        private System.Windows.Forms.Keys m_Key;
         private string m_Status;
         private GlobalHotkey m_GlobalHotkey;
 
@@ -36,8 +35,8 @@ namespace Tagger.ViewModels
             this.UnregisterHotkeyCommand = new DelegateCommand<object>(this.UnregisterHotkey, this.CanUnregisterHotkey);
 
             // Restore previous settings state
-            this.ModifierKeys = (ModifierKeys)Settings.Default.Hotkey_Modifiers;
-            this.Key = (Keys)Settings.Default.Hotkey_Keys;
+            this.ModifierKeys = (System.Windows.Input.ModifierKeys)Settings.Default.Hotkey_Modifiers;
+            this.Key = (System.Windows.Forms.Keys)Settings.Default.Hotkey_Keys;
 
             // Restore hotkey if possible
             if (this.CanRegisterHotkey(null))
@@ -74,15 +73,15 @@ namespace Tagger.ViewModels
                 if (IsModifierKey(key)) { return; }
 
                 // Set view model properties
-                this.ModifierKeys = Keyboard.Modifiers;
-                this.Key = (System.Windows.Forms.Keys)KeyInterop.VirtualKeyFromKey(key);
+                this.ModifierKeys = System.Windows.Input.Keyboard.Modifiers;
+                this.Key = (System.Windows.Forms.Keys)System.Windows.Input.KeyInterop.VirtualKeyFromKey(key);
 
                 // The text box grabs all input
                 e.Handled = true;
             };
         }
 
-        private static bool IsModifierKey(Key key)
+        private static bool IsModifierKey(System.Windows.Input.Key key)
         {
             return key == System.Windows.Input.Key.LeftShift
                 || key == System.Windows.Input.Key.RightShift
@@ -151,7 +150,7 @@ namespace Tagger.ViewModels
         /// <returns>true if command could be invoked</returns>
         private bool CanRegisterHotkey(object parameter)
         {
-            return this.Key != Keys.None;
+            return this.Key != System.Windows.Forms.Keys.None;
         }
 
         #endregion
@@ -193,7 +192,7 @@ namespace Tagger.ViewModels
         /// <summary>
         /// Modifier keys used for hotkey 
         /// </summary>
-        public ModifierKeys ModifierKeys
+        public System.Windows.Input.ModifierKeys ModifierKeys
         {
             get
             {
@@ -211,7 +210,7 @@ namespace Tagger.ViewModels
         /// <summary>
         /// Key used in hotkey
         /// </summary>
-        public Keys Key
+        public System.Windows.Forms.Keys Key
         {
             get
             {
@@ -235,19 +234,19 @@ namespace Tagger.ViewModels
             {
                 var hotkey = string.Empty;
 
-                if (this.ModifierKeys.HasFlag(ModifierKeys.Control))
+                if (this.ModifierKeys.HasFlag(System.Windows.Input.ModifierKeys.Control))
                 {
                     hotkey += "Ctrl+";
                 }
-                if (this.ModifierKeys.HasFlag(ModifierKeys.Shift))
+                if (this.ModifierKeys.HasFlag(System.Windows.Input.ModifierKeys.Shift))
                 {
                     hotkey += "Shift+";
                 }
-                if (this.ModifierKeys.HasFlag(ModifierKeys.Alt))
+                if (this.ModifierKeys.HasFlag(System.Windows.Input.ModifierKeys.Alt))
                 {
                     hotkey += "Alt+";
                 }
-                if (this.ModifierKeys.HasFlag(ModifierKeys.Windows))
+                if (this.ModifierKeys.HasFlag(System.Windows.Input.ModifierKeys.Windows))
                 {
                     hotkey += "Win+";
                 }
