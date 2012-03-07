@@ -14,6 +14,7 @@ namespace Tagger.Wpf
             // TODO: Check windows OS edition
             InitializeComponent();
 
+            this.Loaded += delegate { RegistrationManager.RegisterException(this); };
             this.Closed += delegate { App.Current.Shutdown(); };
         }      
 

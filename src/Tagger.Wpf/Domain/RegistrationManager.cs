@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using Tagger.WinAPI;
+using Utils.Diagnostics;
 using Utils.Extensions;
 
 namespace Tagger
@@ -11,6 +13,11 @@ namespace Tagger
     /// </summary>
     public static class RegistrationManager
     {
+        /// <summary>
+        /// Windows that should not be tagged
+        /// </summary>
+        private static List<IntPtr> Exceptions = new List<IntPtr>();
+
         /// <summary>
         /// All known tag contexts
         /// </summary>
@@ -53,6 +60,32 @@ namespace Tagger
                 orderby label.Text
                 orderby label.Color.ToString()
                 select label;
+        }
+
+        /// <summary>
+        /// Register exception window that should not be tagged
+        /// </summary>
+        /// <param name="window">Window that should not be tagged</param>
+        public static void RegisterException(Window window)
+        {
+            Check.Require(window != null, "Window should not be null");
+            var handle = window.GetHandle();
+
+            Check.Ensure(handle != IntPtr.Zero, "Do not call RegisterException from constructor");
+            RegistrationManager.Exceptions.Add(handle);
+        }
+
+        /// <summary>
+        /// Unregister exception window that should not be tagged
+        /// </summary>
+        /// <param name="window">Window that should not be tagged</param>
+        public static void UnregisterException(Window window)
+        {
+            Check.Require(window != null, "Window should not be null");
+            var handle = window.GetHandle();
+
+            Check.Ensure(handle != IntPtr.Zero, "Do not call UnregisterException from constructor");
+            RegistrationManager.Exceptions.Remove(handle);
         }
 
         /// <summary>
@@ -107,6 +140,13 @@ namespace Tagger
         private static IntPtr GetHostHandle()
         {
             var foremostWindow = NativeAPI.GetForegroundWindow();
+
+            // If window is in exceptions, ignore call
+            var exceptionMatch = RegistrationManager.Exceptions.Contains(foremostWindow);
+            if (exceptionMatch)
+            {
+                return IntPtr.Zero;
+            }
 
             // If tag window is foremost, return its owner
             var tagMatch = RegistrationManager.KnownTags.SingleOrDefault(c => c.TagWindow.GetHandle() == foremostWindow);
