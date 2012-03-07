@@ -30,7 +30,6 @@ namespace Tagger.ViewModels
         {
             // Initialize fields
             this.m_GlobalHotkey = null;
-            this.RegisterHotkeyCommand = new DelegateCommand<object>(this.RegisterHotkey, this.CanRegisterHotkey);
             this.UnregisterHotkeyCommand = new DelegateCommand<object>(this.UnregisterHotkey, this.CanUnregisterHotkey);
 
             // Restore previous settings state
@@ -38,14 +37,7 @@ namespace Tagger.ViewModels
             this.Key = (Key)Settings.Default.Hotkey_Keys;
             
             // Restore hotkey if possible
-            if (this.CanRegisterHotkey(null))
-            {
-                this.RegisterHotkeyCommand.Execute(null);
-            }
-            else
-            {
-                this.Status = "None";
-            }
+            this.RegisterHotkey();
 
             // Save settings on program deactivation (app exit included)
             App.Current.Deactivated += delegate
@@ -74,7 +66,7 @@ namespace Tagger.ViewModels
                 // Set view model properties
                 this.ModifierKeys = Keyboard.Modifiers;
                 this.Key = key;
-                this.RegisterHotkey(null);
+                this.RegisterHotkey();
 
                 // The text box grabs all input
                 e.Handled = true;
@@ -108,19 +100,16 @@ namespace Tagger.ViewModels
 
         #endregion
 
-        #region Command - RegisterHotkey
-
-        /// <summary>
-        /// Register global windows hotkey
-        /// </summary>
-        public DelegateCommand<object> RegisterHotkeyCommand { get; private set; }
-
         /// <summary>
         /// RegisterHotkey command handler
         /// </summary>
-        private void RegisterHotkey(object parameter)
+        private void RegisterHotkey()
         {
-            Check.Require(CanRegisterHotkey(parameter));
+            if (this.Key == Key.None )
+            {
+                this.Status = "None";
+                return;
+            }
 
             // Unregister previous hotkey if needed
             if (this.m_GlobalHotkey != null)
@@ -143,17 +132,6 @@ namespace Tagger.ViewModels
             // Update command can execute status
             this.OnDelegateCommandsCanExecuteChanged();
         }
-
-        /// <summary>
-        /// Test that verifies if RegisterHotkey command can be invoked
-        /// </summary>
-        /// <returns>true if command could be invoked</returns>
-        private bool CanRegisterHotkey(object parameter)
-        {
-            return this.Key != Key.None;
-        }
-
-        #endregion
 
         #region Command - UnregisterHotkey
 
