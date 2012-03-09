@@ -37,6 +37,8 @@ namespace Tagger.Wpf
                 Settings.Default.Save();
             };
 
+            // Dispose on exit
+            App.Current.Exit += delegate { tagViewModel.Dispose(); };
         }      
 
         private void Window_StateChanged(object sender, EventArgs e)
