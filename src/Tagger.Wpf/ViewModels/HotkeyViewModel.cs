@@ -34,6 +34,9 @@ namespace Tagger.ViewModels
                 || key == Key.RWin;
         }
 
+        // TODO: Add XAML-bound properties for purpose of the shortcut and static function to call
+        // See: http://stackoverflow.com/questions/5146946/binding-of-static-methode-function-to-funct-property-in-xaml
+
         /// <summary>
         /// Initializes new instance of HotkeyViewModel class
         /// </summary>

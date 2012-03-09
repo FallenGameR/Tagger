@@ -19,8 +19,7 @@ namespace Tagger.Wpf
             this.Loaded += delegate { RegistrationManager.RegisterException(this); };
             this.Closed += delegate { App.Current.Shutdown(); };
 
-            var tagViewModel = new HotkeyViewModel();
-            tagViewModel.BindToView(this.TagHotkeyControl);
+            var tagViewModel = new HotkeyViewModel(this.TagHotkeyControl);
 
             // Restore previous settings state
             tagViewModel.ModifierKeys = (ModifierKeys)Settings.Default.Hotkey_Modifiers;
