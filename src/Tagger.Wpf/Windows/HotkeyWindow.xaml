@@ -12,6 +12,6 @@
         <v:TrayIconControl />
         <v:HotkeyControl x:Name="TagHotkeyControl"
                          Handler="{e:StaticMethod Tagger.RegistrationManager.GlobalHotkeyHandle}"
-                         Purpose="Tagger hotkey" />
+                         Purpose="Tag hotkey" />
     </StackPanel>
 </Window>

@@ -1,19 +1,14 @@
-﻿using System.Windows.Controls;
-using System.Windows;
-using System;
-
-namespace Tagger.Wpf.Views
+﻿namespace Tagger.Wpf.Views
 {
+    using System;
+    using System.Windows;
+    using System.Windows.Controls;
+
     /// <summary>
     /// Interaction logic for HotkeyControl.xaml
     /// </summary>
     public partial class HotkeyControl : UserControl
     {
-        public HotkeyControl()
-        {
-            InitializeComponent();
-        }
-
         /// <summary>
         /// Dependency propery for Purpose property
         /// </summary>
@@ -22,15 +17,6 @@ namespace Tagger.Wpf.Views
             typeof(string),
             typeof(HotkeyControl),
             new UIPropertyMetadata("Shortcut key"));
-
-        /// <summary>
-        /// Purpose of the hotkey, what it is used for
-        /// </summary>
-        public string Purpose
-        {
-            get { return (string)this.GetValue(PurposeProperty); }
-            set { this.SetValue(PurposeProperty, value); }
-        }
 
         /// <summary>
         /// Dependency property for Handler property
@@ -42,7 +28,24 @@ namespace Tagger.Wpf.Views
             new UIPropertyMetadata(null));
 
         /// <summary>
-        /// Global hotkey handler delegate
+        /// Initializes a new instance of the HotkeyControl class
+        /// </summary>
+        public HotkeyControl()
+        {
+            InitializeComponent();
+        }
+
+        /// <summary>
+        /// Gets or sets purpose of the hotkey, what it is used for
+        /// </summary>
+        public string Purpose
+        {
+            get { return (string)this.GetValue(PurposeProperty); }
+            set { this.SetValue(PurposeProperty, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets global hotkey handler delegate
         /// </summary>
         public Action Handler
         {
