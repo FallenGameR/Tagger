@@ -1,8 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Input;
 using Microsoft.Practices.Prism.Commands;
-using Tagger.Properties;
-using Tagger.Wpf;
 using Tagger.Wpf.Views;
 using Utils.Diagnostics;
 using Utils.Extensions;
@@ -15,6 +14,9 @@ namespace Tagger.ViewModels
     /// </summary>
     public class HotkeyViewModel : ViewModelBase
     {
+        /// <summary>
+        /// Status field
+        /// </summary>
         private string m_Status;
 
         /// <summary>
@@ -34,9 +36,6 @@ namespace Tagger.ViewModels
                 || key == Key.RWin;
         }
 
-        // TODO: Add XAML-bound properties for purpose of the shortcut and static function to call
-        // See: http://stackoverflow.com/questions/5146946/binding-of-static-methode-function-to-funct-property-in-xaml
-
         /// <summary>
         /// Initializes new instance of HotkeyViewModel class
         /// </summary>
@@ -47,6 +46,7 @@ namespace Tagger.ViewModels
 
             // Initialize properties
             this.GlobalHotkey = null;
+            this.HotkeyHandler = control.Handler;
             this.UnregisterHotkeyCommand = new DelegateCommand<object>(this.UnregisterHotkey, this.CanUnregisterHotkey);
 
             // Bind to view
@@ -89,6 +89,11 @@ namespace Tagger.ViewModels
         /// Global hotkey object that is used to watch for hotkey event
         /// </summary>
         private GlobalHotkey GlobalHotkey { get; set; }
+
+        /// <summary>
+        /// Handler for the global hotkey
+        /// </summary>
+        private Action HotkeyHandler { get; set; }
 
         /// <summary>
         /// String representation of hotkey used
@@ -156,7 +161,7 @@ namespace Tagger.ViewModels
             try
             {
                 this.GlobalHotkey = new GlobalHotkey(this.ModifierKeys, this.Key);
-                this.GlobalHotkey.KeyPressed += (s, a) => RegistrationManager.GlobalHotkeyHandle();
+                this.GlobalHotkey.KeyPressed += delegate { this.HotkeyHandler(); };
                 this.Status = this.HotkeyText;
             }
             catch (Win32Exception winEx)
@@ -191,6 +196,14 @@ namespace Tagger.ViewModels
             return this.GlobalHotkey != null;
         }
 
+        /// <summary>
+        /// Handler for key down event
+        /// </summary>
+        /// <remarks>
+        /// Used instead of a binding 
+        /// </remarks>
+        /// <param name="sender">Event sender</param>
+        /// <param name="ea">Event arguments</param>
         private void KeyDownHandler(object sender, KeyEventArgs ea)
         {
             // Fetch the actual shortcut key
