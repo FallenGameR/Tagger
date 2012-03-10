@@ -65,7 +65,11 @@ namespace Tagger
             };
             this.SettingsWindow.ExistingTagsComboBox.PreviewKeyDown += (sender, args) =>
             {
-                if ((args.Key == Key.Space) || (args.Key == Key.Down) || (args.Key == Key.PageDown))
+                var isSpace = args.Key == Key.Space;
+                var isDown = (args.Key == Key.Down) || (args.Key == Key.PageDown);
+                var isOpened = this.SettingsWindow.ExistingTagsComboBox.IsDropDownOpen;
+
+                if( isSpace || (!isOpened && isDown) )
                 {
                     this.SettingsWindow.ExistingTagsComboBox.IsDropDownOpen = !this.SettingsWindow.ExistingTagsComboBox.IsDropDownOpen;
                 }
@@ -75,6 +79,9 @@ namespace Tagger
                 var tagLabel = (TagLabel)this.SettingsWindow.ExistingTagsComboBox.SelectedValue;
                 this.TagViewModel.Text = tagLabel.Text;
                 this.TagViewModel.Color = tagLabel.Color;
+            };
+            this.SettingsWindow.ExistingTagsComboBox.DropDownClosed += delegate
+            {
                 this.SettingsWindow.ExistingTagsComboBox.SelectedValue = null;
             };
         }
