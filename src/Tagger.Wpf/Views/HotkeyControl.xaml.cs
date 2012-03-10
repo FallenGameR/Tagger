@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
 using System.Windows;
+using System;
 
 namespace Tagger.Wpf.Views
 {
@@ -29,6 +30,24 @@ namespace Tagger.Wpf.Views
         {
             get { return (string)this.GetValue(PurposeProperty); }
             set { this.SetValue(PurposeProperty, value); }
+        }
+
+        /// <summary>
+        /// Dependency property for Handler property
+        /// </summary>
+        public static readonly DependencyProperty HandlerProperty = DependencyProperty.Register(
+            "Handler",
+            typeof(Action),
+            typeof(HotkeyControl),
+            new UIPropertyMetadata(null));
+
+        /// <summary>
+        /// Global hotkey handler delegate
+        /// </summary>
+        public Action Handler
+        {
+            get { return (Action)this.GetValue(HandlerProperty); }
+            set { this.SetValue(HandlerProperty, value); }
         }
     }
 }

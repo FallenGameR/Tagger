@@ -1,6 +1,7 @@
 ﻿namespace Utils.Prism
 {
     using System;
+    using System.Linq;
     using System.Reflection;
     using System.Text.RegularExpressions;
     using System.Windows.Markup;
@@ -8,7 +9,7 @@
     [MarkupExtensionReturnType(typeof(Action))]
     public class StaticMethodExtension : MarkupExtension
     {
-        // {d:StaticMethod Program.Method1}
+        // {d:StaticMethod Tagger.RegistrationManager.GlobalHotkeyHandle}
         public StaticMethodExtension(string methodPath)
         {
             this.MethodPath = methodPath;
@@ -29,18 +30,15 @@
                 throw new ArgumentException("Failed to parse method path. Use full path to the method, without parentesis at the end.");
             }
 
-            var typeResolver = (IXamlTypeResolver)serviceProvider.GetService(typeof(IXamlTypeResolver));
-            var methodInfo = typeResolver
-                .Resolve(match.Groups["type"].Value)
-                .GetMethod(
-                    match.Groups["method"].Value, 
-                    BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Static);
+            var query =
+                from assembly in AppDomain.CurrentDomain.GetAssemblies()
+                from type in assembly.GetTypes()
+                where type.FullName == match.Groups["type"].Value
+                let method = type.GetMethod(match.Groups["method"].Value, BindingFlags.Public | BindingFlags.Static)
+                where method.ReturnType == typeof(void)
+                select Delegate.CreateDelegate(typeof(Action), method, true);
 
-            if ((methodInfo != null) && (methodInfo.ReturnType == typeof(void)))
-            {
-                this.Function = (Action)Delegate.CreateDelegate(typeof(Action), methodInfo, true);
-            }
-
+            this.Function = (Action)query.FirstOrDefault();
             return this.Function;
         }
     }
