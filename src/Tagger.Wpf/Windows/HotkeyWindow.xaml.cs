@@ -9,7 +9,7 @@ namespace Tagger.Wpf
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow: Window
+    public partial class MainWindow : Window
     {
         public MainWindow()
         {
@@ -20,6 +20,8 @@ namespace Tagger.Wpf
             this.Closed += delegate { App.Current.Shutdown(); };
 
             var tagViewModel = new HotkeyViewModel(this.TagHotkeyControl);
+            var settingsViewModel = new HotkeyViewModel(this.SettingsHotkeyControl);
+            var groupsViewModel = new HotkeyViewModel(this.GroupsHotkeyControl);
 
             // Restore previous settings state
             tagViewModel.ModifierKeys = (ModifierKeys)Settings.Default.Hotkey_Modifiers;
@@ -37,8 +39,13 @@ namespace Tagger.Wpf
             };
 
             // Dispose on exit
-            App.Current.Exit += delegate { tagViewModel.Dispose(); };
-        }      
+            App.Current.Exit += delegate
+            {
+                tagViewModel.Dispose();
+                settingsViewModel.Dispose();
+                groupsViewModel.Dispose();
+            };
+        }
 
         private void Window_StateChanged(object sender, EventArgs e)
         {

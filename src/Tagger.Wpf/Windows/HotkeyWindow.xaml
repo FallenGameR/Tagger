@@ -15,7 +15,7 @@
                          Handler="{e:StaticMethod Tagger.RegistrationManager.GlobalHotkeyHandle}"
                          Purpose="Tag hotkey" />
         <v:HotkeyControl x:Name="SettingsHotkeyControl" Purpose="Settings hotkey" />
-        <v:HotkeyControl x:Name="PickHotkeyControl" Purpose="Groups hotkey" />
+        <v:HotkeyControl x:Name="GroupsHotkeyControl" Purpose="Groups hotkey" />
 
     </StackPanel>
 </Window>

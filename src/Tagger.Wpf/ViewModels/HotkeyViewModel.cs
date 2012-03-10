@@ -146,15 +146,22 @@ namespace Tagger.ViewModels
         /// </summary>
         public void RegisterHotkey()
         {
+            // Guard for no handler
+            if (this.HotkeyHandler == null)
+            {
+                this.Status = "No handler";
+                return;
+            }
+
             // Guard for not set key
-            if (this.Key == Key.None )
+            if (this.Key == Key.None)
             {
                 this.Status = "None";
                 return;
             }
 
             // Unregister previous hotkey
-            if (this.CanUnregisterHotkey(null) )
+            if (this.CanUnregisterHotkey(null))
             {
                 this.UnregisterHotkeyCommand.Execute(null);
             }
@@ -168,7 +175,7 @@ namespace Tagger.ViewModels
             }
             catch (Win32Exception winEx)
             {
-                this.Status = string.Format( "Failed to register '{0}' - {1}", this.HotkeyText, winEx.Message);
+                this.Status = string.Format("Failed to register '{0}' - {1}", this.HotkeyText, winEx.Message);
             }
 
             // Update command can execute status
