@@ -5,6 +5,7 @@
         xmlns:v="clr-namespace:Tagger.Wpf.Views"
         Title="Tagger hotkey setup"
         Background="#FAFAFA"
+        FocusManager.FocusedElement="{e:FirstFocusedElement}"
         SizeToContent="WidthAndHeight"
         StateChanged="Window_StateChanged"
         WindowStartupLocation="CenterScreen">
@@ -13,5 +14,8 @@
         <v:HotkeyControl x:Name="TagHotkeyControl"
                          Handler="{e:StaticMethod Tagger.RegistrationManager.GlobalHotkeyHandle}"
                          Purpose="Tag hotkey" />
+        <v:HotkeyControl x:Name="SettingsHotkeyControl" Purpose="Settings hotkey" />
+        <v:HotkeyControl x:Name="PickHotkeyControl" Purpose="Groups hotkey" />
+
     </StackPanel>
 </Window>

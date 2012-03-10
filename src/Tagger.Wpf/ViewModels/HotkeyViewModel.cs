@@ -45,6 +45,8 @@ namespace Tagger.ViewModels
             Check.Require(control != null, "Hotkey control should not be null");
 
             // Initialize properties
+            this.Key = Key.None;
+            this.ModifierKeys = ModifierKeys.None;
             this.GlobalHotkey = null;
             this.HotkeyHandler = control.Handler;
             this.UnregisterHotkeyCommand = new DelegateCommand<object>(this.UnregisterHotkey, this.CanUnregisterHotkey);

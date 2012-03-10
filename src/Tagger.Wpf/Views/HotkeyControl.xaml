@@ -1,11 +1,9 @@
 ﻿<UserControl x:Class="Tagger.Wpf.Views.HotkeyControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:markupExtensions="clr-namespace:Utils.Prism;assembly=Tagger.Lib"
              x:Name="hotkeyControl"
              Width="500"
-             Height="35"
-             FocusManager.FocusedElement="{markupExtensions:FirstFocusedElement}">
+             Height="35">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="120" />
