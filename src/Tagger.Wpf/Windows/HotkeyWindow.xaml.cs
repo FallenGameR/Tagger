@@ -24,17 +24,22 @@ namespace Tagger.Wpf
             var groupsViewModel = new HotkeyViewModel(this.GroupsHotkeyControl);
 
             // Restore previous settings state
-            tagViewModel.ModifierKeys = (ModifierKeys)Settings.Default.Hotkey_Modifiers;
-            tagViewModel.Key = (Key)Settings.Default.Hotkey_Keys;
+            tagViewModel.ModifierKeys = (ModifierKeys)Settings.Default.TagHotkey_Modifiers;
+            tagViewModel.Key = (Key)Settings.Default.TagHotkey_Keys;
+            settingsViewModel.ModifierKeys = (ModifierKeys)Settings.Default.SettingsHotkey_Modifiers;
+            settingsViewModel.Key = (Key)Settings.Default.SettingsHotkey_Keys;
 
             // Restore registration state
             tagViewModel.RegisterHotkey();
+            settingsViewModel.RegisterHotkey();
 
             // Save settings on program deactivation (app exit included)
             App.Current.Deactivated += delegate
             {
-                Settings.Default.Hotkey_Modifiers = (int)tagViewModel.ModifierKeys;
-                Settings.Default.Hotkey_Keys = (int)tagViewModel.Key;
+                Settings.Default.TagHotkey_Modifiers = (int)tagViewModel.ModifierKeys;
+                Settings.Default.TagHotkey_Keys = (int)tagViewModel.Key;
+                Settings.Default.SettingsHotkey_Modifiers = (int)settingsViewModel.ModifierKeys;
+                Settings.Default.SettingsHotkey_Keys = (int)settingsViewModel.Key;
                 Settings.Default.Save();
             };
 

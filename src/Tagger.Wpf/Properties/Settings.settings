@@ -2,11 +2,11 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tagger.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="Hotkey_Modifiers" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+    <Setting Name="TagHotkey_Modifiers" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
     </Setting>
-    <Setting Name="Hotkey_Keys" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+    <Setting Name="TagHotkey_Keys" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">62</Value>
     </Setting>
     <Setting Name="Tag_Text" Type="System.String" Scope="User">
       <Value Profile="(Default)">Describe Me</Value>
@@ -28,6 +28,12 @@
     </Setting>
     <Setting Name="Tag_OffsetRight" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="SettingsHotkey_Modifiers" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="SettingsHotkey_Keys" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">47</Value>
     </Setting>
   </Settings>
 </SettingsFile>

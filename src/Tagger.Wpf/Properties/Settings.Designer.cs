@@ -25,25 +25,25 @@ namespace Tagger.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int Hotkey_Modifiers {
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int TagHotkey_Modifiers {
             get {
-                return ((int)(this["Hotkey_Modifiers"]));
+                return ((int)(this["TagHotkey_Modifiers"]));
             }
             set {
-                this["Hotkey_Modifiers"] = value;
+                this["TagHotkey_Modifiers"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int Hotkey_Keys {
+        [global::System.Configuration.DefaultSettingValueAttribute("62")]
+        public int TagHotkey_Keys {
             get {
-                return ((int)(this["Hotkey_Keys"]));
+                return ((int)(this["TagHotkey_Keys"]));
             }
             set {
-                this["Hotkey_Keys"] = value;
+                this["TagHotkey_Keys"] = value;
             }
         }
         
@@ -128,6 +128,30 @@ namespace Tagger.Properties {
             }
             set {
                 this["Tag_OffsetRight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int SettingsHotkey_Modifiers {
+            get {
+                return ((int)(this["SettingsHotkey_Modifiers"]));
+            }
+            set {
+                this["SettingsHotkey_Modifiers"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("47")]
+        public int SettingsHotkey_Keys {
+            get {
+                return ((int)(this["SettingsHotkey_Keys"]));
+            }
+            set {
+                this["SettingsHotkey_Keys"] = value;
             }
         }
     }
