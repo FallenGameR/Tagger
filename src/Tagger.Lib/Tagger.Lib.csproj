@@ -56,13 +56,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\WindowSizes.cs" />
-    <Compile Include="Utils\ConsoleManager.cs" />
-    <Compile Include="Utils\Counter.cs" />
     <Compile Include="Utils\HotkeyEventArgs.cs" />
     <Compile Include="Domain\GlobalHotkey.cs" />
     <Compile Include="Domain\WindowListner.cs" />
     <Compile Include="Utils\Extensions\Strings.cs" />
     <Compile Include="Utils\Extensions\Windows.cs" />
+    <Compile Include="Utils\Prism\ColorStringConverter.cs" />
+    <Compile Include="Utils\Prism\StaticMethodExtension.cs" />
     <Compile Include="WinApi\Windows.cs" />
     <Compile Include="WinApi\GlobalHotkeys.cs" />
     <Compile Include="Utils\Extensions\Collections.cs" />

@@ -97,7 +97,7 @@
     <Compile Include="Views\TrayIconControl.xaml.cs">
       <DependentUpon>TrayIconControl.xaml</DependentUpon>
     </Compile>
-    <Page Include="Windows\MainWindow.xaml">
+    <Page Include="Windows\HotkeyWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -106,8 +106,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ViewModels\HotkeyViewModel.cs" />
-    <Compile Include="Windows\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="Windows\HotkeyWindow.xaml.cs">
+      <DependentUpon>HotkeyWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Windows\SettingsWindow.xaml">

@@ -7,6 +7,7 @@ using Tagger.Wpf;
 using Tagger.Wpf.Windows;
 using Utils.Diagnostics;
 using Utils.Extensions;
+using System.Windows.Input;
 
 namespace Tagger
 {
@@ -38,9 +39,6 @@ namespace Tagger
     /// </remarks>
     public sealed class TagContext : IDisposable
     {
-        private Counter itemsCounter = new Counter("DataBinding");
-        private Counter counter = new Counter("redraw");
-
         /// <summary>
         /// Initializes new instance of TagContext
         /// </summary>
@@ -63,14 +61,27 @@ namespace Tagger
             this.SettingsWindow.Closing += this.SettingsClosingHandler;
             this.SettingsWindow.ExistingTagsComboBox.DropDownOpened += delegate
             {
-                itemsCounter.Next();
                 this.SettingsWindow.ExistingTagsComboBox.ItemsSource = RegistrationManager.GetExistingTags().ToList();
+            };
+            this.SettingsWindow.ExistingTagsComboBox.PreviewKeyDown += (sender, args) =>
+            {
+                var isSpace = args.Key == Key.Space;
+                var isDown = (args.Key == Key.Down) || (args.Key == Key.PageDown);
+                var isOpened = this.SettingsWindow.ExistingTagsComboBox.IsDropDownOpen;
+
+                if( isSpace || (!isOpened && isDown) )
+                {
+                    this.SettingsWindow.ExistingTagsComboBox.IsDropDownOpen = !this.SettingsWindow.ExistingTagsComboBox.IsDropDownOpen;
+                }
             };
             this.SettingsWindow.ExistingTagsComboBox.SelectionChanged += delegate
             {
                 var tagLabel = (TagLabel)this.SettingsWindow.ExistingTagsComboBox.SelectedValue;
                 this.TagViewModel.Text = tagLabel.Text;
                 this.TagViewModel.Color = tagLabel.Color;
+            };
+            this.SettingsWindow.ExistingTagsComboBox.DropDownClosed += delegate
+            {
                 this.SettingsWindow.ExistingTagsComboBox.SelectedValue = null;
             };
         }
@@ -149,11 +160,6 @@ namespace Tagger
             var clientArea = WindowSizes.GetClientArea(this.HostWindow);
             var newTop = clientArea.Top + this.TagViewModel.OffsetTop;
             var newLeft = clientArea.Right - tagWindowWidth - this.TagViewModel.OffsetRight;
-
-            if ((this.TagWindow.Top != newTop) || (this.TagWindow.Left != newLeft))
-            {
-                counter.Next();
-            }
 
             if (this.TagWindow.Top != newTop)
             {

@@ -13,3 +13,5 @@ Release/
 !/libs/UnitTest++/bin/Debug/
 !/libs/UnitTest++/bin/Release/
 
+
+StyleCop.Cache

@@ -15,17 +15,16 @@ namespace Tagger
     /// </remarks>    
     public sealed class GlobalHotkey : NativeWindow, IDisposable
     {
-        private Counter counter = new Counter("Wndproc");
-
         /// <summary>
         /// Creates invisible receiver window
         /// </summary>
-        public GlobalHotkey(ModifierKeys modifier, Keys key)
+        public GlobalHotkey(ModifierKeys modifier, Key key)
         {
             this.CreateHandle(new CreateParams());
 
+            var virtualKey = KeyInterop.VirtualKeyFromKey(key);
             var noRepeatModifier = (uint)modifier | NativeAPI.NoRepeat;
-            var success = NativeAPI.RegisterHotKey(this.Handle, 0, noRepeatModifier, (uint)key);
+            var success = NativeAPI.RegisterHotKey(this.Handle, 0, noRepeatModifier, (uint)virtualKey);
 
             if (!success)
             {
@@ -48,8 +47,6 @@ namespace Tagger
         /// <param name="message">Message received</param>
         protected override void WndProc(ref Message message)
         {
-            counter.Next();
-
             // Default event processing
             base.WndProc(ref message);
 

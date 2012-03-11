@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using Tagger.WinAPI;
+using Utils.Diagnostics;
 using Utils.Extensions;
 
 namespace Tagger
@@ -12,30 +14,73 @@ namespace Tagger
     public static class RegistrationManager
     {
         /// <summary>
+        /// Windows that should not be tagged
+        /// </summary>
+        private static List<IntPtr> Exceptions = new List<IntPtr>();
+
+        /// <summary>
         /// All known tag contexts
         /// </summary>
         private static List<TagContext> KnownTags = new List<TagContext>();
 
         /// <summary>
-        /// Handles captured global windows hotkey
+        /// Template method for tag and settings hotkeys
         /// </summary>
-        public static void GlobalHotkeyHandle()
+        /// <param name="tagExistsHandler">Fallback action if tag was already registered</param>
+        private static void TagRegistrationHandler(Action<TagContext> tagExistsHandler)
         {
             // Get foremost host
             var host = RegistrationManager.GetHostHandle();
             if (host == IntPtr.Zero) { return; }
 
-            // Togle visibility if there is a tag for such host already registered
+            // Register new tag if there is no tag associated with host window
             var context = RegistrationManager.GetKnownTagContext(host);
-            if (context != null)
+            if (context == null)
             {
-                context.TagWindow.ToggleVisibility();
-                NativeAPI.SetForegroundWindow(host);
-                return;
+                RegistrationManager.RegisterTag(host);
             }
+            // Otherwise use custom handler for already existing tag
+            else
+            {
+                tagExistsHandler(context);
 
-            // Register new tag
-            RegistrationManager.RegisterTag(host);
+                // Keep focus on settings text if setting are visible
+                if (context.SettingsWindow.IsVisible)
+                {
+                    context.SettingsWindow.Focus();
+                    context.SettingsWindow.TextTxt.Focus();
+                    context.SettingsWindow.TextTxt.SelectAll();
+                }
+                // Otherwise keep focus on host window
+                else
+                {
+                    NativeAPI.SetForegroundWindow(context.HostWindow);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles tag global hotkey
+        /// </summary>
+        public static void TagHotkeyHandler()
+        {
+            RegistrationManager.TagRegistrationHandler(context =>
+            {
+                // Togle tag visibility if tag for this host already registered
+                context.TagWindow.ToggleVisibility();
+            });
+        }
+
+        /// <summary>
+        /// Handles settings global hotkey
+        /// </summary>
+        public static void SettingsHotkeyHandler()
+        {
+            RegistrationManager.TagRegistrationHandler(context =>
+            {
+                // Togle settings visibility if tag for this host already registered
+                context.SettingsWindow.ToggleVisibility();
+            });
         }
 
         /// <summary>
@@ -51,8 +96,34 @@ namespace Tagger
                 from label in distinct
                 where !label.Equals(defaultLabel)
                 orderby label.Text
-                orderby label.Color
+                orderby label.Color.ToString()
                 select label;
+        }
+
+        /// <summary>
+        /// Register exception window that should not be tagged
+        /// </summary>
+        /// <param name="window">Window that should not be tagged</param>
+        public static void RegisterException(Window window)
+        {
+            Check.Require(window != null, "Window should not be null");
+            var handle = window.GetHandle();
+
+            Check.Ensure(handle != IntPtr.Zero, "Do not call RegisterException from constructor");
+            RegistrationManager.Exceptions.Add(handle);
+        }
+
+        /// <summary>
+        /// Unregister exception window that should not be tagged
+        /// </summary>
+        /// <param name="window">Window that should not be tagged</param>
+        public static void UnregisterException(Window window)
+        {
+            Check.Require(window != null, "Window should not be null");
+            var handle = window.GetHandle();
+
+            Check.Ensure(handle != IntPtr.Zero, "Do not call UnregisterException from constructor");
+            RegistrationManager.Exceptions.Remove(handle);
         }
 
         /// <summary>
@@ -107,6 +178,13 @@ namespace Tagger
         private static IntPtr GetHostHandle()
         {
             var foremostWindow = NativeAPI.GetForegroundWindow();
+
+            // If window is in exceptions, ignore call
+            var exceptionMatch = RegistrationManager.Exceptions.Contains(foremostWindow);
+            if (exceptionMatch)
+            {
+                return IntPtr.Zero;
+            }
 
             // If tag window is foremost, return its owner
             var tagMatch = RegistrationManager.KnownTags.SingleOrDefault(c => c.TagWindow.GetHandle() == foremostWindow);

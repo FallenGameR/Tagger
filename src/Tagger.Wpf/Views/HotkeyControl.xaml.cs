@@ -1,6 +1,6 @@
-﻿using System.Windows.Controls;
-using System.Windows.Input;
-using Tagger.ViewModels;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace Tagger.Wpf.Views
 {
@@ -9,51 +9,48 @@ namespace Tagger.Wpf.Views
     /// </summary>
     public partial class HotkeyControl : UserControl
     {
+        /// <summary>
+        /// Dependency propery for Purpose property
+        /// </summary>
+        public static readonly DependencyProperty PurposeProperty = DependencyProperty.Register(
+            "Purpose",
+            typeof(string),
+            typeof(HotkeyControl),
+            new UIPropertyMetadata("Shortcut key"));
+
+        /// <summary>
+        /// Dependency property for Handler property
+        /// </summary>
+        public static readonly DependencyProperty HandlerProperty = DependencyProperty.Register(
+            "Handler",
+            typeof(Action),
+            typeof(HotkeyControl),
+            new UIPropertyMetadata(null));
+
+        /// <summary>
+        /// Initializes a new instance of the HotkeyControl class
+        /// </summary>
         public HotkeyControl()
         {
             InitializeComponent();
-
-            this.DataContext = this.ViewModel;
-            App.Current.Exit += delegate { this.ViewModel.Dispose(); };
         }
 
-        /// <remarks>
-        /// Original http://stackoverflow.com/questions/2136431/how-do-i-read-custom-keyboard-shortcut-from-user-in-wpf
-        /// </remarks>
-        /// <remarks>
-        /// Buggy output on Ctrl+Shift+Z
-        /// </remarks>
-        private void txtShortcutKey_PreviewKeyDown(object sender, KeyEventArgs e)
+        /// <summary>
+        /// Gets or sets purpose of the hotkey, what it is used for
+        /// </summary>
+        public string Purpose
         {
-            // Fetch the actual shortcut key
-            var key = (e.Key == Key.System) ? e.SystemKey : e.Key;
-
-            // Ignore modifier keys
-            if (IsModifierKey(key)) { return; }
-            
-            // Set view model properties
-            this.ViewModel.ModifierKeys = Keyboard.Modifiers;
-            this.ViewModel.Key = (System.Windows.Forms.Keys)KeyInterop.VirtualKeyFromKey(key);
-
-            // The text box grabs all input
-            e.Handled = true;
+            get { return (string)this.GetValue(PurposeProperty); }
+            set { this.SetValue(PurposeProperty, value); }
         }
 
-        private static bool IsModifierKey(Key key)
+        /// <summary>
+        /// Gets or sets global hotkey handler delegate
+        /// </summary>
+        public Action Handler
         {
-            return key == Key.LeftShift 
-                || key == Key.RightShift 
-                || key == Key.LeftCtrl 
-                || key == Key.RightCtrl 
-                || key == Key.LeftAlt 
-                || key == Key.RightAlt 
-                || key == Key.LWin 
-                || key == Key.RWin;
-        }
-
-        private HotkeyViewModel ViewModel
-        {
-            get { return (this.DataContext == null) ? new HotkeyViewModel() : (HotkeyViewModel)DataContext; }
+            get { return (Action)this.GetValue(HandlerProperty); }
+            set { this.SetValue(HandlerProperty, value); }
         }
     }
 }

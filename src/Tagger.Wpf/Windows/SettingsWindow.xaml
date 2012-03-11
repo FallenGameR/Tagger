@@ -3,10 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:av="http://schemas.codeplex.com/wpfcontrib/xaml/presentation"
         xmlns:local="clr-namespace:Tagger.Wpf.Windows"
-        xmlns:markupExtensions="clr-namespace:Utils.Prism;assembly=Tagger.Lib"
         xmlns:media="clr-namespace:System.Windows.Media;assembly=PresentationCore"
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         xmlns:t="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit.Extended"
+        xmlns:utils="clr-namespace:Utils.Prism;assembly=Tagger.Lib"
         Title="Settings"
         Background="#FAFAFA"
         ResizeMode="NoResize"
@@ -20,6 +20,7 @@
                 <scm:SortDescription PropertyName="Source" />
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
+        <utils:ColorStringConverter x:Key="converter" />
     </Window.Resources>
 
     <StackPanel Margin="3">
@@ -70,7 +71,8 @@
                       ItemsSource="{x:Static local:SettingsWindow.ColorNames}"
                       Text="{Binding Path=Color,
                                      Mode=TwoWay,
-                                     UpdateSourceTrigger=PropertyChanged}">
+                                     UpdateSourceTrigger=PropertyChanged,
+                                     Converter={StaticResource converter}}">
                 <ComboBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <VirtualizingStackPanel />
@@ -144,7 +146,8 @@
                               ItemsSource="{x:Static local:SettingsWindow.ColorNames}"
                               Text="{Binding Path=FontColor,
                                              Mode=TwoWay,
-                                             UpdateSourceTrigger=PropertyChanged}">
+                                             UpdateSourceTrigger=PropertyChanged,
+                                             Converter={StaticResource converter}}">
                         <ComboBox.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <VirtualizingStackPanel />
