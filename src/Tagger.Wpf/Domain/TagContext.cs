@@ -63,6 +63,11 @@ namespace Tagger
             {
                 this.SettingsWindow.ExistingTagsComboBox.ItemsSource = RegistrationManager.GetExistingTags().ToList();
             };
+            this.SettingsWindow.ExistingTagsComboBox.DropDownClosed += delegate
+            {
+                this.SettingsWindow.ExistingTagsComboBox.SelectedValue = null;
+                this.SettingsWindow.ExistingTagsComboBox.ItemsSource = null;
+            };
             this.SettingsWindow.ExistingTagsComboBox.PreviewKeyDown += (sender, args) =>
             {
                 var isSpace = args.Key == Key.Space;
@@ -79,10 +84,6 @@ namespace Tagger
                 var tagLabel = (TagLabel)this.SettingsWindow.ExistingTagsComboBox.SelectedValue;
                 this.TagViewModel.Text = tagLabel.Text;
                 this.TagViewModel.Color = tagLabel.Color;
-            };
-            this.SettingsWindow.ExistingTagsComboBox.DropDownClosed += delegate
-            {
-                this.SettingsWindow.ExistingTagsComboBox.SelectedValue = null;
             };
         }
 
