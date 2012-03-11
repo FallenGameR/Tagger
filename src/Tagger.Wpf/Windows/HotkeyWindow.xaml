@@ -12,9 +12,11 @@
     <StackPanel>
         <v:TrayIconControl />
         <v:HotkeyControl x:Name="TagHotkeyControl"
-                         Handler="{e:StaticMethod Tagger.RegistrationManager.GlobalHotkeyHandle}"
+                         Handler="{e:StaticMethod Tagger.RegistrationManager.TagHotkeyHandler}"
                          Purpose="Tag hotkey" />
-        <v:HotkeyControl x:Name="SettingsHotkeyControl" Purpose="Settings hotkey" />
+        <v:HotkeyControl x:Name="SettingsHotkeyControl"
+                         Handler="{e:StaticMethod Tagger.RegistrationManager.SettingsHotkeyHandler}"
+                         Purpose="Settings hotkey" />
         <v:HotkeyControl x:Name="GroupsHotkeyControl" Purpose="Groups hotkey" />
 
     </StackPanel>

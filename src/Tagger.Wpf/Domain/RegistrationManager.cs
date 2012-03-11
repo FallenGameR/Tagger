@@ -24,25 +24,63 @@ namespace Tagger
         private static List<TagContext> KnownTags = new List<TagContext>();
 
         /// <summary>
-        /// Handles captured global windows hotkey
+        /// Template method for tag and settings hotkeys
         /// </summary>
-        public static void GlobalHotkeyHandle()
+        /// <param name="tagExistsHandler">Fallback action if tag was already registered</param>
+        private static void TagRegistrationHandler(Action<TagContext> tagExistsHandler)
         {
             // Get foremost host
             var host = RegistrationManager.GetHostHandle();
             if (host == IntPtr.Zero) { return; }
 
-            // Togle visibility if there is a tag for such host already registered
+            // Register new tag if there is no tag associated with host window
             var context = RegistrationManager.GetKnownTagContext(host);
-            if (context != null)
+            if (context == null)
             {
-                context.TagWindow.ToggleVisibility();
-                NativeAPI.SetForegroundWindow(host);
-                return;
+                RegistrationManager.RegisterTag(host);
             }
+            // Otherwise use custom handler for already existing tag
+            else
+            {
+                tagExistsHandler(context);
 
-            // Register new tag
-            RegistrationManager.RegisterTag(host);
+                // Keep focus on settings text if setting are visible
+                if (context.SettingsWindow.IsVisible)
+                {
+                    context.SettingsWindow.Focus();
+                    context.SettingsWindow.TextTxt.Focus();
+                    context.SettingsWindow.TextTxt.SelectAll();
+                }
+                // Otherwise keep focus on host window
+                else
+                {
+                    NativeAPI.SetForegroundWindow(context.HostWindow);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles tag global hotkey
+        /// </summary>
+        public static void TagHotkeyHandler()
+        {
+            RegistrationManager.TagRegistrationHandler(context =>
+            {
+                // Togle tag visibility if tag for this host already registered
+                context.TagWindow.ToggleVisibility();
+            });
+        }
+
+        /// <summary>
+        /// Handles settings global hotkey
+        /// </summary>
+        public static void SettingsHotkeyHandler()
+        {
+            RegistrationManager.TagRegistrationHandler(context =>
+            {
+                // Togle settings visibility if tag for this host already registered
+                context.SettingsWindow.ToggleVisibility();
+            });
         }
 
         /// <summary>
