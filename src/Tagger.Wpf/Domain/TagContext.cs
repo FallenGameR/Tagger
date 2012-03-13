@@ -155,36 +155,33 @@ namespace Tagger
         /// <param name="tagWindowWidth">Width of the tag window</param>
         private void RedrawTagPosition(double tagWindowWidth)
         {
+            // Ignore unrelevant updates
             if (this.HostWindow == IntPtr.Zero)
             {
                 return;
             }
 
+            // Get client area with guard against lag in receiving windows destroy event
             NativeAPI.RECT clientArea = new NativeAPI.RECT();
-
             try
             {
                 clientArea = WindowSizes.GetClientArea(this.HostWindow);
             }
-            catch (Win32Exception ex)
+            catch (Win32Exception)
             {
-                File.WriteAllText("LastUnhandledWin32Exception.txt", ex.ToString());
-                System.Windows.MessageBox.Show(
-                    ex.Message,
-                    "Unhandled Win32 exception",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-                throw;
+                return;
             }
 
+            // Calculate new tag position
             var newTop = clientArea.Top + this.TagViewModel.OffsetTop;
             var newLeft = clientArea.Right - tagWindowWidth - this.TagViewModel.OffsetRight;
 
+            // Update position only if coordinates changed to speed up redraw process
+            // NOTE: Redraw would happen in WPF redraw step of prioritized queue in GUI process
             if (this.TagWindow.Top != newTop)
             {
                 this.TagWindow.Top = newTop;
             }
-
             if (this.TagWindow.Left != newLeft)
             {
                 this.TagWindow.Left = newLeft;
