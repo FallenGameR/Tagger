@@ -1,13 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Windows;
+using System.Windows.Input;
 using Microsoft.Practices.Prism.Commands;
 using Tagger.WinAPI;
 using Tagger.Wpf;
 using Tagger.Wpf.Windows;
 using Utils.Diagnostics;
 using Utils.Extensions;
-using System.Windows.Input;
 
 namespace Tagger
 {
@@ -158,7 +160,23 @@ namespace Tagger
                 return;
             }
 
-            var clientArea = WindowSizes.GetClientArea(this.HostWindow);
+            NativeAPI.RECT clientArea = new NativeAPI.RECT();
+
+            try
+            {
+                clientArea = WindowSizes.GetClientArea(this.HostWindow);
+            }
+            catch (Win32Exception ex)
+            {
+                File.WriteAllText("LastUnhandledWin32Exception.txt", ex.ToString());
+                System.Windows.MessageBox.Show(
+                    ex.Message,
+                    "Unhandled Win32 exception",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                throw;
+            }
+
             var newTop = clientArea.Top + this.TagViewModel.OffsetTop;
             var newLeft = clientArea.Right - tagWindowWidth - this.TagViewModel.OffsetRight;
 
