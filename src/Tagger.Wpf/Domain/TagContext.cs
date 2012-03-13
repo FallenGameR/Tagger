@@ -162,7 +162,7 @@ namespace Tagger
             }
 
             // Get client area with guard against lag in receiving windows destroy event
-            NativeAPI.RECT clientArea = new NativeAPI.RECT();
+            NativeAPI.RECT clientArea;
             try
             {
                 clientArea = WindowSizes.GetClientArea(this.HostWindow);
