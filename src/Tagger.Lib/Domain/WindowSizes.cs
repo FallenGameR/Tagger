@@ -30,7 +30,13 @@ namespace Tagger
 
             // For the window rectangle determine actual client area
             var zero = NativeAPI.SendMessage(windowHandle, NativeAPI.WM_NCCALCSIZE, 0, ref sizes);
-            Check.Ensure(zero == 0);
+            if (zero != 0)
+            {
+                // NOTE: Documentation doesn't say a thing about setting last error code,
+                //       trying out if it would work with one specific application
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            }
+
             return sizes;
         }
     }
