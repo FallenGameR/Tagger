@@ -1,6 +1,6 @@
-﻿using System.Windows;
-using System.Windows.Threading;
-using System.IO;
+﻿using System.IO;
+using System.Reflection;
+using System.Windows;
 
 namespace Tagger.Wpf
 {
@@ -16,7 +16,12 @@ namespace Tagger.Wpf
         {
             App.Current.DispatcherUnhandledException += (sender, ea) =>
             {
-                File.WriteAllText("LastUnhandledException.txt", ea.Exception.ToString());
+                var filePath = Path.Combine(
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    "LastUnhandledException.txt");
+
+                File.WriteAllText(filePath, ea.Exception.ToString());
+
                 MessageBox.Show(
                     ea.Exception.Message,
                     "Unhandled exception",
