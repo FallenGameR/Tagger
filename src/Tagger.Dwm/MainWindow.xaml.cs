@@ -1,13 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using Tagger.WinAPI;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
 using Utils.Extensions;
+using System.Windows.Media;
+using System.Windows.Documents;
+using System.Collections.Generic;
+using Utils.Diagnostics;
 
 namespace Tagger.Dwm
 {
@@ -124,7 +128,7 @@ namespace Tagger.Dwm
                 throw new COMException("DwmQueryThumbnailSourceSize( {0}, ... ) failed".Format(thumbnailHandle), hresultQuery);
             }
 
-            var location = canvas.TranslatePoint(new Point(0, 0), this);
+            var location = canvas.GetLocation();
             var properties = new NativeAPI.DWM_THUMBNAIL_PROPERTIES
             {
                 fVisible = true,
