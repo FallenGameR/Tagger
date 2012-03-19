@@ -40,8 +40,8 @@ namespace Tagger.Dwm
 
             if (this.SuccessfullyRegistered)
             {
-                this.UpdateOnDestinationSizeChanged();
-                this.destinationControl.SizeChanged += delegate { this.UpdateOnDestinationSizeChanged(); };
+                this.SizeChangedHandler(null, null);
+                this.destinationControl.SizeChanged += this.SizeChangedHandler;
             }
         }
 
@@ -59,13 +59,17 @@ namespace Tagger.Dwm
         /// </summary>
         public void Dispose()
         {
-            NativeAPI.DwmUnregisterThumbnail(this.thumbnailHandle);
+            if (this.SuccessfullyRegistered)
+            {
+                NativeAPI.DwmUnregisterThumbnail(this.thumbnailHandle);
+                this.destinationControl.SizeChanged -= this.SizeChangedHandler;
+            }
         }
 
         /// <summary>
-        /// Update thumbnail on destination WPF control size changed
+        /// Update thumbnail on destination WPF control size changed event
         /// </summary>
-        private void UpdateOnDestinationSizeChanged()
+        private void SizeChangedHandler(object sender, SizeChangedEventArgs ea)
         {
             NativeAPI.SIZE thumbnailSize;
             var hresultQuery = NativeAPI.DwmQueryThumbnailSourceSize(this.thumbnailHandle, out thumbnailSize);
@@ -73,7 +77,7 @@ namespace Tagger.Dwm
             {
                 throw new COMException("DwmQueryThumbnailSourceSize( {0}, ... ) failed".Format(this.thumbnailHandle), hresultQuery);
             }
-
+            
             var location = this.destinationControl.GetLocation();
             var properties = new NativeAPI.DWM_THUMBNAIL_PROPERTIES
             {
