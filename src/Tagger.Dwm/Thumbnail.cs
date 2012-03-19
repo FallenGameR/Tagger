@@ -24,7 +24,7 @@ namespace Tagger.Dwm
 
             if (hresultRegister == NativeAPI.S_OK)
             {
-                this.UpdateThumb();
+                this.Update();
             }
             else
             {
@@ -42,7 +42,7 @@ namespace Tagger.Dwm
             }
         }
 
-        private void UpdateThumb()
+        public void Update()
         {
             NativeAPI.SIZE thumbnailSize;
             var hresultQuery = NativeAPI.DwmQueryThumbnailSourceSize(this.thumbnailHandle, out thumbnailSize);

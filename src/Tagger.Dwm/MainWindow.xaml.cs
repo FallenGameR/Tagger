@@ -20,7 +20,7 @@ namespace Tagger.Dwm
     /// </summary>
     public partial class MainWindow : Window
     {
-        private IntPtr thumbnailHandle;
+        private Thumbnail thumbnail;
 
         public MainWindow()
         {
@@ -80,13 +80,10 @@ namespace Tagger.Dwm
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (this.thumbnailHandle != IntPtr.Zero)
+            if (this.thumbnail != null)
             {
-                var hresult = NativeAPI.DwmUnregisterThumbnail(this.thumbnailHandle);
-                if (hresult != NativeAPI.S_OK)
-                {
-                    throw new COMException("DwmUnregisterThumbnail( {0} ) failed".Format(this.thumbnailHandle), hresult);
-                }
+                this.thumbnail.Dispose();
+                this.thumbnail = null;
             }
 
             this.RebindWindowItems();
@@ -94,64 +91,22 @@ namespace Tagger.Dwm
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (this.thumbnail != null)
+            {
+                this.thumbnail.Dispose();
+                this.thumbnail = null;
+            }
+
             var window = (WindowItem)lstWindows.SelectedItem;
-
-            if (this.thumbnailHandle != IntPtr.Zero)
-            {
-                var hresultUnregister = NativeAPI.DwmUnregisterThumbnail(thumbnailHandle);
-                if (hresultUnregister != NativeAPI.S_OK)
-                {
-                    throw new COMException("DwmUnregisterThumbnail failed", hresultUnregister);
-                }
-            }
-
-            var hresultRegister = NativeAPI.DwmRegisterThumbnail(this.Handle, window.Handle, out thumbnailHandle);
-
-            if (hresultRegister == NativeAPI.S_OK)
-            {
-                this.UpdateThumb();
-            }
-            else
-            {
-                throw new COMException("DwmRegisterThumbnail( {0}, {1}, ... )".Format(this.Handle, window.Handle), hresultRegister);
-            }
-        }
-
-        private void UpdateThumb()
-        {
-            if (this.thumbnailHandle == IntPtr.Zero) { return; }
-
-            NativeAPI.SIZE thumbnailSize;
-            var hresultQuery = NativeAPI.DwmQueryThumbnailSourceSize(thumbnailHandle, out thumbnailSize);
-            if (hresultQuery != NativeAPI.S_OK)
-            {
-                throw new COMException("DwmQueryThumbnailSourceSize( {0}, ... ) failed".Format(thumbnailHandle), hresultQuery);
-            }
-
-            var location = canvas.GetLocation();
-            var properties = new NativeAPI.DWM_THUMBNAIL_PROPERTIES
-            {
-                fVisible = true,
-                dwFlags = NativeAPI.DWM_TNP_VISIBLE | NativeAPI.DWM_TNP_RECTDESTINATION,
-                rcDestination = new NativeAPI.RECT
-                {
-                    Left = (int)location.X,
-                    Top = (int)location.Y,
-                    Right = (int)(location.X + Math.Min(canvas.ActualWidth, thumbnailSize.x)),
-                    Bottom = (int)(location.Y + Math.Min(canvas.ActualHeight, thumbnailSize.y)),
-                },
-            };
-
-            var hresultUpdate = NativeAPI.DwmUpdateThumbnailProperties(thumbnailHandle, ref properties);
-            if (hresultUpdate != NativeAPI.S_OK)
-            {
-                throw new COMException("DwmUpdateThumbnailProperties( {0}, ... ) failed".Format(thumbnailHandle), hresultUpdate);
-            }
+            this.thumbnail = new Thumbnail(window.Handle, canvas);
         }
 
         private void ComboBox_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            this.UpdateThumb();
+            if (this.thumbnail != null)
+            {
+                this.thumbnail.Update();
+            }
         }
     }
 }
