@@ -1,16 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Interop;
 
 namespace Tagger.Dwm
@@ -21,47 +13,40 @@ namespace Tagger.Dwm
     public partial class MainWindow : Window
     {
         private IntPtr thumb;
-        private List<WindowItem> windows;
 
         public MainWindow()
         {
             InitializeComponent();
+            this.Loaded += delegate { this.GetWindows(); };
         }
 
         private IntPtr Handle
         {
             get { return new WindowInteropHelper(this).Handle; }
         }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.GetWindows();
-        }
-
+        
         private void GetWindows()
         {
-            windows = new List<WindowItem>();
-            WinApi.EnumWindows(Callback, 0);
+            var windows = new List<WindowItem>();
+            WinApi.EnumWindows( (IntPtr hwnd, int lParam) =>
+            {
+                if (this.Handle != hwnd && (WinApi.GetWindowLongA(hwnd, WinApi.GWL_STYLE) & WinApi.TARGETWINDOW) == WinApi.TARGETWINDOW)
+                {
+                    var sb = new StringBuilder(100);
+                    WinApi.GetWindowText(hwnd, sb, sb.Capacity);
+
+                    var t = new WindowItem();
+                    t.Handle = hwnd;
+                    t.Title = sb.ToString();
+                    windows.Add(t);
+                }
+
+                return true; //continue enumeration
+            }, 0);
 
             lstWindows.Items.Clear();
             foreach (WindowItem w in windows)
                 lstWindows.Items.Add(w);
-        }
-
-        private bool Callback(IntPtr hwnd, int lParam)
-        {
-            if (this.Handle != hwnd && (WinApi.GetWindowLongA(hwnd, WinApi.GWL_STYLE) & WinApi.TARGETWINDOW) == WinApi.TARGETWINDOW)
-            {
-                var sb = new StringBuilder(100);
-                WinApi.GetWindowText(hwnd, sb, sb.Capacity);
-
-                var t = new WindowItem();
-                t.Handle = hwnd;
-                t.Title = sb.ToString();
-                windows.Add(t);
-            }
-
-            return true; //continue enumeration
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
