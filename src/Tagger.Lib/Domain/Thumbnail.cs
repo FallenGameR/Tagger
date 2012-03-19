@@ -36,31 +36,30 @@ namespace Tagger.Dwm
             var destinationWindow = (Window)destination.GetTopLevelElement();
             var destinationHandle = destinationWindow.GetHandle();
             var hresultRegister = NativeAPI.DwmRegisterThumbnail(destinationHandle, source, out this.thumbnailHandle);
+            this.SuccessfullyRegistered = hresultRegister == NativeAPI.S_OK;
 
-            if (hresultRegister == NativeAPI.S_OK)
+            if (this.SuccessfullyRegistered)
             {
                 this.UpdateOnDestinationSizeChanged();
                 this.destinationControl.SizeChanged += delegate { this.UpdateOnDestinationSizeChanged(); };
             }
-            else
-            {
-                // TODO: Implement more sound way of handling source destroyed events
-                //throw new COMException("DwmRegisterThumbnail( {0}, {1}, ... )".Format(destinationHandle, source), hresultRegister);
-            }
         }
+
+        /// <summary>
+        /// Gets a value indicating whether thumbnail was successfully registered
+        /// </summary>
+        /// <remarks>
+        /// It is pointless to implement logic to handle source window destruction 
+        /// more gracefully. Not showing thumbnail is gracefull enough strategy already.
+        /// </remarks>
+        public bool SuccessfullyRegistered { get; private set; }
 
         /// <summary>
         /// Cleanup allocated resources
         /// </summary>
         public void Dispose()
         {
-            var hresultUnregister = NativeAPI.DwmUnregisterThumbnail(this.thumbnailHandle);
-
-            if (hresultUnregister != NativeAPI.S_OK)
-            {
-                // TODO: Implement more sound way of handling source destroyed events
-                //throw new COMException("DwmUnregisterThumbnail( {0} ) failed".Format(this.thumbnailHandle), hresultUnregister);
-            }
+            NativeAPI.DwmUnregisterThumbnail(this.thumbnailHandle);
         }
 
         /// <summary>
