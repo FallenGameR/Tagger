@@ -27,10 +27,8 @@
                 Click="Button_Click"
                 Content="Refresh" />
 
-        <Image x:Name="image"
-               Grid.Row="1"
-               Grid.ColumnSpan="2" />
-
-
+        <Canvas x:Name="canvas"
+                Grid.Row="1"
+                Grid.ColumnSpan="2" />
     </Grid>
 </Window>

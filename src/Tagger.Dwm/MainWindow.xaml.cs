@@ -28,6 +28,11 @@ namespace Tagger.Dwm
             InitializeComponent();
         }
 
+        private IntPtr Handle
+        {
+            get { return new WindowInteropHelper(this).Handle; }
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             this.GetWindows();
@@ -41,14 +46,6 @@ namespace Tagger.Dwm
             lstWindows.Items.Clear();
             foreach (WindowItem w in windows)
                 lstWindows.Items.Add(w);
-        }
-
-        private IntPtr Handle
-        {
-            get
-            {
-                return new WindowInteropHelper(this).Handle; ;
-            }
         }
 
         private bool Callback(IntPtr hwnd, int lParam)
@@ -92,37 +89,27 @@ namespace Tagger.Dwm
         {
             if (thumb != IntPtr.Zero)
             {
-                WinApi.PSIZE size;
-                WinApi.DwmQueryThumbnailSourceSize(thumb, out size);
+                WinApi.PSIZE thumbnailSize;
+                WinApi.DwmQueryThumbnailSourceSize(thumb, out thumbnailSize);
 
-                WinApi.DWM_THUMBNAIL_PROPERTIES props = new WinApi.DWM_THUMBNAIL_PROPERTIES();
+                Point locationFromWindow = canvas.TranslatePoint(new Point(0, 0), this);
 
-                props.fVisible = true;
-                props.dwFlags = WinApi.DWM_TNP_VISIBLE | WinApi.DWM_TNP_RECTDESTINATION | WinApi.DWM_TNP_OPACITY;
-                props.opacity = (byte)255;
-                var position = GetPosition(image);
-                props.rcDestination = new WinApi.Rect(
-                    (int)position.X,
-                    (int)position.Y,
-                    (int)(position.X + 100),
-                    (int)(position.Y + 100));
-
-                if (size.x < image.Width)
-                    props.rcDestination.Right = props.rcDestination.Left + size.x;
-
-                if (size.y < image.Height)
-                    props.rcDestination.Bottom = props.rcDestination.Top + size.y;
+                var props = new WinApi.DWM_THUMBNAIL_PROPERTIES
+                {
+                    fVisible = true,
+                    dwFlags = WinApi.DWM_TNP_VISIBLE | WinApi.DWM_TNP_RECTDESTINATION | WinApi.DWM_TNP_OPACITY,
+                    opacity = byte.MaxValue,
+                    rcDestination = new WinApi.Rect
+                    {
+                        Left = (int)locationFromWindow.X,
+                        Top = (int)locationFromWindow.Y,
+                        Right = (int)(locationFromWindow.X + canvas.ActualWidth),
+                        Bottom = (int)(locationFromWindow.Y + canvas.ActualHeight),
+                    },
+                };
 
                 WinApi.DwmUpdateThumbnailProperties(thumb, ref props);
             }
-        }
-
-        private Point GetPosition(Visual element)
-        {
-            var positionTransform = element.TransformToAncestor(this);
-            var areaPosition = positionTransform.Transform(new Point(0, 0));
-
-            return areaPosition;
         }
 
         private void ComboBox_SizeChanged(object sender, SizeChangedEventArgs e)
