@@ -4,6 +4,9 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
+using Tagger.WinAPI;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
 
 namespace Tagger.Dwm
 {
@@ -28,12 +31,23 @@ namespace Tagger.Dwm
         private void GetWindows()
         {
             var windows = new List<WindowItem>();
-            WinApi.EnumWindows( (IntPtr hwnd, int lParam) =>
+            var res = NativeAPI.EnumWindows( (IntPtr hwnd, int lParam) =>
             {
-                if (this.Handle != hwnd && (WinApi.GetWindowLongA(hwnd, WinApi.GWL_STYLE) & WinApi.TARGETWINDOW) == WinApi.TARGETWINDOW)
+                var winLong = NativeAPI.GetWindowLong(hwnd, NativeAPI.GWL_STYLE);
+                if (winLong == 0)
+                {
+                    throw new Win32Exception(Marshal.GetLastWin32Error());
+                }
+
+                if (this.Handle != hwnd && (winLong & NativeAPI.TARGETWINDOW) == NativeAPI.TARGETWINDOW)
                 {
                     var sb = new StringBuilder(100);
-                    WinApi.GetWindowText(hwnd, sb, sb.Capacity);
+                    var ress = NativeAPI.GetWindowText(hwnd, sb, sb.Capacity);
+                    var err = Marshal.GetLastWin32Error();
+                    if ((ress == 0) && ( err != NativeAPI.SuccessOperation))
+                    {
+                        throw new Win32Exception(err);
+                    }
 
                     var t = new WindowItem();
                     t.Handle = hwnd;
@@ -43,6 +57,10 @@ namespace Tagger.Dwm
 
                 return true; //continue enumeration
             }, 0);
+            if (res == 0)
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            }
 
             lstWindows.Items.Clear();
             foreach (WindowItem w in windows)
@@ -52,7 +70,13 @@ namespace Tagger.Dwm
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (thumb != IntPtr.Zero)
-                WinApi.DwmUnregisterThumbnail(thumb);
+            {
+                var res = NativeAPI.DwmUnregisterThumbnail(thumb);
+                if (res != NativeAPI.S_OK)
+                {
+                    throw new COMException("DwmUnregisterThumbnail failed", res);
+                }
+            }
 
             GetWindows();
         }
@@ -62,38 +86,58 @@ namespace Tagger.Dwm
             var w = (WindowItem)lstWindows.SelectedItem;
 
             if (thumb != IntPtr.Zero)
-                WinApi.DwmUnregisterThumbnail(thumb);
+            {
+                var res  = NativeAPI.DwmUnregisterThumbnail(thumb);
+                if (res != NativeAPI.S_OK)
+                {
+                    throw new COMException("DwmUnregisterThumbnail failed", res);
+                }
+            }
 
-            int i = WinApi.DwmRegisterThumbnail(this.Handle, w.Handle, out thumb);
+            int i = NativeAPI.DwmRegisterThumbnail(this.Handle, w.Handle, out thumb);
 
-            if (i == 0)
+            if (i == NativeAPI.S_OK)
+            {
                 UpdateThumb();
+            }
+            else
+            {
+                throw new COMException("DwmRegisterThumbnail failed", i);
+            }
         }
 
         private void UpdateThumb()
         {
             if (thumb != IntPtr.Zero)
             {
-                WinApi.PSIZE thumbnailSize;
-                WinApi.DwmQueryThumbnailSourceSize(thumb, out thumbnailSize);
+                NativeAPI.SIZE thumbnailSize;
+                var res = NativeAPI.DwmQueryThumbnailSourceSize(thumb, out thumbnailSize);
+                if (res != NativeAPI.S_OK)
+                {
+                    throw new COMException("DwmQueryThumbnailSourceSize failed", res);
+                }
 
                 Point locationFromWindow = canvas.TranslatePoint(new Point(0, 0), this);
 
-                var props = new WinApi.DWM_THUMBNAIL_PROPERTIES
+                var props = new NativeAPI.DWM_THUMBNAIL_PROPERTIES
                 {
                     fVisible = true,
-                    dwFlags = WinApi.DWM_TNP_VISIBLE | WinApi.DWM_TNP_RECTDESTINATION | WinApi.DWM_TNP_OPACITY,
+                    dwFlags = NativeAPI.DWM_TNP_VISIBLE | NativeAPI.DWM_TNP_RECTDESTINATION | NativeAPI.DWM_TNP_OPACITY,
                     opacity = byte.MaxValue,
-                    rcDestination = new WinApi.Rect
+                    rcDestination = new NativeAPI.RECT
                     {
                         Left = (int)locationFromWindow.X,
                         Top = (int)locationFromWindow.Y,
-                        Right = (int)(locationFromWindow.X + canvas.ActualWidth),
-                        Bottom = (int)(locationFromWindow.Y + canvas.ActualHeight),
+                        Right = (int)(locationFromWindow.X + Math.Min(canvas.ActualWidth, thumbnailSize.x)),
+                        Bottom = (int)(locationFromWindow.Y + Math.Min(canvas.ActualHeight, thumbnailSize.y)),
                     },
                 };
 
-                WinApi.DwmUpdateThumbnailProperties(thumb, ref props);
+                var res2 = NativeAPI.DwmUpdateThumbnailProperties(thumb, ref props);
+                if (res2 != NativeAPI.S_OK)
+                {
+                    throw new COMException("DwmUpdateThumbnailProperties", res2);
+                }
             }
         }
 
