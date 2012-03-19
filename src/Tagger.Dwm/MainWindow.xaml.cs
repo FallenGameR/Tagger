@@ -44,7 +44,7 @@ namespace Tagger.Dwm
                     var sb = new StringBuilder(100);
                     var ress = NativeAPI.GetWindowText(hwnd, sb, sb.Capacity);
                     var err = Marshal.GetLastWin32Error();
-                    if ((ress == 0) && ( err != NativeAPI.SuccessOperation))
+                    if ((ress == 0) && ( err != NativeAPI.NO_ERROR))
                     {
                         throw new Win32Exception(err);
                     }
@@ -74,7 +74,7 @@ namespace Tagger.Dwm
                 var res = NativeAPI.DwmUnregisterThumbnail(thumb);
                 if (res != NativeAPI.S_OK)
                 {
-                    throw new COMException("DwmUnregisterThumbnail failed", res);
+                    throw new COMException("DwmUnregisterThumbnail( )", res);
                 }
             }
 

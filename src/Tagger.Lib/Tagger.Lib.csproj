@@ -55,6 +55,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Domain\DesktopWindowManager.cs" />
     <Compile Include="Domain\WindowSizes.cs" />
     <Compile Include="Utils\HotkeyEventArgs.cs" />
     <Compile Include="Domain\GlobalHotkey.cs" />

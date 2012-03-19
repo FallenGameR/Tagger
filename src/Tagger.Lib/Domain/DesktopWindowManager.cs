@@ -9,14 +9,8 @@
     /// </summary>
     public static partial class NativeAPI
     {
-        [StructLayout(LayoutKind.Sequential)]
-        public struct RECT
-        {
-            public int Left;
-            public int Top;
-            public int Right;
-            public int Bottom;
-        }
+        public const int S_OK = 0;
+        public const int NO_ERROR = 0;
 
         [StructLayout(LayoutKind.Sequential)]
         public struct DWM_THUMBNAIL_PROPERTIES
@@ -35,8 +29,6 @@
             public int x;
             public int y;
         }
-
-        public const int S_OK = 0;
 
         public const int GWL_STYLE = -16;
 
@@ -129,7 +121,5 @@
         /// window or control handle is invalid, the return value is zero. To get extended error information, call GetLastError.</returns>
         [DllImport("user32.dll", SetLastError = true)]
         public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
-
-        public const int SuccessOperation = 0;
     }
 }
