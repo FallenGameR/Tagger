@@ -55,6 +55,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Domain\Thumbnail.cs" />
     <Compile Include="Utils\Extensions\Wpf.cs" />
     <Compile Include="WinApi\DesktopWindowManager.cs" />
     <Compile Include="Domain\WindowSizes.cs" />

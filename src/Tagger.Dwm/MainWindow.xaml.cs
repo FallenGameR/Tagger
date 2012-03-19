@@ -78,17 +78,6 @@ namespace Tagger.Dwm
                 
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            if (this.thumbnail != null)
-            {
-                this.thumbnail.Dispose();
-                this.thumbnail = null;
-            }
-
-            this.RebindWindowItems();
-        }
-
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (this.thumbnail != null)
@@ -99,14 +88,6 @@ namespace Tagger.Dwm
 
             var window = (WindowItem)lstWindows.SelectedItem;
             this.thumbnail = new Thumbnail(window.Handle, canvas);
-        }
-
-        private void ComboBox_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (this.thumbnail != null)
-            {
-                this.thumbnail.Update();
-            }
         }
     }
 }

@@ -7,11 +7,26 @@ using Utils.Extensions;
 
 namespace Tagger.Dwm
 {
+    /// <summary>
+    /// Thumbnail provided by Desktop Window Manager
+    /// </summary>
     public sealed class Thumbnail : IDisposable
     {
+        /// <summary>
+        /// Handle to DWM thumbnail
+        /// </summary>
         private IntPtr thumbnailHandle;
+
+        /// <summary>
+        /// WPF control that is used to render the thumbnail
+        /// </summary>
         private FrameworkElement destinationControl;
 
+        /// <summary>
+        /// Initializes a new instance of Thumbnail class
+        /// </summary>
+        /// <param name="source">Source window handle that is used to generate thumbnail</param>
+        /// <param name="destination">Destination WPF control that is used to render thumbnail</param>
         public Thumbnail(IntPtr source, FrameworkElement destination)
         {
             Check.Require(source != IntPtr.Zero, "Source must not be zero");
@@ -24,25 +39,34 @@ namespace Tagger.Dwm
 
             if (hresultRegister == NativeAPI.S_OK)
             {
-                this.Update();
+                this.UpdateOnDestinationSizeChanged();
+                this.destinationControl.SizeChanged += delegate { this.UpdateOnDestinationSizeChanged(); };
             }
             else
             {
-                throw new COMException("DwmRegisterThumbnail( {0}, {1}, ... )".Format(destinationHandle, source), hresultRegister);
+                // TODO: Implement more sound way of handling source destroyed events
+                //throw new COMException("DwmRegisterThumbnail( {0}, {1}, ... )".Format(destinationHandle, source), hresultRegister);
             }
         }
 
+        /// <summary>
+        /// Cleanup allocated resources
+        /// </summary>
         public void Dispose()
         {
             var hresultUnregister = NativeAPI.DwmUnregisterThumbnail(this.thumbnailHandle);
 
             if (hresultUnregister != NativeAPI.S_OK)
             {
-                throw new COMException("DwmUnregisterThumbnail( {0} ) failed".Format(this.thumbnailHandle), hresultUnregister);
+                // TODO: Implement more sound way of handling source destroyed events
+                //throw new COMException("DwmUnregisterThumbnail( {0} ) failed".Format(this.thumbnailHandle), hresultUnregister);
             }
         }
 
-        public void Update()
+        /// <summary>
+        /// Update thumbnail on destination WPF control size changed
+        /// </summary>
+        private void UpdateOnDestinationSizeChanged()
         {
             NativeAPI.SIZE thumbnailSize;
             var hresultQuery = NativeAPI.DwmQueryThumbnailSourceSize(this.thumbnailHandle, out thumbnailSize);

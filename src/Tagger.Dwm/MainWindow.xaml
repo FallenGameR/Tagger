@@ -5,10 +5,6 @@
         Width="525"
         Height="350">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="100" />
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
             <RowDefinition />
@@ -16,18 +12,8 @@
 
         <ComboBox x:Name="lstWindows"
                   Grid.Row="0"
-                  Grid.Column="0"
                   Margin="3"
-                  SelectionChanged="ComboBox_SelectionChanged"
-                  SizeChanged="ComboBox_SizeChanged" />
-        <Button Grid.Row="0"
-                Grid.Column="1"
-                Margin="3"
-                Click="Button_Click"
-                Content="Refresh" />
-
-        <Canvas x:Name="canvas"
-                Grid.Row="1"
-                Grid.ColumnSpan="2" />
+                  SelectionChanged="ComboBox_SelectionChanged" />
+        <Canvas x:Name="canvas" Grid.Row="1" />
     </Grid>
 </Window>
