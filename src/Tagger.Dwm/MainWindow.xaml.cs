@@ -39,7 +39,9 @@ namespace Tagger.Dwm
                     throw new Win32Exception(Marshal.GetLastWin32Error());
                 }
 
-                if (this.Handle != hwnd && (winLong & NativeAPI.TARGETWINDOW) == NativeAPI.TARGETWINDOW)
+                const ulong TARGETWINDOW = NativeAPI.WS_BORDER | NativeAPI.WS_VISIBLE;
+
+                if (this.Handle != hwnd && (winLong & TARGETWINDOW) == TARGETWINDOW)
                 {
                     var sb = new StringBuilder(100);
                     var ress = NativeAPI.GetWindowText(hwnd, sb, sb.Capacity);
@@ -122,8 +124,7 @@ namespace Tagger.Dwm
                 var props = new NativeAPI.DWM_THUMBNAIL_PROPERTIES
                 {
                     fVisible = true,
-                    dwFlags = NativeAPI.DWM_TNP_VISIBLE | NativeAPI.DWM_TNP_RECTDESTINATION | NativeAPI.DWM_TNP_OPACITY,
-                    opacity = byte.MaxValue,
+                    dwFlags = NativeAPI.DWM_TNP_VISIBLE | NativeAPI.DWM_TNP_RECTDESTINATION,
                     rcDestination = new NativeAPI.RECT
                     {
                         Left = (int)locationFromWindow.X,
