@@ -47,6 +47,21 @@
         }
 
         /// <summary>
+        /// Specifies margin of the glass frame
+        /// </summary>
+        /// <remarks>
+        /// Used in DwmExtendFrameIntoClientArea function.
+        /// </remarks>
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MARGINS
+        {
+            public int Left;
+            public int Right;
+            public int Top;
+            public int Bottom;
+        }
+
+        /// <summary>
         /// Creates a Desktop Window Manager (DWM) thumbnail relationship between the destination and source windows.
         /// </summary>
         /// <param name="hwndDestination">The handle to the window that will use the DWM thumbnail.</param>
@@ -81,5 +96,22 @@
         /// <returns>If this function succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [DllImport("dwmapi.dll")]
         public static extern int DwmUpdateThumbnailProperties(IntPtr hThumbnailId, ref DWM_THUMBNAIL_PROPERTIES ptnProperties);
+
+        /// <summary>
+        /// Obtains a value that indicates whether Desktop Window Manager (DWM) composition is enabled. 
+        /// </summary>
+        /// <returns>
+        /// true if composition is enabled.
+        /// </returns>
+        [DllImport("dwmapi.dll", PreserveSig=false)]
+        public static extern bool DwmIsCompositionEnabled();
+
+        /// <summary>
+        /// Extends the window frame into the client area.
+        /// </summary>
+        /// <param name="hwnd">The handle to the window in which the frame will be extended into the client area.</param>
+        /// <param name="margins">A pointer to a MARGINS structure that describes the margins to use when extending the frame into the client area.</param>
+        [DllImport("dwmapi.dll", PreserveSig=false)]
+        public static extern void DwmExtendFrameIntoClientArea(IntPtr hwnd, ref MARGINS margins);
     }
 }

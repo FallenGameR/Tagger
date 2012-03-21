@@ -5,7 +5,7 @@ using Tagger.WinAPI;
 using Utils.Diagnostics;
 using Utils.Extensions;
 
-namespace Tagger.Dwm
+namespace Tagger
 {
     /// <summary>
     /// Thumbnail provided by Desktop Window Manager
