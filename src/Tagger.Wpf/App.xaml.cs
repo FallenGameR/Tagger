@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
+using Tagger.Windows;
 
 namespace Tagger.Wpf
 {
@@ -48,6 +49,7 @@ namespace Tagger.Wpf
                 this.CreateTag("one", Colors.SeaGreen);
                 this.CreateTag("one", Colors.SeaGreen);
                 this.CreateTag("two", Colors.YellowGreen);
+                new GroupsWindow().Show();
             }
         }
 
