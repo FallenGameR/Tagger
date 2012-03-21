@@ -27,36 +27,37 @@ namespace Tagger
         /// Template method for tag and settings hotkeys
         /// </summary>
         /// <param name="tagExistsHandler">Fallback action if tag was already registered</param>
-        private static void TagRegistrationHandler(Action<TagContext> tagExistsHandler)
+        internal static TagContext TagRegistrationHandler(Action<TagContext> tagExistsHandler)
         {
             // Get foremost host
             var host = RegistrationManager.GetHostHandle();
-            if (host == IntPtr.Zero) { return; }
+            if (host == IntPtr.Zero) { return null; }
 
             // Register new tag if there is no tag associated with host window
             var context = RegistrationManager.GetKnownTagContext(host);
             if (context == null)
             {
-                RegistrationManager.RegisterTag(host);
+                return RegistrationManager.RegisterTag(host);
             }
+
             // Otherwise use custom handler for already existing tag
+            tagExistsHandler(context);
+
+            // Keep focus on settings text if setting are visible
+            if (context.SettingsWindow.IsVisible)
+            {
+                context.SettingsWindow.Focus();
+                context.SettingsWindow.TextTxt.Focus();
+                context.SettingsWindow.TextTxt.SelectAll();
+            }
+            // Otherwise keep focus on host window
             else
             {
-                tagExistsHandler(context);
-
-                // Keep focus on settings text if setting are visible
-                if (context.SettingsWindow.IsVisible)
-                {
-                    context.SettingsWindow.Focus();
-                    context.SettingsWindow.TextTxt.Focus();
-                    context.SettingsWindow.TextTxt.SelectAll();
-                }
-                // Otherwise keep focus on host window
-                else
-                {
-                    NativeAPI.SetForegroundWindow(context.HostWindow);
-                }
+                NativeAPI.SetForegroundWindow(context.HostWindow);
             }
+
+            // Return existing context 
+            return context;
         }
 
         /// <summary>
@@ -130,7 +131,8 @@ namespace Tagger
         /// Registeres new tag
         /// </summary>
         /// <param name="hostWindow">Handle to the window host that is tagged</param>
-        private static void RegisterTag(IntPtr hostWindow)
+        /// <returns>Tag context created for the tag</returns>
+        private static TagContext RegisterTag(IntPtr hostWindow)
         {
             var context = new TagContext();
             context.AttachToHost(hostWindow);
@@ -140,6 +142,8 @@ namespace Tagger
             {
                 RegistrationManager.KnownTags.Add(context);
             }
+
+            return context;
         }
 
         /// <summary>
