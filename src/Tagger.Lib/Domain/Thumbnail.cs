@@ -72,11 +72,7 @@ namespace Tagger
         private void SizeChangedHandler(object sender, SizeChangedEventArgs ea)
         {
             NativeAPI.SIZE thumbnailSize;
-            var hresultQuery = NativeAPI.DwmQueryThumbnailSourceSize(this.thumbnailHandle, out thumbnailSize);
-            if (hresultQuery != NativeAPI.S_OK)
-            {
-                throw new COMException("DwmQueryThumbnailSourceSize( {0}, ... ) failed".Format(this.thumbnailHandle), hresultQuery);
-            }
+            NativeAPI.DwmQueryThumbnailSourceSize(this.thumbnailHandle, out thumbnailSize);
             
             var location = this.destinationControl.GetLocation();
             var properties = new NativeAPI.DWM_THUMBNAIL_PROPERTIES
@@ -92,11 +88,7 @@ namespace Tagger
                 },
             };
 
-            var hresultUpdate = NativeAPI.DwmUpdateThumbnailProperties(this.thumbnailHandle, ref properties);
-            if (hresultUpdate != NativeAPI.S_OK)
-            {
-                throw new COMException("DwmUpdateThumbnailProperties( {0}, ... ) failed".Format(this.thumbnailHandle), hresultUpdate);
-            }
+            NativeAPI.DwmUpdateThumbnailProperties(this.thumbnailHandle, ref properties);
         }
     }
 }

@@ -85,8 +85,8 @@
         /// <param name="hThumbnail">A handle to the thumbnail to retrieve the source window size from.</param>
         /// <param name="pSize">A pointer to a SIZE structure that, when this function returns successfully, receives the size of the source thumbnail.</param>
         /// <returns>If this function succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
-        [DllImport("dwmapi.dll")]
-        public static extern int DwmQueryThumbnailSourceSize(IntPtr hThumbnail, out SIZE pSize);
+        [DllImport("dwmapi.dll", PreserveSig = false)]
+        public static extern void DwmQueryThumbnailSourceSize(IntPtr hThumbnail, out SIZE pSize);
 
         /// <summary>
         /// Updates the properties for a Desktop Window Manager (DWM) thumbnail.
@@ -94,8 +94,8 @@
         /// <param name="hThumbnailId">The handle to the DWM thumbnail to be updated.</param>
         /// <param name="ptnProperties">A pointer to a DWM_THUMBNAIL_PROPERTIES structure that contains the new thumbnail properties.</param>
         /// <returns>If this function succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
-        [DllImport("dwmapi.dll")]
-        public static extern int DwmUpdateThumbnailProperties(IntPtr hThumbnailId, ref DWM_THUMBNAIL_PROPERTIES ptnProperties);
+        [DllImport("dwmapi.dll", PreserveSig = false)]
+        public static extern void DwmUpdateThumbnailProperties(IntPtr hThumbnailId, ref DWM_THUMBNAIL_PROPERTIES ptnProperties);
 
         /// <summary>
         /// Obtains a value that indicates whether Desktop Window Manager (DWM) composition is enabled. 
