@@ -49,7 +49,7 @@ namespace Tagger.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Describe Me")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Purpose")]
         public string Tag_Text {
             get {
                 return ((string)(this["Tag_Text"]));

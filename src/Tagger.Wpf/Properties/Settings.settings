@@ -9,7 +9,7 @@
       <Value Profile="(Default)">62</Value>
     </Setting>
     <Setting Name="Tag_Text" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Describe Me</Value>
+      <Value Profile="(Default)">Purpose</Value>
     </Setting>
     <Setting Name="Tag_Color" Type="System.String" Scope="User">
       <Value Profile="(Default)">OliveDrab</Value>
