@@ -57,6 +57,9 @@
     <Reference Include="AvalonLibrary">
       <HintPath>..\..\libs\WpfContrib\AvalonLibrary.dll</HintPath>
     </Reference>
+    <Reference Include="Hardcodet.Wpf.TaskbarNotification">
+      <HintPath>..\..\libs\WpfNotifyIcon\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+    </Reference>
     <Reference Include="ManagedWinapi">
       <HintPath>..\..\libs\ManagedWinAPI\ManagedWinapi.dll</HintPath>
     </Reference>

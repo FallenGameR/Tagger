@@ -14,7 +14,13 @@ namespace Tagger.ViewModels
         /// </summary>
         public TrayIconViewModel()
         {
-            this.ShowSettingsCommand = new DelegateCommand<object>(delegate { App.MainSettingsWindow.Show(); });
+            this.ShowSettingsCommand = new DelegateCommand<object>(delegate
+            {
+                App.MainSettingsWindow.Show();
+                App.MainSettingsWindow.WindowState = System.Windows.WindowState.Normal;
+                App.MainSettingsWindow.ShowInTaskbar = true;
+
+            });
             this.CloseProgramCommand = new DelegateCommand<object>(delegate { App.Current.Shutdown(); });
         }
 
