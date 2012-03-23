@@ -65,11 +65,7 @@ namespace Tagger
         /// </summary>
         public static void TagHotkeyHandler()
         {
-            RegistrationManager.TagRegistrationHandler(context =>
-            {
-                // Togle tag visibility if tag for this host already registered
-                context.TagWindow.ToggleVisibility();
-            });
+            RegistrationManager.TagRegistrationHandler(context => { context.TagWindow.ToggleVisibility(); });
         }
 
         /// <summary>
@@ -77,11 +73,7 @@ namespace Tagger
         /// </summary>
         public static void SettingsHotkeyHandler()
         {
-            RegistrationManager.TagRegistrationHandler(context =>
-            {
-                // Togle settings visibility if tag for this host already registered
-                context.SettingsWindow.ToggleVisibility();
-            });
+            RegistrationManager.TagRegistrationHandler(context => { context.SettingsWindow.ToggleVisibility(); });
         }
 
         /// <summary>
@@ -138,7 +130,7 @@ namespace Tagger
             context.AttachToHost(hostWindow);
             context.HostWindowListner.WindowDestroyed += delegate { RegistrationManager.UnregisterTag(hostWindow); };
 
-            lock( RegistrationManager.KnownTags )
+            lock (RegistrationManager.KnownTags)
             {
                 RegistrationManager.KnownTags.Add(context);
             }
