@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows;
-using Tagger.ViewModels;
 using System.Windows.Input;
 using Tagger.Properties;
+using Tagger.ViewModels;
 
 namespace Tagger.Wpf
 {
@@ -21,7 +21,6 @@ namespace Tagger.Wpf
 
             var tagViewModel = new HotkeyViewModel(this.TagHotkeyControl);
             var settingsViewModel = new HotkeyViewModel(this.SettingsHotkeyControl);
-            var groupsViewModel = new HotkeyViewModel(this.GroupsHotkeyControl);
 
             // Restore previous settings state
             tagViewModel.ModifierKeys = (ModifierKeys)Settings.Default.TagHotkey_Modifiers;
@@ -48,7 +47,6 @@ namespace Tagger.Wpf
             {
                 tagViewModel.Dispose();
                 settingsViewModel.Dispose();
-                groupsViewModel.Dispose();
             };
         }
 

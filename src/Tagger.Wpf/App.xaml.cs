@@ -1,10 +1,6 @@
-﻿using System.Diagnostics;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Media;
-using Tagger.Windows;
 
 namespace Tagger.Wpf
 {

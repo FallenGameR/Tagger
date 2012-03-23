@@ -1,21 +1,18 @@
-﻿<UserControl 
-    x:Class="Tagger.Wpf.Views.TrayIconControl"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:av="http://schemas.codeplex.com/wpfcontrib/xaml/presentation"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-    mc:Ignorable="d" 
-    d:DesignHeight="35" 
-    d:DesignWidth="35">
-    
-    <!-- Tray icon used to control program while it is minimized -->
-    <av:NotifyIcon 
-        Icon="/Tagger.Wpf;component/Properties/Logo.ico" 
-        Text="Tagger">
+﻿<UserControl x:Class="Tagger.Wpf.Views.TrayIconControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:av="http://schemas.codeplex.com/wpfcontrib/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DesignHeight="35"
+             d:DesignWidth="35"
+             mc:Ignorable="d">
+
+    <!--  Tray icon used to control program while it is minimized  -->
+    <av:NotifyIcon Icon="/Tagger.Wpf;component/Properties/Logo.ico" Text="Tagger">
         <FrameworkElement.ContextMenu>
             <ContextMenu>
-                <MenuItem Header="Open settings" />
+                <MenuItem Header="Program settings" />
                 <MenuItem Header="Exit" />
             </ContextMenu>
         </FrameworkElement.ContextMenu>
