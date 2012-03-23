@@ -101,7 +101,7 @@
     <Compile Include="Views\TrayIconControl.xaml.cs">
       <DependentUpon>TrayIconControl.xaml</DependentUpon>
     </Compile>
-    <Page Include="Windows\HotkeyWindow.xaml">
+    <Page Include="Windows\GlobalSettingsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -109,12 +109,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ViewModels\HotkeyViewModel.cs" />
-    <Compile Include="Windows\HotkeyWindow.xaml.cs">
-      <DependentUpon>HotkeyWindow.xaml</DependentUpon>
+    <Compile Include="ViewModels\GlobalSettingsViewModel.cs" />
+    <Compile Include="Windows\GlobalSettingsWindow.xaml.cs">
+      <DependentUpon>GlobalSettingsWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Windows\SettingsWindow.xaml">
+    <Page Include="Windows\AppearanceWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -132,8 +132,8 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Windows\SettingsWindow.xaml.cs">
-      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    <Compile Include="Windows\AppearanceWindow.xaml.cs">
+      <DependentUpon>AppearanceWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\TagWindow.xaml.cs">
       <DependentUpon>TagWindow.xaml</DependentUpon>

@@ -19,8 +19,8 @@ namespace Tagger.Wpf
             this.Loaded += delegate { RegistrationManager.RegisterException(this); };
             this.Closed += delegate { App.Current.Shutdown(); };
 
-            var tagViewModel = new HotkeyViewModel(this.TagHotkeyControl);
-            var settingsViewModel = new HotkeyViewModel(this.SettingsHotkeyControl);
+            var tagViewModel = new GlobalSettingsViewModel(this.TagHotkeyControl);
+            var settingsViewModel = new GlobalSettingsViewModel(this.SettingsHotkeyControl);
             var trayIconViewModel = new TrayIconViewModel();
             this.TrayIconControl.DataContext = trayIconViewModel;
 

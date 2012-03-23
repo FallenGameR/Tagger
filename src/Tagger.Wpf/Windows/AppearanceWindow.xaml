@@ -98,6 +98,7 @@
 
             <Expander Grid.ColumnSpan="3"
                       Margin="0,5,0,0"
+                      HorizontalAlignment="Center"
                       Header="Advanced">
                 <av:AutoGrid Margin="0,5,0,0">
                     <Grid.ColumnDefinitions>
