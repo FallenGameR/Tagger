@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows.Controls;
+using Tagger.ViewModels;
 
 namespace Tagger.Wpf.Views
 {
@@ -22,6 +11,11 @@ namespace Tagger.Wpf.Views
         public TrayIconControl()
         {
             InitializeComponent();
+            this.DataContext = new TrayIconViewModel();
+
+            // Existing issues with notify icon:
+            // - hidden with the main apliction - http://wpfcontrib.codeplex.com/wikipage?title=NotifyIcon&referringTitle=Home&ProjectName=wpfcontrib
+            // - bindings do not work inside the icon - http://wpfcontrib.codeplex.com/workitem/7238
         }
     }
 }

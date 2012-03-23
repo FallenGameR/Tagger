@@ -3,18 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:av="http://schemas.codeplex.com/wpfcontrib/xaml/presentation"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:diagnostics="clr-namespace:System.Diagnostics;assembly=WindowsBase"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Name="trayIconControl"
              d:DesignHeight="35"
              d:DesignWidth="35"
              mc:Ignorable="d">
 
     <!--  Tray icon used to control program while it is minimized  -->
     <av:NotifyIcon Icon="/Tagger.Wpf;component/Properties/Logo.ico" Text="Tagger">
-        <FrameworkElement.ContextMenu>
+        <av:NotifyIcon.ContextMenu>
             <ContextMenu>
                 <MenuItem Command="{Binding ShowSettingsCommand}" Header="Program settings" />
-                <MenuItem Command="{Binding CloseProgramCommand}" Header="Exit" />
+                <MenuItem Command="{Binding CloseProgramCommand, diagnostics:PresentationTraceSources.TraceLevel=High}" Header="Exit" />
             </ContextMenu>
-        </FrameworkElement.ContextMenu>
+        </av:NotifyIcon.ContextMenu>
     </av:NotifyIcon>
 </UserControl>
