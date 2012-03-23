@@ -12,8 +12,8 @@
     <av:NotifyIcon Icon="/Tagger.Wpf;component/Properties/Logo.ico" Text="Tagger">
         <FrameworkElement.ContextMenu>
             <ContextMenu>
-                <MenuItem Header="Program settings" />
-                <MenuItem Header="Exit" />
+                <MenuItem Command="{Binding ShowSettingsCommand}" Header="Program settings" />
+                <MenuItem Command="{Binding CloseProgramCommand}" Header="Exit" />
             </ContextMenu>
         </FrameworkElement.ContextMenu>
     </av:NotifyIcon>

@@ -9,9 +9,9 @@ namespace Tagger.Wpf
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class HotkeyWindow : Window
     {
-        public MainWindow()
+        public HotkeyWindow()
         {
             // TODO: Check windows OS edition
             InitializeComponent();
@@ -21,6 +21,8 @@ namespace Tagger.Wpf
 
             var tagViewModel = new HotkeyViewModel(this.TagHotkeyControl);
             var settingsViewModel = new HotkeyViewModel(this.SettingsHotkeyControl);
+            var trayIconViewModel = new TrayIconViewModel();
+            this.TrayIconControl.DataContext = trayIconViewModel;
 
             // Restore previous settings state
             tagViewModel.ModifierKeys = (ModifierKeys)Settings.Default.TagHotkey_Modifiers;
@@ -47,6 +49,7 @@ namespace Tagger.Wpf
             {
                 tagViewModel.Dispose();
                 settingsViewModel.Dispose();
+                trayIconViewModel.Dispose();
             };
         }
 

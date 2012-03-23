@@ -10,6 +10,11 @@ namespace Tagger.Wpf
     public partial class App: Application
     {
         /// <summary>
+        /// Application settings window 
+        /// </summary>
+        public static Window MainSettingsWindow { get; private set; }
+
+        /// <summary>
         /// Initiailize application scale events
         /// </summary>
         protected override void OnStartup(StartupEventArgs ea)
@@ -34,9 +39,9 @@ namespace Tagger.Wpf
                 args.Handled = false;
             };
 
-            // Show start window
-            var startWindow = new MainWindow();
-            startWindow.Show();
+            // Create and show start window
+            App.MainSettingsWindow = new HotkeyWindow();
+            App.MainSettingsWindow.Show();
         }
     }
 }
