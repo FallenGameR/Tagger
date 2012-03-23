@@ -17,7 +17,5 @@
         <v:HotkeyControl x:Name="SettingsHotkeyControl"
                          Handler="{e:StaticMethod Tagger.RegistrationManager.SettingsHotkeyHandler}"
                          Purpose="Settings hotkey" />
-        <v:HotkeyControl x:Name="GroupsHotkeyControl" Purpose="Groups hotkey" />
-
     </StackPanel>
 </Window>

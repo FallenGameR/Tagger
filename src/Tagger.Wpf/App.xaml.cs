@@ -41,25 +41,6 @@ namespace Tagger.Wpf
             // Show start window
             var startWindow = new MainWindow();
             startWindow.Show();
-
-            // If in debug mode, prepare test window set
-            if (ea.Args.Any( a => a.ToLower() == "-debug" ) )
-            {
-                startWindow.WindowState = WindowState.Minimized;
-                this.CreateTag("one", Colors.SeaGreen);
-                this.CreateTag("one", Colors.SeaGreen);
-                this.CreateTag("two", Colors.YellowGreen);
-                new GroupsWindow().Show();
-            }
-        }
-
-        private void CreateTag(string text, Color color)
-        {
-            Process.Start("notepad.exe").WaitForInputIdle();
-            var context = RegistrationManager.TagRegistrationHandler(delegate { });
-            context.SettingsWindow.Hide();
-            context.TagViewModel.Text = text;
-            context.TagViewModel.Color = color;
         }
     }
 }
