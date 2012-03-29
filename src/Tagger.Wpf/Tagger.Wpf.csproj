@@ -109,7 +109,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ViewModels\GlobalSettingsViewModel.cs" />
+    <Compile Include="ViewModels\HotkeyViewModel.cs" />
     <Compile Include="Windows\GlobalSettingsWindow.xaml.cs">
       <DependentUpon>GlobalSettingsWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

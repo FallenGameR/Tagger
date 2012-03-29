@@ -12,7 +12,7 @@ namespace Tagger.ViewModels
     /// <summary>
     /// View model for global windows hotkey setting
     /// </summary>
-    public class GlobalSettingsViewModel : ViewModelBase
+    public class HotkeyViewModel : ViewModelBase
     {
         /// <summary>
         /// Status field
@@ -40,7 +40,7 @@ namespace Tagger.ViewModels
         /// Initializes new instance of HotkeyViewModel class
         /// </summary>
         /// <param name="control">Control to be bound to</param>
-        public GlobalSettingsViewModel(HotkeyControl control)
+        public HotkeyViewModel(HotkeyControl control)
         {
             Check.Require(control != null, "Hotkey control should not be null");
 
@@ -219,7 +219,7 @@ namespace Tagger.ViewModels
             var key = (ea.Key == Key.System) ? ea.SystemKey : ea.Key;
 
             // Ignore modifier keys
-            if (GlobalSettingsViewModel.IsModifierKey(key)) { return; }
+            if (HotkeyViewModel.IsModifierKey(key)) { return; }
 
             // Set view model properties
             this.ModifierKeys = Keyboard.Modifiers;

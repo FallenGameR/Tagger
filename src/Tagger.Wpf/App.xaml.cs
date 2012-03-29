@@ -40,7 +40,7 @@ namespace Tagger.Wpf
             };
 
             // Create and show start window
-            App.MainSettingsWindow = new HotkeyWindow();
+            App.MainSettingsWindow = new GlobalSettingsWindow();
             App.MainSettingsWindow.Show();
         }
     }

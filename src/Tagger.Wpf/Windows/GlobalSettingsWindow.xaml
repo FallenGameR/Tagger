@@ -1,4 +1,4 @@
-﻿<Window x:Class="Tagger.Wpf.HotkeyWindow"
+﻿<Window x:Class="Tagger.Wpf.GlobalSettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:e="clr-namespace:Utils.Prism;assembly=Tagger.Lib"
@@ -17,5 +17,22 @@
         <v:HotkeyControl x:Name="SettingsHotkeyControl"
                          Handler="{e:StaticMethod Tagger.RegistrationManager.SettingsHotkeyHandler}"
                          Purpose="Settings hotkey" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="100" />
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0"
+                   Grid.Column="0"
+                   Margin="3"
+                   Content="Randomize colors" />
+            <CheckBox Grid.Row="0"
+                      Grid.Column="1"
+                      Margin="3"
+                      VerticalAlignment="Center"
+                      Content="use random color for each new tag" />
+        </Grid>
     </StackPanel>
 </Window>
