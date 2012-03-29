@@ -32,7 +32,9 @@
                       Grid.Column="1"
                       Margin="3"
                       VerticalAlignment="Center"
-                      Content="use random color for each new tag" />
+                      Content="use random color for each new tag"
+                      IsChecked="{Binding Path=UseColorRandomization,
+                                          Mode=TwoWay}" />
         </Grid>
     </StackPanel>
 </Window>

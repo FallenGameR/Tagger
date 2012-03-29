@@ -29,11 +29,14 @@
     <Setting Name="Tag_OffsetRight" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="SettingsHotkey_Modifiers" Type="System.Int32" Scope="User">
+    <Setting Name="AppearanceHotkey_Modifiers" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">3</Value>
     </Setting>
-    <Setting Name="SettingsHotkey_Keys" Type="System.Int32" Scope="User">
+    <Setting Name="AppearanceHotkey_Keys" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">47</Value>
+    </Setting>
+    <Setting Name="GlobalSettings_UseColorRandomization" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

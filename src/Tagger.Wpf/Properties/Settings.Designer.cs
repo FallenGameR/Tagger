@@ -134,24 +134,36 @@ namespace Tagger.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("3")]
-        public int SettingsHotkey_Modifiers {
+        public int AppearanceHotkey_Modifiers {
             get {
-                return ((int)(this["SettingsHotkey_Modifiers"]));
+                return ((int)(this["AppearanceHotkey_Modifiers"]));
             }
             set {
-                this["SettingsHotkey_Modifiers"] = value;
+                this["AppearanceHotkey_Modifiers"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("47")]
-        public int SettingsHotkey_Keys {
+        public int AppearanceHotkey_Keys {
             get {
-                return ((int)(this["SettingsHotkey_Keys"]));
+                return ((int)(this["AppearanceHotkey_Keys"]));
             }
             set {
-                this["SettingsHotkey_Keys"] = value;
+                this["AppearanceHotkey_Keys"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool GlobalSettings_UseColorRandomization {
+            get {
+                return ((bool)(this["GlobalSettings_UseColorRandomization"]));
+            }
+            set {
+                this["GlobalSettings_UseColorRandomization"] = value;
             }
         }
     }
