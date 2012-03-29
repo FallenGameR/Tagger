@@ -1,5 +1,6 @@
 ﻿using Utils.Prism;
 using Utils.Extensions;
+using Tagger.Properties;
 
 namespace Tagger.ViewModels
 {
@@ -8,8 +9,6 @@ namespace Tagger.ViewModels
     /// </summary>
     public class GlobalSettingsViewModel : ViewModelBase
     {
-        private bool m_UseColorRandomization;
-
         /// <summary>
         /// Flag that tells if color randomization is used
         /// </summary>
@@ -18,8 +17,15 @@ namespace Tagger.ViewModels
         /// </remarks>
         public bool UseColorRandomization
         {
-            get { return m_UseColorRandomization; }
-            set { m_UseColorRandomization = value; OnPropertyChanged(this.Property(() => UseColorRandomization)); }
+            get
+            {
+                return Settings.Default.GlobalSettings_UseColorRandomization;
+            }
+            set
+            {
+                Settings.Default.GlobalSettings_UseColorRandomization = value; 
+                OnPropertyChanged(this.Property(() => UseColorRandomization));
+            }
         }
     }
 }

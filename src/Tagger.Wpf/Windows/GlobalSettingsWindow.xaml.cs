@@ -31,7 +31,6 @@ namespace Tagger.Wpf
             tagViewModel.Key = (Key)Settings.Default.TagHotkey_Keys;
             appearanceViewModel.ModifierKeys = (ModifierKeys)Settings.Default.AppearanceHotkey_Modifiers;
             appearanceViewModel.Key = (Key)Settings.Default.AppearanceHotkey_Keys;
-            globalSettingsViewModel.UseColorRandomization = Settings.Default.GlobalSettings_UseColorRandomization;
 
             // Restore registration state
             tagViewModel.RegisterHotkey();
@@ -44,7 +43,6 @@ namespace Tagger.Wpf
                 Settings.Default.TagHotkey_Keys = (int)tagViewModel.Key;
                 Settings.Default.AppearanceHotkey_Modifiers = (int)appearanceViewModel.ModifierKeys;
                 Settings.Default.AppearanceHotkey_Keys = (int)appearanceViewModel.Key;
-                Settings.Default.GlobalSettings_UseColorRandomization = globalSettingsViewModel.UseColorRandomization;
                 Settings.Default.Save();
             };
 
