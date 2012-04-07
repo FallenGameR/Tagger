@@ -39,6 +39,8 @@ namespace Tagger.Wpf
                 args.Handled = false;
             };
 
+            // TODO: Check windows OS edition
+
             // Create and show start window
             App.MainSettingsWindow = new GlobalSettingsWindow();
             App.MainSettingsWindow.Show();

@@ -13,12 +13,9 @@ namespace Tagger.Wpf
     {
         public GlobalSettingsWindow()
         {
-            // TODO: Check windows OS edition
             InitializeComponent();
 
-            this.Loaded += delegate { RegistrationManager.RegisterException(this); };
-            this.Closed += delegate { App.Current.Shutdown(); };
-
+            // Initialize data contexts
             var globalSettingsViewModel = new GlobalSettingsViewModel();
             var tagViewModel = new HotkeyViewModel(this.TagHotkeyControl);
             var appearanceViewModel = new HotkeyViewModel(this.SettingsHotkeyControl);
@@ -35,6 +32,12 @@ namespace Tagger.Wpf
             // Restore registration state
             tagViewModel.RegisterHotkey();
             appearanceViewModel.RegisterHotkey();
+
+            // Do not tag global settings window
+            this.Loaded += delegate { RegistrationManager.RegisterException(this); };
+
+            // Exit application on window close
+            this.Closed += delegate { App.Current.Shutdown(); };
 
             // Save settings on program deactivation (app exit included)
             App.Current.Deactivated += delegate
