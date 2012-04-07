@@ -26,23 +26,33 @@
     <StackPanel Margin="3">
 
         <!--  Settings grid  -->
-        <av:AutoGrid>
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100" />
                 <ColumnDefinition Width="240" />
                 <ColumnDefinition Width="80" />
             </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
 
-            <Label Margin="3">Text</Label>
+            <Label Grid.Row="0"
+                   Grid.Column="0"
+                   Margin="3"
+                   Content="Text" />
             <TextBox x:Name="TextTxt"
+                     Grid.Row="0"
+                     Grid.Column="1"
                      Margin="3"
                      TargetUpdated="TextTxt_TargetUpdated"
                      Text="{Binding Path=Text,
                                     Mode=TwoWay,
                                     UpdateSourceTrigger=PropertyChanged,
                                     NotifyOnTargetUpdated=True}" />
-
-            <Grid>
+            <Grid Grid.Row="0" Grid.Column="2">
                 <ComboBox x:Name="ExistingTagsComboBox" Margin="3">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
@@ -65,8 +75,14 @@
                            Text="Existing" />
             </Grid>
 
-            <Label Margin="3">Color</Label>
-            <ComboBox Margin="3"
+            <Label Grid.Row="1"
+                   Grid.Column="0"
+                   Margin="3">
+                Color
+            </Label>
+            <ComboBox Grid.Row="1"
+                      Grid.Column="1"
+                      Margin="3"
                       IsEditable="True"
                       ItemsSource="{x:Static local:SettingsWindow.ColorNames}"
                       Text="{Binding Path=Color,
@@ -89,17 +105,22 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <t:ColorPicker Margin="3"
-                           ClipToBounds="False"
-                           FlowDirection="LeftToRight"
-                           SelectedColor="{Binding Path=Color,
-                                                   Mode=TwoWay,
-                                                   UpdateSourceTrigger=PropertyChanged}" />
+            <StackPanel Grid.Row="1" Grid.Column="2">
+                <t:ColorPicker Margin="3"
+                               ClipToBounds="False"
+                               FlowDirection="LeftToRight"
+                               SelectedColor="{Binding Path=Color,
+                                                       Mode=TwoWay,
+                                                       UpdateSourceTrigger=PropertyChanged}" />
+            </StackPanel>
 
-            <Expander Grid.ColumnSpan="3"
+            <Expander Grid.Row="2"
+                      Grid.Column="0"
+                      Grid.ColumnSpan="3"
                       Margin="0,5,0,0"
                       HorizontalAlignment="Center"
-                      Header="Advanced">
+                      Header="Advanced"
+                      IsExpanded="True">
                 <av:AutoGrid Margin="0,5,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="100" />
@@ -211,10 +232,10 @@
                     <Label Grid.ColumnSpan="3" Height="10" />
                 </av:AutoGrid>
             </Expander>
-        </av:AutoGrid>
+        </Grid>
 
         <!--  Buttons grid  -->
-        <Grid>
+        <Grid Grid.Row="3" Grid.Column="0">
             <Button Width="120"
                     Height="25"
                     Margin="3,3,2,3"
