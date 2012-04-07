@@ -1,7 +1,6 @@
 ﻿<Window x:Class="Tagger.Wpf.Windows.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:av="http://schemas.codeplex.com/wpfcontrib/xaml/presentation"
         xmlns:local="clr-namespace:Tagger.Wpf.Windows"
         xmlns:media="clr-namespace:System.Windows.Media;assembly=PresentationCore"
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
@@ -121,19 +120,32 @@
                       HorizontalAlignment="Center"
                       Header="Advanced"
                       IsExpanded="True">
-                <av:AutoGrid Margin="0,5,0,0">
+                <Grid Margin="0,5,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="100" />
                         <ColumnDefinition Width="240" />
                         <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
 
                     <!--
                         VirtualizingStackPanel is used for the fast first render, see also
                         http://www.bennedik.de/2007/10/wpf-fast-font-drop-down-list.html
                     -->
-                    <Label Margin="3">Font name</Label>
-                    <ComboBox Margin="3"
+                    <Label Grid.Row="0"
+                           Grid.Column="0"
+                           Margin="3">
+                        Font name
+                    </Label>
+                    <ComboBox Grid.Row="0"
+                              Grid.Column="1"
+                              Margin="3"
                               IsEditable="True"
                               ItemsSource="{Binding Source={StaticResource fonts}}"
                               SelectedValue="{Binding Path=FontFamily,
@@ -154,7 +166,9 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                    <t:IntegerUpDown Margin="3"
+                    <t:IntegerUpDown Grid.Row="0"
+                                     Grid.Column="2"
+                                     Margin="3"
                                      HorizontalAlignment="Stretch"
                                      VerticalContentAlignment="Top"
                                      Increment="1"
@@ -162,8 +176,14 @@
                                                      Mode=TwoWay,
                                                      UpdateSourceTrigger=PropertyChanged}" />
 
-                    <Label Margin="3">Font color</Label>
-                    <ComboBox Margin="3"
+                    <Label Grid.Row="1"
+                           Grid.Column="0"
+                           Margin="3">
+                        Font color
+                    </Label>
+                    <ComboBox Grid.Row="1"
+                              Grid.Column="1"
+                              Margin="3"
                               IsEditable="True"
                               ItemsSource="{x:Static local:SettingsWindow.ColorNames}"
                               Text="{Binding Path=FontColor,
@@ -186,10 +206,21 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                    <t:ColorPicker Margin="3" SelectedColor="{Binding Path=FontColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <t:ColorPicker Grid.Row="1"
+                                   Grid.Column="2"
+                                   Margin="3"
+                                   SelectedColor="{Binding Path=FontColor,
+                                                           Mode=TwoWay,
+                                                           UpdateSourceTrigger=PropertyChanged}" />
 
-                    <Label Margin="3">Offset top</Label>
-                    <Grid Grid.ColumnSpan="2">
+                    <Label Grid.Row="2"
+                           Grid.Column="0"
+                           Margin="3">
+                        Offset top
+                    </Label>
+                    <Grid Grid.Row="2"
+                          Grid.Column="1"
+                          Grid.ColumnSpan="2">
                         <t:IntegerUpDown Width="100"
                                          Margin="3"
                                          HorizontalAlignment="Left"
@@ -205,8 +236,13 @@
                         </Button>
                     </Grid>
 
-                    <Label Margin="3" Content="Offset right" />
-                    <Grid Grid.ColumnSpan="2">
+                    <Label Grid.Row="3"
+                           Grid.Column="0"
+                           Margin="3"
+                           Content="Offset right" />
+                    <Grid Grid.Row="3"
+                          Grid.Column="1"
+                          Grid.ColumnSpan="2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="215*" />
                             <ColumnDefinition Width="105*" />
@@ -229,8 +265,11 @@
 
                     </Grid>
 
-                    <Label Grid.ColumnSpan="3" Height="10" />
-                </av:AutoGrid>
+                    <Label Grid.Row="4"
+                           Grid.Column="0"
+                           Grid.ColumnSpan="3"
+                           Height="10" />
+                </Grid>
             </Expander>
         </Grid>
 

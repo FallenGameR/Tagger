@@ -54,9 +54,6 @@
     <ApplicationIcon>Properties\Logo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AvalonLibrary">
-      <HintPath>..\..\libs\WpfContrib\AvalonLibrary.dll</HintPath>
-    </Reference>
     <Reference Include="Hardcodet.Wpf.TaskbarNotification">
       <HintPath>..\..\libs\WpfNotifyIcon\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
     </Reference>
