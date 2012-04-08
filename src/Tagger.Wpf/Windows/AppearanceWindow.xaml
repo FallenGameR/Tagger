@@ -28,7 +28,7 @@
         <!--  Settings grid  -->
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="80" />
                 <ColumnDefinition Width="240" />
                 <ColumnDefinition Width="80" />
             </Grid.ColumnDefinitions>
@@ -77,9 +77,8 @@
 
             <Label Grid.Row="1"
                    Grid.Column="0"
-                   Margin="3">
-                Color
-            </Label>
+                   Margin="3"
+                   Content="Color" />
             <ComboBox Grid.Row="1"
                       Grid.Column="1"
                       Margin="3"
@@ -105,18 +104,22 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <StackPanel Grid.Row="1" Grid.Column="2">
-                <t:ColorPicker Margin="3"
-                               ClipToBounds="False"
-                               FlowDirection="LeftToRight"
-                               SelectedColor="{Binding Path=Color,
-                                                       Mode=TwoWay,
-                                                       UpdateSourceTrigger=PropertyChanged}" />
-            </StackPanel>
+            <t:ColorPicker Grid.Row="1"
+                           Grid.Column="2"
+                           Margin="3"
+                           ClipToBounds="False"
+                           FlowDirection="LeftToRight"
+                           SelectedColor="{Binding Path=Color,
+                                                   Mode=TwoWay,
+                                                   UpdateSourceTrigger=PropertyChanged}" />
 
-            <Grid Margin="0,5,0,0" Visibility="{Binding Path=VisibilityState, ElementName=toggleVisibilityButton}">
+            <Grid Grid.Row="2"
+                  Grid.ColumnSpan="3"
+                  VerticalAlignment="Top"
+                  Visibility="{Binding Path=VisibilityState,
+                                       ElementName=toggleVisibilityButton}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="80" />
                     <ColumnDefinition Width="240" />
                     <ColumnDefinition Width="80" />
                 </Grid.ColumnDefinitions>
@@ -222,12 +225,10 @@
                                      Value="{Binding Path=OffsetTop,
                                                      Mode=TwoWay,
                                                      UpdateSourceTrigger=PropertyChanged}" />
-                    <Button Width="120"
-                            Margin="0,18,3,-12"
+                    <Button Margin="5"
                             HorizontalAlignment="Right"
-                            Command="{Binding SaveAsDefaultCommand}">
-                        Save as default
-                    </Button>
+                            Command="{Binding SaveAsDefaultCommand}"
+                            Content="Save as default settings" />
                 </Grid>
 
                 <Label Grid.Row="3"
@@ -238,10 +239,13 @@
                       Grid.Column="1"
                       Grid.ColumnSpan="2">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="215*" />
+                        <ColumnDefinition Width="63*" />
+                        <ColumnDefinition Width="141*" />
+                        <ColumnDefinition Width="11*" />
                         <ColumnDefinition Width="105*" />
                     </Grid.ColumnDefinitions>
-                    <t:IntegerUpDown Width="100"
+                    <t:IntegerUpDown Grid.ColumnSpan="2"
+                                     Width="100"
                                      Margin="3,3,0,3"
                                      HorizontalAlignment="Left"
                                      Increment="1"
@@ -249,33 +253,29 @@
                                                      Mode=TwoWay,
                                                      UpdateSourceTrigger=PropertyChanged}" />
 
-                    <Button Grid.ColumnSpan="2"
-                            Width="120"
-                            Margin="0,16,3,-10"
+                    <Button Grid.Column="1"
+                            Grid.ColumnSpan="3"
+                            Margin="5"
                             HorizontalAlignment="Right"
-                            Command="{Binding LoadFromDefaultCommand}">
-                        Reset
-                    </Button>
+                            Command="{Binding LoadFromDefaultCommand}"
+                            Content="Load from default settings" />
 
                 </Grid>
-
-                <Label Grid.Row="4"
-                       Grid.Column="0"
-                       Grid.ColumnSpan="3"
-                       Height="10" />
             </Grid>
         </Grid>
 
         <!--  Buttons grid  -->
-        <Grid Grid.Row="3" Grid.Column="0">
+        <Grid Grid.Row="3"
+              Grid.Column="0"
+              Margin="0,5,0,0">
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                 <controls:ToggleVisibilityButton x:Name="toggleVisibilityButton"
-                                                 Width="120"
+                                                 Width="100"
                                                  Height="25"
                                                  Margin="3"
                                                  ToggledText="Hide settings"
                                                  UntoggledText="More settings" />
-                <Button Width="120"
+                <Button Width="100"
                         Height="25"
                         Margin="3,3,2,3"
                         HorizontalAlignment="Right"

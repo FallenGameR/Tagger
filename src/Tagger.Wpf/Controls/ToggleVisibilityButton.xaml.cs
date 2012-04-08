@@ -10,7 +10,14 @@ namespace Tagger.Controls
     /// </summary>
     public partial class ToggleVisibilityButton : UserControl
     {
-        private bool isToggled;
+        /// <summary>
+        /// Flags that shows if button is toggled
+        /// </summary>
+        public static readonly DependencyProperty IsToggledProperty = DependencyProperty.Register(
+            "IsToggled",
+            typeof(bool),
+            typeof(ToggleVisibilityButton),
+            new PropertyMetadata(false, UpdateStateNeededCallback));
 
         /// <summary>
         /// Button text
@@ -35,7 +42,7 @@ namespace Tagger.Controls
             "UntoggledText",
             typeof(string),
             typeof(ToggleVisibilityButton),
-            new PropertyMetadata("Untoggled", TextChangedCallback));
+            new PropertyMetadata("Untoggled", UpdateStateNeededCallback));
 
         /// <summary>
         /// Button text used for toggled state
@@ -44,31 +51,28 @@ namespace Tagger.Controls
             "ToggledText",
             typeof(string),
             typeof(ToggleVisibilityButton),
-            new PropertyMetadata("Untoggled", TextChangedCallback));
+            new PropertyMetadata("Untoggled", UpdateStateNeededCallback));
 
-        private static void TextChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        public ToggleVisibilityButton()
+        {
+            InitializeComponent();
+            this.UpdateState();
+        }
+
+        private static void UpdateStateNeededCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var toggleVisibilityButton = (ToggleVisibilityButton)d;
             toggleVisibilityButton.UpdateState();
         }
 
-        public ToggleVisibilityButton()
-        {
-            InitializeComponent();
-
-            this.isToggled = false;
-            this.UpdateState();
-        }
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            this.isToggled = !this.isToggled;
-            this.UpdateState();
+            this.IsToggled = !this.IsToggled;
         }
 
         private void UpdateState()
         {
-            if (this.isToggled)
+            if (this.IsToggled)
             {
                 this.Text = this.ToggledText;
                 this.VisibilityState = Visibility.Visible;
@@ -78,6 +82,15 @@ namespace Tagger.Controls
                 this.Text = this.UntoggledText;
                 this.VisibilityState = Visibility.Collapsed;
             }
+        }
+
+        /// <summary>
+        /// Flags that shows if button is toggled
+        /// </summary>
+        public bool IsToggled
+        {
+            get { return (bool)this.GetValue(IsToggledProperty); }
+            set { this.SetValue(IsToggledProperty, value); }
         }
 
         /// <summary>
