@@ -78,14 +78,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Controls\ToggleButton.xaml.cs">
-      <DependentUpon>ToggleButton.xaml</DependentUpon>
+    <Compile Include="Controls\ToggleVisibilityButton.xaml.cs">
+      <DependentUpon>ToggleVisibilityButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="Domain\RegistrationManager.cs" />
     <Compile Include="Domain\TagContext.cs" />
     <Compile Include="Domain\TagLabel.cs" />
     <Compile Include="ViewModels\GlobalSettingsViewModel.cs" />
     <Compile Include="ViewModels\TagViewModel.cs" />
+    <Compile Include="ViewModels\ToggleButtonViewModel.cs" />
     <Compile Include="ViewModels\TrayIconViewModel.cs" />
     <Compile Include="Views\HotkeyControl.xaml.cs">
       <DependentUpon>HotkeyControl.xaml</DependentUpon>
@@ -93,7 +94,7 @@
     <Compile Include="Views\TrayIconControl.xaml.cs">
       <DependentUpon>TrayIconControl.xaml</DependentUpon>
     </Compile>
-    <Page Include="Controls\ToggleButton.xaml">
+    <Page Include="Controls\ToggleVisibilityButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
