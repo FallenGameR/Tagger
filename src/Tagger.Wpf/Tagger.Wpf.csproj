@@ -86,7 +86,6 @@
     <Compile Include="Domain\TagLabel.cs" />
     <Compile Include="ViewModels\GlobalSettingsViewModel.cs" />
     <Compile Include="ViewModels\TagViewModel.cs" />
-    <Compile Include="ViewModels\ToggleButtonViewModel.cs" />
     <Compile Include="ViewModels\TrayIconViewModel.cs" />
     <Compile Include="Views\HotkeyControl.xaml.cs">
       <DependentUpon>HotkeyControl.xaml</DependentUpon>

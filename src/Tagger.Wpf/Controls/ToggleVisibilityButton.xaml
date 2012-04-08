@@ -7,5 +7,5 @@
              d:DesignHeight="300"
              d:DesignWidth="300"
              mc:Ignorable="d">
-    <Button Content="{Binding Path=UntoggledText, ElementName=toggleVisibilityButtonUserControl}" />
+    <Button Click="Button_Click" Content="{Binding Path=Text, ElementName=toggleVisibilityButtonUserControl}" />
 </UserControl>
