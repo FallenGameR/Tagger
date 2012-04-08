@@ -9,4 +9,6 @@ One executable.
 0.95
 StyleCop
 FxCop
+Project readme on the main github page
+Binary for usage
 1.0
