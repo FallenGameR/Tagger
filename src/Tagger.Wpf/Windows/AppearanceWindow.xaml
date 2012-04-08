@@ -114,170 +114,163 @@
                                                        UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
 
-            <Expander Grid.Row="2"
-                      Grid.Column="0"
-                      Grid.ColumnSpan="3"
-                      Margin="0,5,0,0"
-                      HorizontalAlignment="Center"
-                      Header="Advanced"
-                      IsExpanded="True">
-                <Grid Margin="0,5,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="100" />
-                        <ColumnDefinition Width="240" />
-                        <ColumnDefinition Width="80" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
+            <Grid Margin="0,5,0,0" Visibility="{Binding Path=VisibilityState, ElementName=toggleVisibilityButton}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="240" />
+                    <ColumnDefinition Width="80" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
 
-                    <!--
-                        VirtualizingStackPanel is used for the fast first render, see also
-                        http://www.bennedik.de/2007/10/wpf-fast-font-drop-down-list.html
-                    -->
-                    <Label Grid.Row="0"
-                           Grid.Column="0"
-                           Margin="3">
-                        Font name
-                    </Label>
-                    <ComboBox Grid.Row="0"
-                              Grid.Column="1"
-                              Margin="3"
-                              IsEditable="True"
-                              ItemsSource="{Binding Source={StaticResource fonts}}"
-                              SelectedValue="{Binding Path=FontFamily,
-                                                      Mode=TwoWay,
-                                                      UpdateSourceTrigger=PropertyChanged}">
-                        <ComboBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel />
-                            </ItemsPanelTemplate>
-                        </ComboBox.ItemsPanel>
+                <!--
+                    VirtualizingStackPanel is used for the fast first render, see also
+                    http://www.bennedik.de/2007/10/wpf-fast-font-drop-down-list.html
+                -->
+                <Label Grid.Row="0"
+                       Grid.Column="0"
+                       Margin="3">
+                    Font name
+                </Label>
+                <ComboBox Grid.Row="0"
+                          Grid.Column="1"
+                          Margin="3"
+                          IsEditable="True"
+                          ItemsSource="{Binding Source={StaticResource fonts}}"
+                          SelectedValue="{Binding Path=FontFamily,
+                                                  Mode=TwoWay,
+                                                  UpdateSourceTrigger=PropertyChanged}">
+                    <ComboBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                    </ComboBox.ItemsPanel>
 
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Height="20"
-                                           FontFamily="{Binding}"
-                                           FontSize="15"
-                                           Text="{Binding}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                    <t:IntegerUpDown Grid.Row="0"
-                                     Grid.Column="2"
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Height="20"
+                                       FontFamily="{Binding}"
+                                       FontSize="15"
+                                       Text="{Binding}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <t:IntegerUpDown Grid.Row="0"
+                                 Grid.Column="2"
+                                 Margin="3"
+                                 HorizontalAlignment="Stretch"
+                                 VerticalContentAlignment="Top"
+                                 Increment="1"
+                                 Value="{Binding Path=FontSize,
+                                                 Mode=TwoWay,
+                                                 UpdateSourceTrigger=PropertyChanged}" />
+
+                <Label Grid.Row="1"
+                       Grid.Column="0"
+                       Margin="3">
+                    Font color
+                </Label>
+                <ComboBox Grid.Row="1"
+                          Grid.Column="1"
+                          Margin="3"
+                          IsEditable="True"
+                          ItemsSource="{x:Static local:SettingsWindow.ColorNames}"
+                          Text="{Binding Path=FontColor,
+                                         Mode=TwoWay,
+                                         UpdateSourceTrigger=PropertyChanged,
+                                         Converter={StaticResource converter}}">
+                    <ComboBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                    </ComboBox.ItemsPanel>
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="40"
+                                        Margin="0,1"
+                                        Background="{Binding}" />
+                                <TextBlock Margin="8,1" Text="{Binding}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <t:ColorPicker Grid.Row="1"
+                               Grid.Column="2"
+                               Margin="3"
+                               SelectedColor="{Binding Path=FontColor,
+                                                       Mode=TwoWay,
+                                                       UpdateSourceTrigger=PropertyChanged}" />
+
+                <Label Grid.Row="2"
+                       Grid.Column="0"
+                       Margin="3">
+                    Offset top
+                </Label>
+                <Grid Grid.Row="2"
+                      Grid.Column="1"
+                      Grid.ColumnSpan="2">
+                    <t:IntegerUpDown Width="100"
                                      Margin="3"
-                                     HorizontalAlignment="Stretch"
-                                     VerticalContentAlignment="Top"
+                                     HorizontalAlignment="Left"
                                      Increment="1"
-                                     Value="{Binding Path=FontSize,
+                                     Value="{Binding Path=OffsetTop,
+                                                     Mode=TwoWay,
+                                                     UpdateSourceTrigger=PropertyChanged}" />
+                    <Button Width="120"
+                            Margin="0,18,3,-12"
+                            HorizontalAlignment="Right"
+                            Command="{Binding SaveAsDefaultCommand}">
+                        Save as default
+                    </Button>
+                </Grid>
+
+                <Label Grid.Row="3"
+                       Grid.Column="0"
+                       Margin="3"
+                       Content="Offset right" />
+                <Grid Grid.Row="3"
+                      Grid.Column="1"
+                      Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="215*" />
+                        <ColumnDefinition Width="105*" />
+                    </Grid.ColumnDefinitions>
+                    <t:IntegerUpDown Width="100"
+                                     Margin="3,3,0,3"
+                                     HorizontalAlignment="Left"
+                                     Increment="1"
+                                     Value="{Binding Path=OffsetRight,
                                                      Mode=TwoWay,
                                                      UpdateSourceTrigger=PropertyChanged}" />
 
-                    <Label Grid.Row="1"
-                           Grid.Column="0"
-                           Margin="3">
-                        Font color
-                    </Label>
-                    <ComboBox Grid.Row="1"
-                              Grid.Column="1"
-                              Margin="3"
-                              IsEditable="True"
-                              ItemsSource="{x:Static local:SettingsWindow.ColorNames}"
-                              Text="{Binding Path=FontColor,
-                                             Mode=TwoWay,
-                                             UpdateSourceTrigger=PropertyChanged,
-                                             Converter={StaticResource converter}}">
-                        <ComboBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel />
-                            </ItemsPanelTemplate>
-                        </ComboBox.ItemsPanel>
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <Border Width="40"
-                                            Margin="0,1"
-                                            Background="{Binding}" />
-                                    <TextBlock Margin="8,1" Text="{Binding}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                    <t:ColorPicker Grid.Row="1"
-                                   Grid.Column="2"
-                                   Margin="3"
-                                   SelectedColor="{Binding Path=FontColor,
-                                                           Mode=TwoWay,
-                                                           UpdateSourceTrigger=PropertyChanged}" />
+                    <Button Grid.ColumnSpan="2"
+                            Width="120"
+                            Margin="0,16,3,-10"
+                            HorizontalAlignment="Right"
+                            Command="{Binding LoadFromDefaultCommand}">
+                        Reset
+                    </Button>
 
-                    <Label Grid.Row="2"
-                           Grid.Column="0"
-                           Margin="3">
-                        Offset top
-                    </Label>
-                    <Grid Grid.Row="2"
-                          Grid.Column="1"
-                          Grid.ColumnSpan="2">
-                        <t:IntegerUpDown Width="100"
-                                         Margin="3"
-                                         HorizontalAlignment="Left"
-                                         Increment="1"
-                                         Value="{Binding Path=OffsetTop,
-                                                         Mode=TwoWay,
-                                                         UpdateSourceTrigger=PropertyChanged}" />
-                        <Button Width="120"
-                                Margin="0,18,3,-12"
-                                HorizontalAlignment="Right"
-                                Command="{Binding SaveAsDefaultCommand}">
-                            Save as default
-                        </Button>
-                    </Grid>
-
-                    <Label Grid.Row="3"
-                           Grid.Column="0"
-                           Margin="3"
-                           Content="Offset right" />
-                    <Grid Grid.Row="3"
-                          Grid.Column="1"
-                          Grid.ColumnSpan="2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="215*" />
-                            <ColumnDefinition Width="105*" />
-                        </Grid.ColumnDefinitions>
-                        <t:IntegerUpDown Width="100"
-                                         Margin="3,3,0,3"
-                                         HorizontalAlignment="Left"
-                                         Increment="1"
-                                         Value="{Binding Path=OffsetRight,
-                                                         Mode=TwoWay,
-                                                         UpdateSourceTrigger=PropertyChanged}" />
-
-                        <Button Grid.ColumnSpan="2"
-                                Width="120"
-                                Margin="0,16,3,-10"
-                                HorizontalAlignment="Right"
-                                Command="{Binding LoadFromDefaultCommand}">
-                            Reset
-                        </Button>
-
-                    </Grid>
-
-                    <Label Grid.Row="4"
-                           Grid.Column="0"
-                           Grid.ColumnSpan="3"
-                           Height="10" />
                 </Grid>
-            </Expander>
+
+                <Label Grid.Row="4"
+                       Grid.Column="0"
+                       Grid.ColumnSpan="3"
+                       Height="10" />
+            </Grid>
         </Grid>
 
         <!--  Buttons grid  -->
         <Grid Grid.Row="3" Grid.Column="0">
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                <controls:ToggleVisibilityButton Width="120"
+                <controls:ToggleVisibilityButton x:Name="toggleVisibilityButton"
+                                                 Width="120"
                                                  Height="25"
                                                  Margin="3"
                                                  ToggledText="Hide settings"
