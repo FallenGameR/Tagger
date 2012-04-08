@@ -46,34 +46,13 @@
             <TextBox x:Name="TextTxt"
                      Grid.Row="0"
                      Grid.Column="1"
+                     Grid.ColumnSpan="2"
                      Margin="3"
                      TargetUpdated="TextTxt_TargetUpdated"
                      Text="{Binding Path=Text,
                                     Mode=TwoWay,
                                     UpdateSourceTrigger=PropertyChanged,
                                     NotifyOnTargetUpdated=True}" />
-            <Grid Grid.Row="0" Grid.Column="2">
-                <ComboBox x:Name="ExistingTagsComboBox" Margin="3">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Border Width="40" Margin="0,1">
-                                    <Border.Background>
-                                        <SolidColorBrush Color="{Binding Color}" />
-                                    </Border.Background>
-                                </Border>
-                                <TextBlock Margin="8,1" Text="{Binding Text}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-
-                </ComboBox>
-                <TextBlock Margin="0,0,10,0"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           IsHitTestVisible="False"
-                           Text="Existing" />
-            </Grid>
 
             <Label Grid.Row="1"
                    Grid.Column="0"
@@ -267,7 +246,31 @@
         <!--  Buttons grid  -->
         <Grid Grid.Row="3"
               Grid.Column="0"
-              Margin="0,5,0,0">
+              Margin="0,12,0,0">
+
+            <Grid Width="80" HorizontalAlignment="Left">
+                <ComboBox x:Name="ExistingTagsComboBox" Margin="3">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="40" Margin="0,1">
+                                    <Border.Background>
+                                        <SolidColorBrush Color="{Binding Color}" />
+                                    </Border.Background>
+                                </Border>
+                                <TextBlock Margin="8,1" Text="{Binding Text}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBlock Margin="0,0,10,0"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           IsHitTestVisible="False"
+                           Text="Existing" />
+            </Grid>
+
+
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                 <controls:ToggleVisibilityButton x:Name="toggleVisibilityButton"
                                                  Width="100"

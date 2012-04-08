@@ -83,14 +83,12 @@ namespace Tagger
         /// <remarks>Default tag is excluded since it is not interesting to the user</remarks>
         public static IEnumerable<TagLabel> GetExistingTags()
         {
-            var defaultLabel = new TagLabel(new TagViewModel());
-            var distinct = RegistrationManager.KnownTags.Select(c => c.TagViewModel.GetLabel()).Distinct();
-            return
-                from label in distinct
-                where !label.Equals(defaultLabel)
+            return (
+                from tag in KnownTags
+                let label = tag.TagViewModel.GetLabel()
                 orderby label.Text
                 orderby label.Color.ToString()
-                select label;
+                select label).Distinct();
         }
 
         /// <summary>
