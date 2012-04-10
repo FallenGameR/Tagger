@@ -42,7 +42,7 @@ namespace Tagger.Wpf
             // TODO: Check windows OS edition
 
             // Create and show start window
-            App.MainSettingsWindow = new GlobalSettingsWindow();
+            App.MainSettingsWindow = new TaggerSettingsWindow();
             App.MainSettingsWindow.Show();
         }
     }

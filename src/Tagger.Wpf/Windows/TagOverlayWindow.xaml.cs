@@ -2,9 +2,9 @@
 
 namespace Tagger.Wpf
 {
-    public sealed partial class TagWindow : Window
+    public sealed partial class TagOverlayWindow : Window
     {
-        public TagWindow()
+        public TagOverlayWindow()
         {
             InitializeComponent();
         }

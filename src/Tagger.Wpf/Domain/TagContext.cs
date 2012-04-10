@@ -50,40 +50,40 @@ namespace Tagger
         public TagContext()
         {
             this.TagViewModel = new TagViewModel();
-            this.TagWindow = new TagWindow { DataContext = this.TagViewModel };
-            this.SettingsWindow = new SettingsWindow { DataContext = this.TagViewModel };
+            this.TagOverlayWindow = new TagOverlayWindow { DataContext = this.TagViewModel };
+            this.TagControlWindow = new TagControlWindow { DataContext = this.TagViewModel };
 
-            this.TagViewModel.ToggleSettingsCommand = new DelegateCommand<object>(o => this.SettingsWindow.ToggleVisibility());
+            this.TagViewModel.ToggleSettingsCommand = new DelegateCommand<object>(o => this.TagControlWindow.ToggleVisibility());
             this.TagViewModel.HideSettingsCommand = new DelegateCommand<object>(this.HideSettingsAndRefocus);
-            this.TagViewModel.PropertyChanged += (s, e) => this.RedrawTagPosition(this.TagWindow.Width);
+            this.TagViewModel.PropertyChanged += (s, e) => this.RedrawTagPosition(this.TagOverlayWindow.Width);
 
-            this.TagWindow.MouseRightButtonUp += (s, e) => this.TagViewModel.ToggleSettingsCommand.Execute(null);
-            this.TagWindow.SizeChanged += (s, e) => this.RedrawTagPosition(e.NewSize.Width);
+            this.TagOverlayWindow.MouseRightButtonUp += (s, e) => this.TagViewModel.ToggleSettingsCommand.Execute(null);
+            this.TagOverlayWindow.SizeChanged += (s, e) => this.RedrawTagPosition(e.NewSize.Width);
 
-            this.SettingsWindow.Closing += this.SettingsClosingHandler;
-            this.SettingsWindow.ExistingTagsComboBox.DropDownOpened += delegate
+            this.TagControlWindow.Closing += this.SettingsClosingHandler;
+            this.TagControlWindow.ExistingTagsComboBox.DropDownOpened += delegate
             {
-                this.SettingsWindow.ExistingTagsComboBox.ItemsSource = RegistrationManager.GetExistingTags().ToList();
+                this.TagControlWindow.ExistingTagsComboBox.ItemsSource = RegistrationManager.GetExistingTags().ToList();
             };
-            this.SettingsWindow.ExistingTagsComboBox.DropDownClosed += delegate
+            this.TagControlWindow.ExistingTagsComboBox.DropDownClosed += delegate
             {
-                this.SettingsWindow.ExistingTagsComboBox.SelectedValue = null;
-                this.SettingsWindow.ExistingTagsComboBox.ItemsSource = null;
+                this.TagControlWindow.ExistingTagsComboBox.SelectedValue = null;
+                this.TagControlWindow.ExistingTagsComboBox.ItemsSource = null;
             };
-            this.SettingsWindow.ExistingTagsComboBox.PreviewKeyDown += (sender, args) =>
+            this.TagControlWindow.ExistingTagsComboBox.PreviewKeyDown += (sender, args) =>
             {
                 var isSpace = args.Key == Key.Space;
                 var isDown = (args.Key == Key.Down) || (args.Key == Key.PageDown);
-                var isOpened = this.SettingsWindow.ExistingTagsComboBox.IsDropDownOpen;
+                var isOpened = this.TagControlWindow.ExistingTagsComboBox.IsDropDownOpen;
 
                 if( isSpace || (!isOpened && isDown) )
                 {
-                    this.SettingsWindow.ExistingTagsComboBox.IsDropDownOpen = !this.SettingsWindow.ExistingTagsComboBox.IsDropDownOpen;
+                    this.TagControlWindow.ExistingTagsComboBox.IsDropDownOpen = !this.TagControlWindow.ExistingTagsComboBox.IsDropDownOpen;
                 }
             };
-            this.SettingsWindow.ExistingTagsComboBox.SelectionChanged += delegate
+            this.TagControlWindow.ExistingTagsComboBox.SelectionChanged += delegate
             {
-                var tagLabel = (TagLabel)this.SettingsWindow.ExistingTagsComboBox.SelectedValue;
+                var tagLabel = (TagLabel)this.TagControlWindow.ExistingTagsComboBox.SelectedValue;
                 this.TagViewModel.Text = tagLabel.Text;
                 this.TagViewModel.Color = tagLabel.Color;
             };
@@ -95,13 +95,13 @@ namespace Tagger
         public void Dispose()
         {
             // Cancel hide on close for settings window
-            this.SettingsWindow.Closing -= this.SettingsClosingHandler;
+            this.TagControlWindow.Closing -= this.SettingsClosingHandler;
 
             // Hide and then close both views
-            this.SettingsWindow.Dispatcher.Invoke((Action)delegate { this.SettingsWindow.Hide(); });
-            this.TagWindow.Dispatcher.Invoke((Action)delegate { this.TagWindow.Hide(); });
-            this.TagWindow.Dispatcher.Invoke((Action)delegate { this.TagWindow.Close(); });
-            this.SettingsWindow.Dispatcher.Invoke((Action)delegate { this.SettingsWindow.Close(); });
+            this.TagControlWindow.Dispatcher.Invoke((Action)delegate { this.TagControlWindow.Hide(); });
+            this.TagOverlayWindow.Dispatcher.Invoke((Action)delegate { this.TagOverlayWindow.Hide(); });
+            this.TagOverlayWindow.Dispatcher.Invoke((Action)delegate { this.TagOverlayWindow.Close(); });
+            this.TagControlWindow.Dispatcher.Invoke((Action)delegate { this.TagControlWindow.Close(); });
 
             // Dispose underlying view model
             this.TagViewModel.Dispose();
@@ -140,14 +140,14 @@ namespace Tagger
 
             this.HostWindow = hostWindow;
 
-            this.TagWindow.SetOwner(this.HostWindow);
-            this.TagWindow.Show();
+            this.TagOverlayWindow.SetOwner(this.HostWindow);
+            this.TagOverlayWindow.Show();
 
-            this.SettingsWindow.SetOwner(this.HostWindow);
-            this.SettingsWindow.Show();
+            this.TagControlWindow.SetOwner(this.HostWindow);
+            this.TagControlWindow.Show();
 
             this.HostWindowListner = new WindowListner(this.HostWindow);
-            this.HostWindowListner.ClientAreaChanged += (s, e) => this.RedrawTagPosition(this.TagWindow.Width);
+            this.HostWindowListner.ClientAreaChanged += (s, e) => this.RedrawTagPosition(this.TagOverlayWindow.Width);
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace Tagger
         private void SettingsClosingHandler(object sender, CancelEventArgs ea)
         {
             ea.Cancel = true;
-            this.SettingsWindow.Hide();
+            this.TagControlWindow.Hide();
         }
 
         /// <summary>
@@ -191,13 +191,13 @@ namespace Tagger
 
             // Update position only if coordinates changed to speed up redraw process
             // NOTE: Redraw would happen in WPF redraw step of prioritized queue in GUI process
-            if (this.TagWindow.Top != newTop)
+            if (this.TagOverlayWindow.Top != newTop)
             {
-                this.TagWindow.Top = newTop;
+                this.TagOverlayWindow.Top = newTop;
             }
-            if (this.TagWindow.Left != newLeft)
+            if (this.TagOverlayWindow.Left != newLeft)
             {
-                this.TagWindow.Left = newLeft;
+                this.TagOverlayWindow.Left = newLeft;
             }
         }
 
@@ -211,7 +211,7 @@ namespace Tagger
                 return;
             }
 
-            this.SettingsWindow.ToggleVisibility();
+            this.TagControlWindow.ToggleVisibility();
             NativeAPI.SetForegroundWindow(this.HostWindow);
         }
 
@@ -221,14 +221,14 @@ namespace Tagger
         public TagViewModel TagViewModel { get; private set; }
 
         /// <summary>
-        /// Tag window itself
+        /// Tag overlay window - the displayed tag itself
         /// </summary>
-        public TagWindow TagWindow { get; private set; }
+        public TagOverlayWindow TagOverlayWindow { get; private set; }
 
         /// <summary>
-        /// Settings window that setup tag appearance
+        /// Tag control window - tag appearance settings and other control elements
         /// </summary>
-        public SettingsWindow SettingsWindow { get; private set; }
+        public TagControlWindow TagControlWindow { get; private set; }
 
         /// <summary>
         /// Window handle that is tagged

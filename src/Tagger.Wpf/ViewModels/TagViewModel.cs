@@ -33,6 +33,7 @@ namespace Tagger
             this.LoadFromDefaultCommand = new DelegateCommand<object>(o => this.LoadFromDefault());
             this.ToggleSettingsCommand = new DelegateCommand<object>(delegate { });
             this.HideSettingsCommand = new DelegateCommand<object>(delegate { });
+            this.KillTagCommand = new DelegateCommand<object>(o => this.KillTag());
 
             // Load properties from default values
             this.LoadFromDefaultCommand.Execute(null);
@@ -147,6 +148,14 @@ namespace Tagger
         }
 
         /// <summary>
+        /// Kill current tag
+        /// </summary>
+        private void KillTag()
+        {
+            RegistrationManager.UnregisterTag(this);
+        }
+
+        /// <summary>
         /// Shows or hides settings window that is associated with the tag
         /// </summary>
         public DelegateCommand<object> ToggleSettingsCommand { get; internal set; }
@@ -165,5 +174,10 @@ namespace Tagger
         /// Command to load current settings from default values
         /// </summary>
         public DelegateCommand<object> LoadFromDefaultCommand { get; private set; }
+
+        /// <summary>
+        /// Command to kill current tag
+        /// </summary>
+        public DelegateCommand<object> KillTagCommand { get; private set; }
     }
 }

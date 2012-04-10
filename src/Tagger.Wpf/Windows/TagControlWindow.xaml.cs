@@ -11,7 +11,7 @@ namespace Tagger.Wpf.Windows
     /// <remarks>
     /// Only view-related code here
     /// </remarks>
-    public partial class SettingsWindow : Window
+    public partial class TagControlWindow : Window
     {
         /// <summary>
         /// Color names resource
@@ -24,7 +24,7 @@ namespace Tagger.Wpf.Windows
         /// <summary>
         /// Initializes settings window
         /// </summary>
-        public SettingsWindow()
+        public TagControlWindow()
         {
             InitializeComponent();
             this.IsVisibleChanged += new DependencyPropertyChangedEventHandler(SettingsWindow_IsVisibleChanged);

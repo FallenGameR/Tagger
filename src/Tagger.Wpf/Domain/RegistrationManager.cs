@@ -27,7 +27,7 @@ namespace Tagger
         /// Template method for tag and settings hotkeys
         /// </summary>
         /// <param name="tagExistsHandler">Fallback action if tag was already registered</param>
-        internal static TagContext TagRegistrationHandler(Action<TagContext> tagExistsHandler)
+        public static TagContext TagRegistrationHandler(Action<TagContext> tagExistsHandler)
         {
             // Get foremost host
             var host = RegistrationManager.GetHostHandle();
@@ -44,11 +44,11 @@ namespace Tagger
             tagExistsHandler(context);
 
             // Keep focus on settings text if setting are visible
-            if (context.SettingsWindow.IsVisible)
+            if (context.TagControlWindow.IsVisible)
             {
-                context.SettingsWindow.Focus();
-                context.SettingsWindow.TextTxt.Focus();
-                context.SettingsWindow.TextTxt.SelectAll();
+                context.TagControlWindow.Focus();
+                context.TagControlWindow.TextTxt.Focus();
+                context.TagControlWindow.TextTxt.SelectAll();
             }
             // Otherwise keep focus on host window
             else
@@ -65,7 +65,7 @@ namespace Tagger
         /// </summary>
         public static void TagHotkeyHandler()
         {
-            RegistrationManager.TagRegistrationHandler(context => { context.TagWindow.ToggleVisibility(); });
+            RegistrationManager.TagRegistrationHandler(context => { context.TagOverlayWindow.ToggleVisibility(); });
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Tagger
         /// </summary>
         public static void SettingsHotkeyHandler()
         {
-            RegistrationManager.TagRegistrationHandler(context => { context.SettingsWindow.ToggleVisibility(); });
+            RegistrationManager.TagRegistrationHandler(context => { context.TagControlWindow.ToggleVisibility(); });
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace Tagger
         }
 
         /// <summary>
-        /// Unregisters existing tag and clean it up
+        /// Unregisters existing tag and clean up associated resources
         /// </summary>
         /// <param name="hostWindow">Handle to the window host that is tagged</param>
         private static void UnregisterTag(IntPtr hostWindow)
@@ -145,6 +145,23 @@ namespace Tagger
             lock (RegistrationManager.KnownTags)
             {
                 var match = RegistrationManager.KnownTags.SingleOrDefault(c => c.HostWindow == hostWindow);
+                if (match != null)
+                {
+                    match.Dispose();
+                    RegistrationManager.KnownTags.Remove(match);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Unregisters existing tag and clean up associated resources
+        /// </summary>
+        /// <param name="tagViewModel">Tag view model that is used for tag lookup</param>
+        public static void UnregisterTag(TagViewModel tagViewModel)
+        {
+            lock (RegistrationManager.KnownTags)
+            {
+                var match = RegistrationManager.KnownTags.SingleOrDefault(c => c.TagViewModel == tagViewModel);
                 if (match != null)
                 {
                     match.Dispose();
@@ -181,17 +198,17 @@ namespace Tagger
             }
 
             // If tag window is foremost, return its owner
-            var tagMatch = RegistrationManager.KnownTags.SingleOrDefault(c => c.TagWindow.GetHandle() == foremostWindow);
+            var tagMatch = RegistrationManager.KnownTags.SingleOrDefault(c => c.TagOverlayWindow.GetHandle() == foremostWindow);
             if (tagMatch != null)
             {
-                return tagMatch.TagWindow.GetOwner();
+                return tagMatch.TagOverlayWindow.GetOwner();
             }
 
             // If settings window is foremost, return corresponding tag owner
-            var settingsMatch = RegistrationManager.KnownTags.SingleOrDefault(c => c.SettingsWindow.GetHandle() == foremostWindow);
+            var settingsMatch = RegistrationManager.KnownTags.SingleOrDefault(c => c.TagControlWindow.GetHandle() == foremostWindow);
             if (settingsMatch != null)
             {
-                return settingsMatch.TagWindow.GetOwner();
+                return settingsMatch.TagOverlayWindow.GetOwner();
             }
 
             // Else return foremost window handle

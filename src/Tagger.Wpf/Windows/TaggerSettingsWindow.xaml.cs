@@ -9,9 +9,9 @@ namespace Tagger.Wpf
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class GlobalSettingsWindow : Window
+    public partial class TaggerSettingsWindow : Window
     {
-        public GlobalSettingsWindow()
+        public TaggerSettingsWindow()
         {
             InitializeComponent();
 

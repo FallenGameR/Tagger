@@ -1,7 +1,8 @@
-Kill tag handler.
 Color control with randomization.
 Window OS validation.
 0.9
+Drag anf drop on left click.
+0.92
 Grouping of control buttons.
 Global settings exit prompts for exit.
 Sources link in global settings window.

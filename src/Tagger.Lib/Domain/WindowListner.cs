@@ -45,11 +45,18 @@ namespace Tagger
             // Listen for destruction event
             this.automationWindowElement = AutomationElement.FromHandle(windowHandle);
             this.automationWindowCloseEventHandler = new AutomationEventHandler(OnWindowCloseHandler);
-            Automation.AddAutomationEventHandler(
-                WindowPattern.WindowClosedEvent,
-                this.automationWindowElement,
-                TreeScope.Element,
-                this.automationWindowCloseEventHandler);
+            try
+            {
+                Automation.AddAutomationEventHandler(
+                    WindowPattern.WindowClosedEvent,
+                    this.automationWindowElement,
+                    TreeScope.Element,
+                    this.automationWindowCloseEventHandler);
+            }
+            catch (ArgumentException)
+            {
+                // Workaround for some specific windows like "Start button" that isn't following automation pattern
+            }
 
             // Listen for move events
             this.moveListner = new AccessibleEventListener

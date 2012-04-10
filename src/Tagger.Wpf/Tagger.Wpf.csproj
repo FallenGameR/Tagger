@@ -97,7 +97,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\GlobalSettingsWindow.xaml">
+    <Page Include="Windows\TaggerSettingsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -106,15 +106,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ViewModels\HotkeyViewModel.cs" />
-    <Compile Include="Windows\GlobalSettingsWindow.xaml.cs">
-      <DependentUpon>GlobalSettingsWindow.xaml</DependentUpon>
+    <Compile Include="Windows\TaggerSettingsWindow.xaml.cs">
+      <DependentUpon>TaggerSettingsWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Windows\AppearanceWindow.xaml">
+    <Page Include="Windows\TagControlWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\TagWindow.xaml">
+    <Page Include="Windows\TagOverlayWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -128,11 +128,11 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Windows\AppearanceWindow.xaml.cs">
-      <DependentUpon>AppearanceWindow.xaml</DependentUpon>
+    <Compile Include="Windows\TagControlWindow.xaml.cs">
+      <DependentUpon>TagControlWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\TagWindow.xaml.cs">
-      <DependentUpon>TagWindow.xaml</DependentUpon>
+    <Compile Include="Windows\TagOverlayWindow.xaml.cs">
+      <DependentUpon>TagOverlayWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
