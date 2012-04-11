@@ -1,0 +1,61 @@
+﻿<UserControl x:Class="Tagger.Controls.ColorSelectionControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Tagger.Controls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:t="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit.Extended"
+             xmlns:utils="clr-namespace:Utils.Prism;assembly=Tagger.Lib"
+             d:DesignHeight="30"
+             d:DesignWidth="320"
+             mc:Ignorable="d">
+
+    <!--  Resources - sorted fonts available  -->
+    <UserControl.Resources>
+        <utils:ColorStringConverter x:Key="converter" />
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="80" />
+        </Grid.ColumnDefinitions>
+
+        <!--  Color that can be selected by typing  -->
+        <ComboBox Margin="3"
+                  IsEditable="True"
+                  ItemsSource="{x:Static local:ColorSelectionControl.ColorNames}"
+                  Text="{Binding Path=Color,
+                                 Mode=TwoWay,
+                                 UpdateSourceTrigger=PropertyChanged,
+                                 Converter={StaticResource converter}}">
+            <!--  Virtualizing stack panel instead of default one for quicker startup time  -->
+            <ComboBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel />
+                </ItemsPanelTemplate>
+            </ComboBox.ItemsPanel>
+            <!--  Colors with names for ease of picking a predefined color  -->
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Border Width="40"
+                                Margin="0,1"
+                                Background="{Binding}" />
+                        <TextBlock Margin="8,1" Text="{Binding}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <!--  Color that can be selected by mouse selection  -->
+        <t:ColorPicker Grid.Row="1"
+                       Grid.Column="2"
+                       Margin="3"
+                       ClipToBounds="False"
+                       FlowDirection="LeftToRight"
+                       SelectedColor="{Binding Path=Color,
+                                               Mode=TwoWay,
+                                               UpdateSourceTrigger=PropertyChanged}" />
+    </Grid>
+</UserControl>

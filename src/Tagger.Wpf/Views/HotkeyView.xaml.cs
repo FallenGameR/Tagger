@@ -5,9 +5,9 @@ using System.Windows.Controls;
 namespace Tagger.Wpf.Views
 {
     /// <summary>
-    /// Interaction logic for HotkeyControl.xaml
+    /// Interaction logic for HotkeyView.xaml
     /// </summary>
-    public partial class HotkeyControl : UserControl
+    public partial class HotkeyView : UserControl
     {
         /// <summary>
         /// Dependency propery for Purpose property
@@ -15,7 +15,7 @@ namespace Tagger.Wpf.Views
         public static readonly DependencyProperty PurposeProperty = DependencyProperty.Register(
             "Purpose",
             typeof(string),
-            typeof(HotkeyControl),
+            typeof(HotkeyView),
             new UIPropertyMetadata("Shortcut key"));
 
         /// <summary>
@@ -24,13 +24,13 @@ namespace Tagger.Wpf.Views
         public static readonly DependencyProperty HandlerProperty = DependencyProperty.Register(
             "Handler",
             typeof(Action),
-            typeof(HotkeyControl),
+            typeof(HotkeyView),
             new UIPropertyMetadata(null));
 
         /// <summary>
         /// Initializes a new instance of the HotkeyControl class
         /// </summary>
-        public HotkeyControl()
+        public HotkeyView()
         {
             InitializeComponent();
         }

@@ -10,11 +10,11 @@
         StateChanged="Window_StateChanged"
         WindowStartupLocation="CenterScreen">
     <StackPanel>
-        <v:TrayIconControl x:Name="TrayIconControl" />
-        <v:HotkeyControl x:Name="TagHotkeyControl"
+        <v:TrayIconView x:Name="TrayIconControl" />
+        <v:HotkeyView x:Name="TagHotkeyControl"
                          Handler="{e:StaticMethod Tagger.RegistrationManager.TagHotkeyHandler}"
                          Purpose="Tag hotkey" />
-        <v:HotkeyControl x:Name="SettingsHotkeyControl"
+        <v:HotkeyView x:Name="SettingsHotkeyControl"
                          Handler="{e:StaticMethod Tagger.RegistrationManager.SettingsHotkeyHandler}"
                          Purpose="Settings hotkey" />
         <Grid>

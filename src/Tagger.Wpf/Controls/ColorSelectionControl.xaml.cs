@@ -1,0 +1,25 @@
+﻿using System.Linq;
+using System.Windows.Controls;
+using System.Windows.Media;
+
+namespace Tagger.Controls
+{
+    /// <summary>
+    /// Interaction logic for ColorSelectionControl.xaml
+    /// </summary>
+    public partial class ColorSelectionControl : UserControl
+    {
+        /// <summary>
+        /// Color names resource
+        /// </summary>
+        /// <remarks>
+        /// Not moved to XAML since in C# it's way more readable to call Select from LINQ
+        /// </remarks>
+        public static string[] ColorNames = typeof(Colors).GetProperties().Select(pi => pi.Name).ToArray();
+
+        public ColorSelectionControl()
+        {
+            InitializeComponent();
+        }
+    }
+}

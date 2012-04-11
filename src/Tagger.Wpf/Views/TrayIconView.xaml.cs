@@ -5,9 +5,9 @@ namespace Tagger.Wpf.Views
     /// <summary>
     /// Interaction logic for TrayIconControl.xaml
     /// </summary>
-    public partial class TrayIconControl : UserControl
+    public partial class TrayIconView : UserControl
     {
-        public TrayIconControl()
+        public TrayIconView()
         {
             InitializeComponent();
         }

@@ -40,7 +40,7 @@ namespace Tagger.ViewModels
         /// Initializes new instance of HotkeyViewModel class
         /// </summary>
         /// <param name="control">Control to be bound to</param>
-        public HotkeyViewModel(HotkeyControl control)
+        public HotkeyViewModel(HotkeyView control)
         {
             Check.Require(control != null, "Hotkey control should not be null");
 

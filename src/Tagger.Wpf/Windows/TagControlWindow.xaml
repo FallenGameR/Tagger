@@ -38,6 +38,7 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
+            <!--  Tag text  -->
             <Label Grid.Row="0"
                    Grid.Column="0"
                    Margin="3"
@@ -53,6 +54,7 @@
                                     UpdateSourceTrigger=PropertyChanged,
                                     NotifyOnTargetUpdated=True}" />
 
+            <!--  Tag color  -->
             <Label Grid.Row="1"
                    Grid.Column="0"
                    Margin="3"
@@ -91,6 +93,7 @@
                                                    Mode=TwoWay,
                                                    UpdateSourceTrigger=PropertyChanged}" />
 
+            <!--  Additional settings  -->
             <Grid Grid.Row="2"
                   Grid.ColumnSpan="3"
                   VerticalAlignment="Top"
