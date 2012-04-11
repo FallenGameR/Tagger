@@ -59,39 +59,10 @@
                    Grid.Column="0"
                    Margin="3"
                    Content="Color" />
-            <ComboBox Grid.Row="1"
-                      Grid.Column="1"
-                      Margin="3"
-                      IsEditable="True"
-                      ItemsSource="{x:Static local:TagControlWindow.ColorNames}"
-                      Text="{Binding Path=Color,
-                                     Mode=TwoWay,
-                                     UpdateSourceTrigger=PropertyChanged,
-                                     Converter={StaticResource converter}}">
-                <ComboBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <VirtualizingStackPanel />
-                    </ItemsPanelTemplate>
-                </ComboBox.ItemsPanel>
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <Border Width="40"
-                                    Margin="0,1"
-                                    Background="{Binding}" />
-                            <TextBlock Margin="8,1" Text="{Binding}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-            <t:ColorPicker Grid.Row="1"
-                           Grid.Column="2"
-                           Margin="3"
-                           ClipToBounds="False"
-                           FlowDirection="LeftToRight"
-                           SelectedColor="{Binding Path=Color,
-                                                   Mode=TwoWay,
-                                                   UpdateSourceTrigger=PropertyChanged}" />
+            <controls:ColorSelectionControl Grid.Row="1"
+                                            Grid.Column="1"
+                                            Grid.ColumnSpan="2" />
+
 
             <!--  Additional settings  -->
             <Grid Grid.Row="2"
@@ -115,7 +86,7 @@
                 <Label Grid.Row="0"
                        Grid.Column="0"
                        Margin="3"
-                       Content="Font color" />
+                       Content="Font color" />                
                 <ComboBox Grid.Row="0"
                           Grid.Column="1"
                           Margin="3"
@@ -291,6 +262,7 @@
                                                  Width="100"
                                                  Height="25"
                                                  Margin="3"
+                                                 IsToggled="True"
                                                  ToggledText="Hide settings"
                                                  UntoggledText="More settings" />
                 <Button Width="100"
