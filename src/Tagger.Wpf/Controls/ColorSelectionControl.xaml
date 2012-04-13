@@ -51,7 +51,8 @@
         </ComboBox>
 
         <!--  Color that can be selected by mouse selection  -->
-        <t:ColorPicker Grid.Column="1"
+        <t:ColorPicker x:Name="colorPicker"
+                       Grid.Column="1"
                        Margin="3,0"
                        ClipToBounds="False"
                        FlowDirection="LeftToRight"

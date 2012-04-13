@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Reflection;
 
 namespace Tagger.Controls
 {
@@ -30,6 +31,8 @@ namespace Tagger.Controls
         public ColorSelectionControl()
         {
             InitializeComponent();
+
+            //this.colorPicker.Template find ToggleButton _colorMode and set IsChecked = true
         }
 
         /// <summary>
