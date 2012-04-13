@@ -20,6 +20,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="80" />
+            <ColumnDefinition Width="80" />
         </Grid.ColumnDefinitions>
 
         <!--  Color that can be selected by typing  -->
@@ -50,13 +51,19 @@
         </ComboBox>
 
         <!--  Color that can be selected by mouse selection  -->
-        <t:ColorPicker Grid.Row="1"
-                       Grid.Column="2"
+        <t:ColorPicker Grid.Column="1"
+                       Margin="3"
                        ClipToBounds="False"
                        FlowDirection="LeftToRight"
                        SelectedColor="{Binding ElementName=colorSelectionControl,
                                                Path=Color,
                                                Mode=TwoWay,
                                                UpdateSourceTrigger=PropertyChanged}" />
+
+        <!--  Random color button  -->
+        <Button Grid.Column="2"
+                Margin="3"
+                Click="Button_Click"
+                Content="Random" />
     </Grid>
 </UserControl>

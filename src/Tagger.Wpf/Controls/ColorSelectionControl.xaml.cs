@@ -40,5 +40,10 @@ namespace Tagger.Controls
             get { return (Color)this.GetValue(ColorProperty); }
             set { this.SetValue(ColorProperty, value); }
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Color = ColorRandom.Next();
+        }
     }
 }

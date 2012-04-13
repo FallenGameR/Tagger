@@ -128,14 +128,7 @@ namespace Tagger
             // Randomize color if global color randomization setting is set
             if (Settings.Default.GlobalSettings_UseColorRandomization)
             {
-                var colors =
-                    from property in typeof(Colors).GetProperties()
-                    where property.Name != "Transparent"
-                    select (Color)property.GetValue(null, null);
-
-                var random = new Random();
-                var toSkip = random.Next(0, colors.Count());
-                this.TagViewModel.Color = colors.Skip(toSkip).First();
+                this.TagViewModel.Color = ColorRandom.Next();
             }
 
             this.HostWindow = hostWindow;
