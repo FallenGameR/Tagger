@@ -23,8 +23,7 @@
         </Grid.ColumnDefinitions>
 
         <!--  Color that can be selected by typing  -->
-        <ComboBox Margin="3"
-                  IsEditable="True"
+        <ComboBox IsEditable="True"
                   ItemsSource="{x:Static local:ColorSelectionControl.ColorNames}"
                   Text="{Binding ElementName=colorSelectionControl,
                                  Path=Color,
@@ -53,7 +52,6 @@
         <!--  Color that can be selected by mouse selection  -->
         <t:ColorPicker Grid.Row="1"
                        Grid.Column="2"
-                       Margin="3"
                        ClipToBounds="False"
                        FlowDirection="LeftToRight"
                        SelectedColor="{Binding ElementName=colorSelectionControl,

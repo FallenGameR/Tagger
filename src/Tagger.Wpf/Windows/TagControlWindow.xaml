@@ -62,6 +62,7 @@
             <controls:ColorSelectionControl Grid.Row="1"
                                             Grid.Column="1"
                                             Grid.ColumnSpan="2"
+                                            Margin="3"
                                             Color="{Binding Path=Color,
                                                             Mode=TwoWay,
                                                             UpdateSourceTrigger=PropertyChanged}" />
@@ -92,6 +93,7 @@
                 <controls:ColorSelectionControl Grid.Row="0"
                                                 Grid.Column="1"
                                                 Grid.ColumnSpan="2"
+                                                Margin="3"
                                                 Color="{Binding Path=FontColor,
                                                                 Mode=TwoWay,
                                                                 UpdateSourceTrigger=PropertyChanged}" />
