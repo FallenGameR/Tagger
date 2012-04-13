@@ -6,6 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:t="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit.Extended"
              xmlns:utils="clr-namespace:Utils.Prism;assembly=Tagger.Lib"
+             x:Name="colorSelectionControl"
              d:DesignHeight="30"
              d:DesignWidth="320"
              mc:Ignorable="d">
@@ -25,7 +26,8 @@
         <ComboBox Margin="3"
                   IsEditable="True"
                   ItemsSource="{x:Static local:ColorSelectionControl.ColorNames}"
-                  Text="{Binding Path=Color,
+                  Text="{Binding ElementName=colorSelectionControl,
+                                 Path=Color,
                                  Mode=TwoWay,
                                  UpdateSourceTrigger=PropertyChanged,
                                  Converter={StaticResource converter}}">
@@ -54,7 +56,8 @@
                        Margin="3"
                        ClipToBounds="False"
                        FlowDirection="LeftToRight"
-                       SelectedColor="{Binding Path=Color,
+                       SelectedColor="{Binding ElementName=colorSelectionControl,
+                                               Path=Color,
                                                Mode=TwoWay,
                                                UpdateSourceTrigger=PropertyChanged}" />
     </Grid>

@@ -61,7 +61,10 @@
                    Content="Color" />
             <controls:ColorSelectionControl Grid.Row="1"
                                             Grid.Column="1"
-                                            Grid.ColumnSpan="2" />
+                                            Grid.ColumnSpan="2"
+                                            Color="{Binding Path=Color,
+                                                            Mode=TwoWay,
+                                                            UpdateSourceTrigger=PropertyChanged}" />
 
 
             <!--  Additional settings  -->
@@ -86,7 +89,7 @@
                 <Label Grid.Row="0"
                        Grid.Column="0"
                        Margin="3"
-                       Content="Font color" />                
+                       Content="Font color" />
                 <ComboBox Grid.Row="0"
                           Grid.Column="1"
                           Margin="3"

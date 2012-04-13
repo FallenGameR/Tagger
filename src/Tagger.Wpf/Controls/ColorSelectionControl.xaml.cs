@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows;
 
 namespace Tagger.Controls
 {
@@ -9,6 +10,14 @@ namespace Tagger.Controls
     /// </summary>
     public partial class ColorSelectionControl : UserControl
     {
+        /// <summary>
+        /// Color that is bound to the control
+        /// </summary>
+        public static readonly DependencyProperty ColorProperty = DependencyProperty.Register(
+            "Color",
+            typeof(Color),
+            typeof(ColorSelectionControl));
+
         /// <summary>
         /// Color names resource
         /// </summary>
@@ -20,6 +29,15 @@ namespace Tagger.Controls
         public ColorSelectionControl()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// Color that is bound to the control
+        /// </summary>
+        public Color Color
+        {
+            get { return (Color)this.GetValue(ColorProperty); }
+            set { this.SetValue(ColorProperty, value); }
         }
     }
 }
