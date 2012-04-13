@@ -1,7 +1,7 @@
 ﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows;
 
 namespace Tagger.Controls
 {
@@ -41,6 +41,9 @@ namespace Tagger.Controls
             set { this.SetValue(ColorProperty, value); }
         }
 
+        /// <summary>
+        /// Pick a random color
+        /// </summary>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.Color = ColorRandom.Next();

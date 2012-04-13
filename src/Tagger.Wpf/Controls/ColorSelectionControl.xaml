@@ -7,7 +7,7 @@
              xmlns:t="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit.Extended"
              xmlns:utils="clr-namespace:Utils.Prism;assembly=Tagger.Lib"
              x:Name="colorSelectionControl"
-             d:DesignHeight="30"
+             d:DesignHeight="24"
              d:DesignWidth="320"
              mc:Ignorable="d">
 
@@ -19,8 +19,8 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="80" />
-            <ColumnDefinition Width="80" />
+            <ColumnDefinition Width="70" />
+            <ColumnDefinition Width="60" />
         </Grid.ColumnDefinitions>
 
         <!--  Color that can be selected by typing  -->
@@ -52,7 +52,7 @@
 
         <!--  Color that can be selected by mouse selection  -->
         <t:ColorPicker Grid.Column="1"
-                       Margin="3"
+                       Margin="3,0"
                        ClipToBounds="False"
                        FlowDirection="LeftToRight"
                        SelectedColor="{Binding ElementName=colorSelectionControl,
@@ -62,7 +62,6 @@
 
         <!--  Random color button  -->
         <Button Grid.Column="2"
-                Margin="3"
                 Click="Button_Click"
                 Content="Random" />
     </Grid>
