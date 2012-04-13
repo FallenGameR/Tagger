@@ -16,7 +16,8 @@ namespace Tagger.Controls
         public static readonly DependencyProperty ColorProperty = DependencyProperty.Register(
             "Color",
             typeof(Color),
-            typeof(ColorSelectionControl));
+            typeof(ColorSelectionControl),
+            new PropertyMetadata(Colors.Black));
 
         /// <summary>
         /// Color names resource
