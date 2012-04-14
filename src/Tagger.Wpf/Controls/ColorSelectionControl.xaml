@@ -7,7 +7,7 @@
              xmlns:t="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit.Extended"
              xmlns:utils="clr-namespace:Utils.Prism;assembly=Tagger.Lib"
              x:Name="colorSelectionControl"
-             d:DesignHeight="24"
+             d:DesignHeight="25"
              d:DesignWidth="320"
              mc:Ignorable="d">
 
@@ -19,8 +19,8 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="70" />
             <ColumnDefinition Width="60" />
+            <ColumnDefinition Width="20" />
         </Grid.ColumnDefinitions>
 
         <!--  Color that can be selected by typing  -->
@@ -50,10 +50,16 @@
             </ComboBox.ItemTemplate>
         </ComboBox>
 
+        <!--  Random color button  -->
+        <Button Grid.Column="1"
+                Margin="3,3,-2,3"
+                Click="Button_Click"
+                Content="Random" />
+
         <!--  Color that can be selected by mouse selection  -->
         <t:ColorPicker x:Name="colorPicker"
-                       Grid.Column="1"
-                       Margin="3,0"
+                       Grid.Column="2"
+                       Margin="0,3,3,3"
                        ClipToBounds="False"
                        FlowDirection="LeftToRight"
                        SelectedColor="{Binding ElementName=colorSelectionControl,
@@ -61,9 +67,5 @@
                                                Mode=TwoWay,
                                                UpdateSourceTrigger=PropertyChanged}" />
 
-        <!--  Random color button  -->
-        <Button Grid.Column="2"
-                Click="Button_Click"
-                Content="Random" />
     </Grid>
 </UserControl>
