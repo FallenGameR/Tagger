@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using System.Reflection;
+using Utils.Extensions;
 
 namespace Tagger.Controls
 {
@@ -31,8 +33,30 @@ namespace Tagger.Controls
         public ColorSelectionControl()
         {
             InitializeComponent();
+            this.Loaded += this.ColorSelectionControl_Loaded;
+        }
 
-            //this.colorPicker.Template find ToggleButton _colorMode and set IsChecked = true
+        /// <summary>
+        /// Change color picker to advanced mode on control load
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <remarks>
+        /// Control is needed to be loaded to use traverse its visual tree.
+        /// Control name is taken from ExtendedWPFToolkit sources of ColorPicker control.
+        /// </remarks>
+        void ColorSelectionControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            Func<DependencyObject,string,bool> name = (d, controlname) =>
+                ((string)d.GetValue(Control.NameProperty)) == controlname;
+
+            var control = this.colorPicker.GetVisualTreeChildren().FirstOrDefault(d => name(d, "PART_ColorPickerPalettePopup"));
+            if (control == null) { return; }
+
+            var toggle = control.GetLogicalTreeChildren().OfType<DependencyObject>().FirstOrDefault(d => name(d, "_colorMode")) as ToggleButton;
+            if (toggle == null) { return; }
+
+            toggle.IsChecked = true;
         }
 
         /// <summary>
