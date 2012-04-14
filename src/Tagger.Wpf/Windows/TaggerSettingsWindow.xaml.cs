@@ -3,6 +3,8 @@ using System.Windows;
 using System.Windows.Input;
 using Tagger.Properties;
 using Tagger.ViewModels;
+using System.Windows.Navigation;
+using System.Diagnostics;
 
 namespace Tagger.Wpf
 {
@@ -66,6 +68,12 @@ namespace Tagger.Wpf
                 this.Hide();
                 this.ShowInTaskbar = false;
             }
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(e.Uri.AbsoluteUri);
+            e.Handled = true;
         }
     }
 }
