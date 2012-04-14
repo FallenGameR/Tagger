@@ -1,6 +1,6 @@
 Sources link in global settings window.
-0.9
 Drag anf drop on left click.
+0.9
 One executable.
 0.95
 StyleCop

@@ -9,32 +9,42 @@
         SizeToContent="WidthAndHeight"
         StateChanged="Window_StateChanged"
         WindowStartupLocation="CenterScreen">
-    <StackPanel>
-        <v:TrayIconView x:Name="TrayIconControl" />
-        <v:HotkeyView x:Name="TagHotkeyControl"
-                         Handler="{e:StaticMethod Tagger.RegistrationManager.TagHotkeyHandler}"
-                         Purpose="Tag hotkey" />
-        <v:HotkeyView x:Name="SettingsHotkeyControl"
-                         Handler="{e:StaticMethod Tagger.RegistrationManager.SettingsHotkeyHandler}"
-                         Purpose="Settings hotkey" />
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="120" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="100" />
-            </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
 
-            <Label Grid.Row="0"
-                   Grid.Column="0"
-                   Margin="3"
-                   Content="Randomize colors" />
-            <CheckBox Grid.Row="0"
-                      Grid.Column="1"
-                      Margin="3"
-                      VerticalAlignment="Center"
-                      Content="use random color for each new tag"
-                      IsChecked="{Binding Path=UseColorRandomization,
-                                          Mode=TwoWay}" />
-        </Grid>
-    </StackPanel>
+        <v:HotkeyView x:Name="TagHotkeyControl"
+                      Grid.Row="0"
+                      Grid.ColumnSpan="2"
+                      Handler="{e:StaticMethod Tagger.RegistrationManager.TagHotkeyHandler}"
+                      Purpose="Tag hotkey" />
+
+        <v:HotkeyView x:Name="SettingsHotkeyControl"
+                      Grid.Row="1"
+                      Grid.ColumnSpan="2"
+                      Handler="{e:StaticMethod Tagger.RegistrationManager.SettingsHotkeyHandler}"
+                      Purpose="Settings hotkey" />
+
+        <Label Grid.Row="2"
+               Grid.Column="0"
+               Margin="3"
+               Content="Randomize colors" />
+        <CheckBox Grid.Row="2"
+                  Grid.Column="1"
+                  Margin="3"
+                  VerticalAlignment="Center"
+                  Content="use random color for each new tag"
+                  IsChecked="{Binding Path=UseColorRandomization,
+                                      Mode=TwoWay}" />
+
+        <v:TrayIconView x:Name="TrayIconControl" />
+    </Grid>
 </Window>
