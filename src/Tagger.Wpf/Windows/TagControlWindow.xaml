@@ -111,33 +111,23 @@
                     </Grid.RowDefinitions>
 
                     <!--  Controls  -->
-                    <GroupBox Grid.Row="0"
-                              Grid.RowSpan="4"
-                              Grid.Column="2"
-                              Header="Controls">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-
-                            <Button Grid.Row="0"
-                                    Margin="8"
-                                    Command="{Binding KillTagCommand}"
-                                    Content="Kill this tag" />
-
-                            <Button Grid.Row="1"
-                                    Margin="8"
-                                    Command="{Binding SaveAsDefaultCommand}"
-                                    Content="Save settings as default" />
-
-                            <Button Grid.Row="2"
-                                    Margin="8"
-                                    Command="{Binding LoadFromDefaultCommand}"
-                                    Content="Load from default settings" />
-                        </Grid>
-                    </GroupBox>
+                    <StackPanel Grid.Row="1"
+                                Grid.RowSpan="3"
+                                Grid.Column="2"
+                                Width="180"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Orientation="Vertical">
+                        <Button Margin="5"
+                                Command="{Binding KillTagCommand}"
+                                Content="Kill this tag" />
+                        <Button Margin="5"
+                                Command="{Binding SaveAsDefaultCommand}"
+                                Content="Save settings as default" />
+                        <Button Margin="5"
+                                Command="{Binding LoadFromDefaultCommand}"
+                                Content="Load from default settings" />
+                    </StackPanel>
 
                     <!--
                         Font chooser.
@@ -246,7 +236,6 @@
                                                  Width="100"
                                                  Height="25"
                                                  Margin="3"
-                                                 IsToggled="True"
                                                  ToggledText="Hide settings"
                                                  UntoggledText="More settings" />
                 <Button Width="100"

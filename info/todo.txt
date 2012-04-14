@@ -1,8 +1,6 @@
-Color control with randomization.
 Window OS validation.
 Drag anf drop on left click.
 0.9
-Grouping of control buttons.
 Sources link in global settings window.
 One executable.
 0.95
