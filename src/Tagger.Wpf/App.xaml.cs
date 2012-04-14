@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
 using System.Windows;
+using System;
 
 namespace Tagger.Wpf
 {
@@ -39,7 +40,33 @@ namespace Tagger.Wpf
                 args.Handled = false;
             };
 
-            // TODO: Check windows OS edition
+            // Check windows OS edition
+            var isWindows7orWin2008R2orHigher = 
+                Environment.OSVersion.Version.Major >= 6 && 
+                Environment.OSVersion.Version.Minor >= 1;
+            if ( !isWindows7orWin2008R2orHigher )
+            {
+                MessageBox.Show(@"
+This program was tested only on Windows 7 and Windows 
+2008 Server R2. To track console windows it uses conhost.exe
+process that was not used in previous editions of Windows. 
+To find mapping between conhost.exe and console application 
+it uses Wait Chain Traversal API that was introduced only in
+Windows Vista.
+
+Meaning:
+- If you are running Windows Vista, window tracking most likelly
+wouldn't work for console windows.
+- If you are using some presious version of Windows, you'll get
+exception on the first attempt to create a tag.
+
+If you want to add support for some old OS, fork Tagger  
+https://github.com/FallenGameR/Tagger
+",
+                    "Windows Version Compatibility",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            }
 
             // Create and show start window
             App.MainSettingsWindow = new TaggerSettingsWindow();

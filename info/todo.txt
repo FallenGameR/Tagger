@@ -1,7 +1,6 @@
-Window OS validation.
-Drag anf drop on left click.
-0.9
 Sources link in global settings window.
+0.9
+Drag anf drop on left click.
 One executable.
 0.95
 StyleCop
