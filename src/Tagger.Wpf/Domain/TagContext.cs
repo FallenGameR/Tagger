@@ -61,32 +61,6 @@ namespace Tagger
             this.TagOverlayWindow.SizeChanged += (s, e) => this.RedrawTagPosition(e.NewSize.Width);
 
             this.TagControlWindow.Closing += this.SettingsClosingHandler;
-            this.TagControlWindow.ExistingTagsComboBox.DropDownOpened += delegate
-            {
-                this.TagControlWindow.ExistingTagsComboBox.ItemsSource = RegistrationManager.GetExistingTags().ToList();
-            };
-            this.TagControlWindow.ExistingTagsComboBox.DropDownClosed += delegate
-            {
-                this.TagControlWindow.ExistingTagsComboBox.SelectedValue = null;
-                this.TagControlWindow.ExistingTagsComboBox.ItemsSource = null;
-            };
-            this.TagControlWindow.ExistingTagsComboBox.PreviewKeyDown += (sender, args) =>
-            {
-                var isSpace = args.Key == Key.Space;
-                var isDown = (args.Key == Key.Down) || (args.Key == Key.PageDown);
-                var isOpened = this.TagControlWindow.ExistingTagsComboBox.IsDropDownOpen;
-
-                if( isSpace || (!isOpened && isDown) )
-                {
-                    this.TagControlWindow.ExistingTagsComboBox.IsDropDownOpen = !this.TagControlWindow.ExistingTagsComboBox.IsDropDownOpen;
-                }
-            };
-            this.TagControlWindow.ExistingTagsComboBox.SelectionChanged += delegate
-            {
-                var tagLabel = (TagLabel)this.TagControlWindow.ExistingTagsComboBox.SelectedValue;
-                this.TagViewModel.Text = tagLabel.Text;
-                this.TagViewModel.Color = tagLabel.Color;
-            };
         }
 
         /// <summary>

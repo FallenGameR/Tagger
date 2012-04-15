@@ -27,18 +27,15 @@ namespace Tagger.Wpf.Windows
         public TagControlWindow()
         {
             InitializeComponent();
-            this.IsVisibleChanged += new DependencyPropertyChangedEventHandler(SettingsWindow_IsVisibleChanged);
-        }
 
-        /// <summary>
-        /// Set focus and select all tag text on settings dialog shown
-        /// </summary>
-        private void SettingsWindow_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if ((bool)e.NewValue)
+            // Set focus and select all tag text on settings dialog shown
+            this.IsVisibleChanged += new DependencyPropertyChangedEventHandler( (sender, e) =>
             {
-                this.SelectTagText();
-            }
+                if ((bool)e.NewValue)
+                {
+                    this.SelectTagText();
+                }
+            });
         }
 
         /// <summary>

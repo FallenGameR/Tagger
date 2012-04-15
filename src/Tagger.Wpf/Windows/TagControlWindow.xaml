@@ -209,27 +209,7 @@
               Grid.Column="0"
               Margin="0,13,0,0">
 
-            <Grid Width="80" HorizontalAlignment="Left">
-                <ComboBox x:Name="ExistingTagsComboBox" Margin="3">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Border Width="40" Margin="0,1">
-                                    <Border.Background>
-                                        <SolidColorBrush Color="{Binding Color}" />
-                                    </Border.Background>
-                                </Border>
-                                <TextBlock Margin="8,1" Text="{Binding Text}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <TextBlock Margin="0,0,10,0"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           IsHitTestVisible="False"
-                           Text="Existing" />
-            </Grid>
+            <controls:ExistingTagsComboBox Width="80" HorizontalAlignment="Left" />
 
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                 <controls:ToggleVisibilityButton x:Name="toggleVisibilityButton"

@@ -81,6 +81,9 @@
     <Compile Include="Controls\ColorSelectionControl.xaml.cs">
       <DependentUpon>ColorSelectionControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ExistingTagsComboBox.xaml.cs">
+      <DependentUpon>ExistingTagsComboBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ToggleVisibilityButton.xaml.cs">
       <DependentUpon>ToggleVisibilityButton.xaml</DependentUpon>
     </Compile>
@@ -98,6 +101,10 @@
       <DependentUpon>TrayIconView.xaml</DependentUpon>
     </Compile>
     <Page Include="Controls\ColorSelectionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ExistingTagsComboBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
