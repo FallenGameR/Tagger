@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Utils.Extensions;
 
 namespace Tagger.Controls
@@ -23,6 +24,11 @@ namespace Tagger.Controls
             new PropertyMetadata(Colors.Black));
 
         /// <summary>
+        /// Flags that tracks if control was fully initialized
+        /// </summary>
+        private bool IsFullyInitialized;
+
+        /// <summary>
         /// Color names resource
         /// </summary>
         /// <remarks>
@@ -33,30 +39,46 @@ namespace Tagger.Controls
         public ColorSelectionControl()
         {
             InitializeComponent();
-            this.Loaded += this.ColorSelectionControl_Loaded;
+
+            this.IsFullyInitialized = false;
+            this.IsVisibleChanged += ColorSelectionControl_IsVisibleChanged;
         }
 
         /// <summary>
         /// Change color picker to advanced mode on control load
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         /// <remarks>
         /// Control is needed to be loaded to use traverse its visual tree.
         /// Control name is taken from ExtendedWPFToolkit sources of ColorPicker control.
         /// </remarks>
-        void ColorSelectionControl_Loaded(object sender, RoutedEventArgs e)
+        void ColorSelectionControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            Func<DependencyObject,string,bool> name = (d, controlname) =>
-                ((string)d.GetValue(Control.NameProperty)) == controlname;
+            if (this.IsFullyInitialized)
+            {
+                return;
+            }
 
-            var control = this.colorPicker.GetVisualTreeChildren().FirstOrDefault(d => name(d, "PART_ColorPickerPalettePopup"));
-            if (control == null) { return; }
+            if (this.Visibility == Visibility.Visible)
+            {
+                this.IsFullyInitialized = true;
+            }
 
-            var toggle = control.GetLogicalTreeChildren().OfType<DependencyObject>().FirstOrDefault(d => name(d, "_colorMode")) as ToggleButton;
-            if (toggle == null) { return; }
+            var toggleColorModeButtons = (Action)delegate
+            {
+                Func<DependencyObject, string, bool> name = (d, controlname) =>
+                    ((string)d.GetValue(Control.NameProperty)) == controlname;
 
-            toggle.IsChecked = true;
+                var toggleButtons =
+                    from visual in this.colorPicker.GetVisualTreeChildren()
+                    where name(visual, "PART_ColorPickerPalettePopup")
+                    from logical in visual.GetLogicalTreeChildren().OfType<DependencyObject>()
+                    where name(logical, "_colorMode")
+                    select logical as ToggleButton;
+
+                toggleButtons.Action(b => b.IsChecked = true);
+            };
+
+            this.Dispatcher.BeginInvoke(toggleColorModeButtons, DispatcherPriority.Loaded);
         }
 
         /// <summary>
