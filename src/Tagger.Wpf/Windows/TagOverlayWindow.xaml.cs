@@ -1,12 +1,11 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
-using System;
 
 namespace Tagger.Wpf
 {
     public sealed partial class TagOverlayWindow : Window, IDisposable
     {
-        // http://groups.google.com/group/wpf-disciples/browse_thread/thread/ece72e5eb7f6c217?pli=1
         private Point? m_lastLocation;
 
         public TagOverlayWindow()
@@ -26,6 +25,7 @@ namespace Tagger.Wpf
             this.LocationChanged -= Window_LocationChanged;
             this.PreviewMouseDown -= Window_PreviewMouseDown;
         }
+
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             m_lastLocation = this.PointToScreen(Mouse.GetPosition(this));
@@ -44,6 +44,12 @@ namespace Tagger.Wpf
             }
         }
 
+        /// <summary>
+        /// Drag tag via offset property modification
+        /// </summary>
+        /// <remarks>
+        /// Original code from http://groups.google.com/group/wpf-disciples/browse_thread/thread/ece72e5eb7f6c217?pli=1
+        /// </remarks>
         private void Window_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             if (Mouse.LeftButton != MouseButtonState.Pressed)

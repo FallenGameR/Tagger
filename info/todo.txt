@@ -1,4 +1,3 @@
-Drag and drop on left click.
 0.9
 One executable.
 0.95
