@@ -21,6 +21,7 @@
                                         Mode=OneWay}"
                    FontSize="{Binding Path=FontSize,
                                       Mode=OneWay}"
+                   IsHitTestVisible="False"
                    Text="{Binding Path=Text,
                                   Mode=OneWay}"
                    TextAlignment="Center">
