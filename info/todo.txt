@@ -1,10 +1,9 @@
-Sources link in global settings window.
-Drag anf drop on left click.
+Drag and drop on left click.
 0.9
 One executable.
 0.95
 StyleCop
 FxCop
+1.0
 Project readme on the main github page
 Binary for usage
-1.0

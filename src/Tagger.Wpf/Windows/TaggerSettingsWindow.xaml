@@ -18,7 +18,6 @@
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
-            <RowDefinition />
         </Grid.RowDefinitions>
 
         <v:HotkeyView x:Name="TagHotkeyControl"
@@ -44,12 +43,6 @@
                   Content="use random color for each new tag"
                   IsChecked="{Binding Path=UseColorRandomization,
                                       Mode=TwoWay}" />
-
-        <TextBlock Grid.Row="3"
-                   Grid.Column="1"
-                   HorizontalAlignment="Right">
-            <Hyperlink NavigateUri="https://github.com/FallenGameR/Tagger" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/FallenGameR/Tagger</Hyperlink>
-        </TextBlock>
 
         <v:TrayIconView x:Name="TrayIconControl" />
     </Grid>

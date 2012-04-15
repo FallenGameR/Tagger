@@ -1,4 +1,5 @@
-﻿using Microsoft.Practices.Prism.Commands;
+﻿using System.Diagnostics;
+using Microsoft.Practices.Prism.Commands;
 using Tagger.Wpf;
 using Utils.Prism;
 
@@ -21,6 +22,7 @@ namespace Tagger.ViewModels
                 App.MainSettingsWindow.ShowInTaskbar = true;
 
             });
+            this.BrowseSourcesCommand = new DelegateCommand<object>(delegate { Process.Start(@"https://github.com/FallenGameR/Tagger/"); });
             this.CloseProgramCommand = new DelegateCommand<object>(delegate { App.Current.Shutdown(); });
         }
 
@@ -28,6 +30,11 @@ namespace Tagger.ViewModels
         /// Show settings command 
         /// </summary>
         public DelegateCommand<object> ShowSettingsCommand { get; private set; }
+
+        /// <summary>
+        /// Browse project sources on github
+        /// </summary>
+        public DelegateCommand<object> BrowseSourcesCommand { get; private set; }
 
         /// <summary>
         /// Close program command
