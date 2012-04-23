@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Windows;
+using System.IO.Compression;
 
 namespace Tagger.Wpf
 {
@@ -21,6 +22,9 @@ namespace Tagger.Wpf
         protected override void OnStartup(StartupEventArgs ea)
         {
             base.OnStartup(ea);
+
+            // Override assembly resolution to use deflated referenced dlls
+            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
             // Register unhandled exception handler with logging
             App.Current.DispatcherUnhandledException += (sender, args) =>
@@ -71,6 +75,50 @@ https://github.com/FallenGameR/Tagger
             // Create and show start window
             App.MainSettingsWindow = new TaggerSettingsWindow();
             App.MainSettingsWindow.Show();
+        }
+
+        private static byte[] GetDeflatedAssembly(string assemblyName)
+        {
+            switch (assemblyName)
+            {
+                case "Hardcodet.Wpf.TaskbarNotification, Version=1.0.4.0, Culture=neutral, PublicKeyToken=null":
+                    return Tagger.Properties.Resources.Hardcodet_Wpf_TaskbarNotification_dll;
+
+                case "ManagedWinapi, Version=0.3.0.0, Culture=neutral, PublicKeyToken=null":
+                    return Tagger.Properties.Resources.ManagedWinapi_dll;
+
+                case "Microsoft.Practices.Prism, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35":
+                    return Tagger.Properties.Resources.Microsoft_Practices_Prism_dll;
+
+                case "Tagger.Lib, Version=0.9.0.0, Culture=neutral, PublicKeyToken=null":
+                    return Tagger.Properties.Resources.Tagger_Lib_dll;
+
+                case "WPFToolkit.Extended, Version=1.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4":
+                    return Tagger.Properties.Resources.WPFToolkit_Extended_dll;
+
+                default:
+                    return null;
+            }
+        }
+
+        /// <summary>
+        /// Custom assembly resolver to use deflated referenced assemblies from resources
+        /// </summary>
+        private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            var knownAssembly = GetDeflatedAssembly(args.Name);
+            if (knownAssembly == null) { return null; }
+
+            // Loading of deflated dll from resources
+            using (var resource = new MemoryStream(knownAssembly))
+            using (var deflated = new DeflateStream(resource, CompressionMode.Decompress))
+            using (var reader = new BinaryReader(deflated))
+            {
+                // NOTE: Buffer length should be OK for all stored DLLs
+                var one_megabyte = 1024 * 1024;
+                var buffer = reader.ReadBytes(one_megabyte);
+                return Assembly.Load(buffer);
+            }
         }
     }
 }
