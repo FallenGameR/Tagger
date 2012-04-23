@@ -114,7 +114,7 @@ https://github.com/FallenGameR/Tagger
             using (var deflated = new DeflateStream(resource, CompressionMode.Decompress))
             using (var reader = new BinaryReader(deflated))
             {
-                // NOTE: Buffer length should be OK for all stored DLLs
+                // NOTE: 1Mb buffer should be OK for all referenced DLLs
                 var one_megabyte = 1024 * 1024;
                 var buffer = reader.ReadBytes(one_megabyte);
                 return Assembly.Load(buffer);
