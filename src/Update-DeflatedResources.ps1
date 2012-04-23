@@ -1,7 +1,12 @@
 <#
-Called on Tagger.Lib build.
-Updates deflated resources for Tagger.Wpf
-If referenced asseblies list is changed, one needs to update resources from Studio first.
+.DESCRIPTION
+    This script is called on Tagger.Lib build.
+    It updates deflated referenced assemblies in resources for Tagger.Wpf.
+
+    The script is very simple. It wouldn't detect new referenced assembly or
+    tagger lib version update. You have to manually update library list, copy
+    local referenced assembly property and full versioned name of tagger lib
+    in assembly resolve mapping.
 #>
 
 param
