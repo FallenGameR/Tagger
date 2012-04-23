@@ -1,10 +1,22 @@
+<#
+Called on Tagger.Lib build.
+Updates deflated resources for Tagger.Wpf
+If referenced asseblies list is changed, one needs to update resources from Studio first.
+#>
+
+param
+(
+    [Parameter(Mandatory=$true)]
+    [string] $TaggerLibPath
+)
+
 $scriptLocation = Split-Path $MyInvocation.MyCommand.Path
 $referenced =
-    "$scriptLocation\WpfNotifyIcon\Hardcodet.Wpf.TaskbarNotification.dll",
-    "$scriptLocation\ManagedWinAPI\ManagedWinapi.dll",
-    "$scriptLocation\Prism\Microsoft.Practices.Prism.dll",
-    "$scriptLocation\..\src\Tagger.Lib\bin\Debug\Tagger.Lib.dll",
-    "$scriptLocation\ExtendedWPFToolkit\WPFToolkit.Extended.dll"
+    "$scriptLocation\..\libs\WpfNotifyIcon\Hardcodet.Wpf.TaskbarNotification.dll",
+    "$scriptLocation\..\libs\ManagedWinAPI\ManagedWinapi.dll",
+    "$scriptLocation\..\libs\Prism\Microsoft.Practices.Prism.dll",
+    "$scriptLocation\..\libs\ExtendedWPFToolkit\WPFToolkit.Extended.dll",
+    $taggerLibPath
 
 $createMode = [System.IO.FileMode]::Create
 $compressMode = [System.IO.Compression.CompressionMode]::Compress
@@ -13,7 +25,7 @@ foreach( $path in $referenced )
 {
     $dll = Get-Item $path
     $assembly = [System.IO.File]::ReadAllBytes( $dll.FullName )
-    $fileOutputName = "$scriptLocation\..\src\Tagger.Wpf\Resources\" + $dll.Name + ".deflate"
+    $fileOutputName = "$scriptLocation\Tagger.Wpf\Resources\" + $dll.Name + ".deflate"
 
     try
     {
