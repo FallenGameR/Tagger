@@ -59,5 +59,40 @@ namespace Tagger.Properties {
                 resourceCulture = value;
             }
         }
+        
+        internal static byte[] Hardcodet_Wpf_TaskbarNotification_dll {
+            get {
+                object obj = ResourceManager.GetObject("Hardcodet_Wpf_TaskbarNotification_dll", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        internal static byte[] ManagedWinapi_dll {
+            get {
+                object obj = ResourceManager.GetObject("ManagedWinapi_dll", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        internal static byte[] Microsoft_Practices_Prism_dll {
+            get {
+                object obj = ResourceManager.GetObject("Microsoft_Practices_Prism_dll", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        internal static byte[] Tagger_Lib_dll {
+            get {
+                object obj = ResourceManager.GetObject("Tagger_Lib_dll", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        internal static byte[] WPFToolkit_Extended_dll {
+            get {
+                object obj = ResourceManager.GetObject("WPFToolkit_Extended_dll", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

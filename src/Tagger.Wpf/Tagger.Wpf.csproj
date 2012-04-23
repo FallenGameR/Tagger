@@ -175,6 +175,11 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Resources\Hardcodet.Wpf.TaskbarNotification.dll.deflate" />
+    <None Include="Resources\ManagedWinapi.dll.deflate" />
+    <None Include="Resources\Microsoft.Practices.Prism.dll.deflate" />
+    <None Include="Resources\Tagger.Lib.dll.deflate" />
+    <None Include="Resources\WPFToolkit.Extended.dll.deflate" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Tagger.Lib\Tagger.Lib.csproj">
