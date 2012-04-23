@@ -1,10 +1,10 @@
 $scriptLocation = Split-Path $MyInvocation.MyCommand.Path
 $referenced =
-    "$scriptLocation\Deflated\original\Hardcodet.Wpf.TaskbarNotification.dll",
-    "$scriptLocation\Deflated\original\ManagedWinapi.dll",
-    "$scriptLocation\Deflated\original\Microsoft.Practices.Prism.dll",
-    "$scriptLocation\Deflated\original\Tagger.Lib.dll",
-    "$scriptLocation\Deflated\original\WPFToolkit.Extended.dll"
+    "$scriptLocation\WpfNotifyIcon\Hardcodet.Wpf.TaskbarNotification.dll",
+    "$scriptLocation\ManagedWinAPI\ManagedWinapi.dll",
+    "$scriptLocation\Prism\Microsoft.Practices.Prism.dll",
+    "$scriptLocation\..\src\Tagger.Lib\bin\Debug\Tagger.Lib.dll",
+    "$scriptLocation\ExtendedWPFToolkit\WPFToolkit.Extended.dll"
 
 $createMode = [System.IO.FileMode]::Create
 $compressMode = [System.IO.Compression.CompressionMode]::Compress

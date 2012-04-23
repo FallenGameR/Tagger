@@ -1,4 +1,5 @@
-One executable.
+Scripts that automatically pick up changes in lib.
+Background load of an empty context to preload all dlls.
 0.95
 StyleCop
 FxCop
