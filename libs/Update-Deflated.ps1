@@ -13,7 +13,7 @@ foreach( $path in $referenced )
 {
     $dll = Get-Item $path
     $assembly = [System.IO.File]::ReadAllBytes( $dll.FullName )
-    $fileOutputName = "$scriptLocation\Deflated\compressed\" + $dll.Name + ".deflate"
+    $fileOutputName = "$scriptLocation\..\src\Tagger.Wpf\Resources\" + $dll.Name + ".deflate"
 
     try
     {
