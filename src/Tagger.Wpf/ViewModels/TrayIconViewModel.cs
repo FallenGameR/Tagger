@@ -22,8 +22,14 @@ namespace Tagger.ViewModels
                 App.MainSettingsWindow.ShowInTaskbar = true;
 
             });
-            this.BrowseSourcesCommand = new DelegateCommand<object>(delegate { Process.Start(@"https://github.com/FallenGameR/Tagger/"); });
-            this.CloseProgramCommand = new DelegateCommand<object>(delegate { App.Current.Shutdown(); });
+            this.BrowseSourcesCommand = new DelegateCommand<object>(delegate
+            {
+                Process.Start(@"https://github.com/FallenGameR/Tagger/");
+            });
+            this.CloseProgramCommand = new DelegateCommand<object>(delegate
+            {
+                App.Current.Shutdown();
+            });
         }
 
         /// <summary>

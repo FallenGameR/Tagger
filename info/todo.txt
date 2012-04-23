@@ -1,4 +1,4 @@
-Background load of an empty context to preload all dlls.
+Exit application on shutdown.
 0.95
 StyleCop
 FxCop
