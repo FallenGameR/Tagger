@@ -1,5 +1,3 @@
-Exit application on shutdown.
-0.95
 StyleCop
 FxCop
 1.0
