@@ -1,11 +1,18 @@
-﻿using System;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
-using Tagger.WinAPI;
-using Utils.Diagnostics;
+﻿//-----------------------------------------------------------------------
+// <copyright file="WindowSizes.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Tagger
 {
+    using System;
+    using System.ComponentModel;
+    using System.Runtime.InteropServices;
+    using Tagger.WinAPI;
+
     /// <summary>
     /// Helper class to determine window sizes
     /// </summary>
@@ -18,10 +25,10 @@ namespace Tagger
         /// <returns>
         /// Rectangle used to render host window content
         /// </returns>
-        public static Tagger.WinAPI.NativeAPI.RECT GetClientArea(IntPtr windowHandle)
+        public static NativeAPI.RECT GetClientArea(IntPtr windowHandle)
         {
             // Get window rectange
-            Tagger.WinAPI.NativeAPI.RECT sizes;
+            NativeAPI.RECT sizes;
             bool success = NativeAPI.GetWindowRect(windowHandle, out sizes);
             if (!success)
             {
