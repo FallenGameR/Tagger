@@ -17,7 +17,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Tagger")]
-[assembly: AssemblyCopyright("Copyright © Alexander Kostikov (FallenGameR) 2012")]
+[assembly: AssemblyCopyright("Copyright © Alexander Kostikov (FallenGameR) 2011-2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
