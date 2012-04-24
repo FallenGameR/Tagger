@@ -115,6 +115,7 @@ https://github.com/FallenGameR/Tagger
             using (var reader = new BinaryReader(deflated))
             {
                 // NOTE: 1Mb buffer should be OK for all referenced DLLs
+                // TODO: Do not use hardcoded buffer - http://stackoverflow.com/questions/1528508/uncompress-data-file-with-deflatestream
                 var one_megabyte = 1024 * 1024;
                 var buffer = reader.ReadBytes(one_megabyte);
                 return Assembly.Load(buffer);
