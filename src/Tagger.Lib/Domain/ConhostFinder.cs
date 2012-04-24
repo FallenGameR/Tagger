@@ -1,15 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
-using Tagger.WinAPI;
-using Utils.Diagnostics;
-using Utils.Extensions;
+//-----------------------------------------------------------------------
+// <copyright file="ConhostFinder.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Tagger
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Runtime.InteropServices;
+    using Tagger.WinAPI;
+
     /// <summary>
     /// Finds conhost.exe that hosts a console application 
     /// </summary>
@@ -23,10 +29,10 @@ namespace Tagger
         /// <summary>
         /// Native safe handle for WCT session that is used to get conhost
         /// </summary>
-        private WctHandle wctSessionHandle;
+        private readonly WctHandle wctSessionHandle;
 
         /// <summary>
-        /// Initializes ConsoleFinder by opening valid WCT session
+        /// Initializes a new instance of the <see cref="ConhostFinder"/> class by opening a valid WCT session 
         /// </summary>
         public ConhostFinder()
         {
@@ -58,21 +64,13 @@ namespace Tagger
         {
             var query =
                 from thread in Process.GetProcessById(consoleAppProcessId).Threads.Cast<ProcessThread>()
-                from node in GetThreadWaitChain(thread.Id)
+                from node in this.GetThreadWaitChain(thread.Id)
                 where node.ObjectType == NativeAPI.WCT_OBJECT_TYPE.Thread
                 where Process.GetProcessById(node.ProcessId).ProcessName == "conhost"
                 select node.ProcessId;
 
             var found = query.SingleOrDefault();
-
-            if (found == default(int))
-            {
-                return consoleAppProcessId;
-            }
-            else
-            {
-                return found;
-            }
+            return found == default(int) ? consoleAppProcessId : found;
         }
 
         /// <summary>
@@ -83,7 +81,7 @@ namespace Tagger
         private IEnumerable<NativeAPI.WAITCHAIN_NODE_INFO> GetThreadWaitChain(int threadId)
         {
             var nodes = new NativeAPI.WAITCHAIN_NODE_INFO[NativeAPI.WCT_MAX_NODE_COUNT];
-            int length = NativeAPI.WCT_MAX_NODE_COUNT;
+            var length = NativeAPI.WCT_MAX_NODE_COUNT;
             int isCycle;
 
             var success = NativeAPI.GetThreadWaitChain(
