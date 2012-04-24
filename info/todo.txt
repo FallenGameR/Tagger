@@ -1,5 +1,6 @@
 StyleCop
 FxCop
+Remove hardcoded buffer length from dll deflating
 1.0
 Project readme on the main github page
 Binary for usage
