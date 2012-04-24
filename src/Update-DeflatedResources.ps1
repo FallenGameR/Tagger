@@ -7,6 +7,9 @@
     tagger lib version update. You have to manually update library list, copy
     local referenced assembly property and full versioned name of tagger lib
     in assembly resolve mapping.
+
+.LINKS
+    http://msdn.microsoft.com/en-us/library/7k989cfy.aspx
 #>
 
 param

@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Threading;
 using Microsoft.Practices.Prism.Commands;
 using Tagger.Wpf;
 using Utils.Prism;
@@ -28,7 +30,11 @@ namespace Tagger.ViewModels
             });
             this.CloseProgramCommand = new DelegateCommand<object>(delegate
             {
-                App.Current.Shutdown();
+                // http://stackoverflow.com/questions/1867380/application-current-shutdown-doesnt
+                new Thread(() =>
+                    App.MainSettingsWindow.Dispatcher.BeginInvoke((Action)(() =>
+                        App.Current.Shutdown()))
+                ).Start();
             });
         }
 
