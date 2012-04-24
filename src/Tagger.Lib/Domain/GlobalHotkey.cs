@@ -1,12 +1,20 @@
-﻿using System;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using System.Windows.Input;
-using Tagger.WinAPI;
+﻿//-----------------------------------------------------------------------
+// <copyright file="GlobalHotkey.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Tagger
 {
+    using System;
+    using System.ComponentModel;
+    using System.Runtime.InteropServices;
+    using System.Windows.Forms;
+    using System.Windows.Input;
+    using Tagger.WinAPI;
+
     /// <summary>
     /// Global hotkey registration
     /// </summary>
@@ -16,8 +24,10 @@ namespace Tagger
     public sealed class GlobalHotkey : NativeWindow, IDisposable
     {
         /// <summary>
-        /// Creates invisible receiver window
+        /// Initializes a new instance of the <see cref="GlobalHotkey"/> class. Creates invisible receiver window.
         /// </summary>
+        /// <param name="modifier">Key modifier to use for global hotkey</param>
+        /// <param name="key">Key valuse to use for global hotkey</param>
         public GlobalHotkey(ModifierKeys modifier, Key key)
         {
             this.CreateHandle(new CreateParams());
@@ -31,6 +41,11 @@ namespace Tagger
                 throw new Win32Exception(Marshal.GetLastWin32Error());
             }
         }
+
+        /// <summary>
+        /// Event that is used to subscribe to global hotkey pressed event
+        /// </summary>
+        public event EventHandler<HotkeyEventArgs> KeyPressed;
 
         /// <summary>
         /// Cleaning up created handle
@@ -51,18 +66,19 @@ namespace Tagger
             base.WndProc(ref message);
 
             // Filtering out irrelevent events
-            if (message.Msg != NativeAPI.WM_HOTKEY) { return; }
+            if (message.Msg != NativeAPI.WM_HOTKEY)
+            {
+                return;
+            }
 
             // Do not process anything if there are no subscribers
-            if (this.KeyPressed == null) { return; }
+            if (this.KeyPressed == null)
+            {
+                return;
+            }
 
             // Fire event with converted event arguments
             this.KeyPressed(this, new HotkeyEventArgs((int)message.LParam));
         }
-
-        /// <summary>
-        /// Event that is used to subscribe to global hotkey pressed event
-        /// </summary>
-        public event EventHandler<HotkeyEventArgs> KeyPressed;
     }
 }
