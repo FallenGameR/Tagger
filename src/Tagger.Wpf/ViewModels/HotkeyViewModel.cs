@@ -187,7 +187,7 @@ namespace Tagger.ViewModels
         /// </summary>
         private void UnregisterHotkey(object parameter)
         {
-            Check.Require(this.CanUnregisterHotkey(parameter));
+            Check.Require(this.CanUnregisterHotkey(parameter), "You are not able to unregister hotkey");
 
             this.GlobalHotkey.Dispose();
             this.GlobalHotkey = null;

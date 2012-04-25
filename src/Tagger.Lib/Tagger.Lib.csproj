@@ -63,7 +63,7 @@
     <Compile Include="WinApi\Windows.cs" />
     <Compile Include="WinApi\GlobalHotkeys.cs" />
     <Compile Include="Utils\Extensions\Collections.cs" />
-    <Compile Include="Utils\Diagnostics\Checks.cs" />
+    <Compile Include="Utils\Diagnostics\Check.cs" />
     <Compile Include="Utils\Diagnostics\DesignByContractException.cs" />
     <Compile Include="Utils\Diagnostics\ProgramException.cs" />
     <Compile Include="Domain\PortableExecutableReader.cs" />

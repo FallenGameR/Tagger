@@ -36,7 +36,7 @@ namespace Tagger
             }
 
             // For the window rectangle determine actual client area
-            // NOTE: Return code is not checked since WPF glass applications return something weird in it
+            // Return code is not checked since WPF glass applications return something weird in it
             NativeAPI.SendMessage(windowHandle, NativeAPI.WM_NCCALCSIZE, 0, ref sizes);
             return sizes;
         }
