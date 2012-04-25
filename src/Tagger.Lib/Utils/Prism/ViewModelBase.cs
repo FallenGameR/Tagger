@@ -1,16 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using Microsoft.Practices.Prism.Commands;
-using Utils.Diagnostics;
-using Utils.Extensions;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ViewModelBase.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Utils.Prism
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Reflection;
+    using System.Text;
+    using Microsoft.Practices.Prism.Commands;
+    using Utils.Diagnostics;
+    using Utils.Extensions;
+
     /// <summary>
     /// Base class for all ViewModels. Features:
     /// - safe proparty changes notifications 
@@ -45,15 +53,18 @@ namespace Utils.Prism
         /// Method prefix to use for validator methods.
         /// Convention used is: {ValidateMethodPrefix}{PropertyName}
         /// </summary>
-        private static readonly string ValidateMethodPrefix = "Validate_";
+        private const string ValidateMethodPrefix = "Validate_";
 
         #endregion
 
         #region Constructor
 
-        public ViewModelBase()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ViewModelBase"/> class.
+        /// </summary>
+        protected ViewModelBase()
         {
-            Errors = new Dictionary<string, IList<string>>();
+            this.Errors = new Dictionary<string, IList<string>>();
         }
 
         #endregion
@@ -67,12 +78,12 @@ namespace Utils.Prism
         /// <param name="info">Error details</param>
         protected void AddValidationError(string property, string info)
         {
-            if (!Errors.ContainsKey(property))
+            if (!this.Errors.ContainsKey(property))
             {
-                Errors[property] = new List<string>();
+                this.Errors[property] = new List<string>();
             }
-            Errors[property].Add(info);
-            OnErrorCollectionChanged();
+            this.Errors[property].Add(info);
+            this.OnErrorCollectionChanged();
         }
 
         /// <summary>
@@ -81,10 +92,10 @@ namespace Utils.Prism
         /// <param name="property">Property name</param>
         protected void RemoveAllValidationErrors(string property)
         {
-            if (Errors.ContainsKey(property))
+            if (this.Errors.ContainsKey(property))
             {
-                Errors.Remove(property);
-                OnErrorCollectionChanged();
+                this.Errors.Remove(property);
+                this.OnErrorCollectionChanged();
             }
         }
 
@@ -96,7 +107,7 @@ namespace Utils.Prism
         /// </remarks>
         protected virtual void OnErrorCollectionChanged()
         {
-            OnDelegateCommandsCanExecuteChanged();
+            this.OnDelegateCommandsCanExecuteChanged();
         }
 
         /// <summary>
@@ -105,8 +116,8 @@ namespace Utils.Prism
         /// <param name="propertyName">Name of the changed property</param>
         protected void OnPropertyChanged(string propertyName)
         {
-            CheckPropertyExist(propertyName);
-            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            this.CheckPropertyExist(propertyName);
+            this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
@@ -114,12 +125,12 @@ namespace Utils.Prism
         /// </summary>
         protected void OnDelegateCommandsCanExecuteChanged()
         {
-            var commands = 
+            var commands =
                 from info in GetType().GetProperties()
                 where info.PropertyType == typeof(DelegateCommand<object>)
-                select (DelegateCommand<object>) info.GetValue(this, null);
+                select (DelegateCommand<object>)info.GetValue(this, null);
 
-            commands.Action( c => c.RaiseCanExecuteChanged() );
+            commands.Action(c => c.RaiseCanExecuteChanged());
         }
 
         /// <summary>
@@ -134,11 +145,13 @@ namespace Utils.Prism
         {
             var property = TypeDescriptor.GetProperties(this)[propertyName];
 
-            Check.Require(property != null, string.Format(
-                "Current ViewModel doesn't have {0} property. " +
-                "Most likely you've renamed a property name and haven't updated corresponding binding. " +
-                "Please specify correct property name in the binding.",
-                propertyName));
+            Check.Require(
+                property != null,
+                string.Format(
+                    "Current ViewModel doesn't have {0} property. " + 
+                    "Most likely you've renamed a property name and haven't updated corresponding binding. " +
+                    "Please specify correct property name in the binding.",
+                    propertyName));
         }
 
         #endregion
@@ -148,10 +161,10 @@ namespace Utils.Prism
         /// <summary>
         /// True if disposed method was already called
         /// </summary>
-        private bool m_WasDisposed = false;
+        private bool wasDisposed = false;
 
         /// <summary>
-        /// Finilizer that would be called if Dispose method hasn't been called
+        /// Finalizes an instance of the <see cref="ViewModelBase"/> class. 
         /// </summary>
         /// <remarks>
         /// Do not redifine in descendants
@@ -180,17 +193,20 @@ namespace Utils.Prism
         private void Dispose(bool wasCalledFromDisposeMethod)
         {
             // Cleanup must happen only once
-            if (m_WasDisposed) return;
-            m_WasDisposed = true;
+            if (this.wasDisposed)
+            {
+                return;
+            }
+            this.wasDisposed = true;
 
             // We can dispose managed resources only if we were called from Dispose, not from the finilizer
             if (wasCalledFromDisposeMethod)
             {
-                OnDisposeManaged();
+                this.OnDisposeManaged();
             }
 
             // We can dispose unmanaged resources both from finilizer and Dispose
-            OnDisposeUnmanaged();
+            this.OnDisposeUnmanaged();
 
 #if DEBUG
             // Log dispose call in debug output

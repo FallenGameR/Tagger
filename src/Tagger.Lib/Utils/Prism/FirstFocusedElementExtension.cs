@@ -1,34 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Markup;
-using System.Windows.Media;
+﻿//-----------------------------------------------------------------------
+// <copyright file="FirstFocusedElementExtension.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Utils.Prism
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Reflection;
+    using System.Windows;
+    using System.Windows.Input;
+    using System.Windows.Markup;
+    using System.Windows.Media;
+
     /// <summary>
     /// This markup extension locates the first focusable child and returns it.
     /// It is intended to be used with FocusManager.FocusedElement:
-    /// <Window ... FocusManager.FocusedElement={ft:FirstFocusedElement} />
     /// </summary>
+    /// <example>
+    /// In XAML: Window FocusManager.FocusedElement={ft:FirstFocusedElement} 
+    /// </example>
+    /// <remarks>
+    /// Original was taken from some WPF site.
+    /// </remarks>
     public class FirstFocusedElementExtension : MarkupExtension
     {
         /// <summary>
-        /// Unhook the handler after it has set focus to the element the first time
-        /// </summary>
-        public bool OneTime { get; set; }
-
-        /// <summary>
-        /// Constructor
+        /// Initializes a new instance of the <see cref="FirstFocusedElementExtension"/> class. 
         /// </summary>
         public FirstFocusedElementExtension()
         {
-            OneTime = true;
+            this.OneTime = true;
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether we should unhook the 
+        /// handler after it has set focus to the element the first time
+        /// </summary>
+        public bool OneTime { get; set; }
 
         /// <summary>
         /// This method locates the first focusable + visible element we can
@@ -39,11 +53,13 @@ namespace Utils.Prism
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
             // Ignore if in design mode
-            if ((bool)(DesignerProperties.IsInDesignModeProperty.GetMetadata(typeof(DependencyObject)).DefaultValue))
+            if ((bool)DesignerProperties.IsInDesignModeProperty.GetMetadata(typeof(DependencyObject)).DefaultValue)
+            {
                 return null;
+            }
 
             // Get the IProvideValue interface which gives us access to the target property 
-            // and object.  Note that MSDN calls this interface "internal" but it's necessary
+            // and object. MSDN actually calls this interface "internal" but it's necessary
             // here because we need to know what property we are assigning to.
             var pvt = serviceProvider.GetService(typeof(IProvideValueTarget)) as IProvideValueTarget;
             if (pvt != null)
@@ -56,6 +72,7 @@ namespace Utils.Prism
                     if (!fe.IsLoaded)
                     {
                         RoutedEventHandler deferredFocusHookup = null;
+                        RoutedEventHandler hookup = deferredFocusHookup;
                         deferredFocusHookup = delegate
                         {
                             // Ignore if the element is now loaded but not
@@ -63,7 +80,9 @@ namespace Utils.Prism
                             // Instead, we'll wait until the item becomes visible and
                             // then set focus.
                             if (fe.IsVisible == false)
+                            {
                                 return;
+                            }
 
                             // Look for the first focusable leaf child and set the property
                             IInputElement ie = GetLeafFocusableChild(fe);
@@ -76,22 +95,24 @@ namespace Utils.Prism
                                 {
                                     ie.Focus();
                                 }
-                                // Being assigned to some other property - just assign it.
                                 else
                                 {
+                                    // Being assigned to some other property - just assign it.
                                     fe.SetValue((DependencyProperty)targetProperty, ie);
                                 }
                             }
-                            // Simple property assignment through reflection.
                             else if (targetProperty is PropertyInfo)
                             {
+                                // Simple property assignment through reflection.
                                 var pi = (PropertyInfo)targetProperty;
                                 pi.SetValue(fe, ie, null);
                             }
 
                             // Unhook the handler if we are supposed to.
-                            if (OneTime)
-                                fe.Loaded -= deferredFocusHookup;
+                            if (this.OneTime)
+                            {
+                                fe.Loaded -= hookup;
+                            }
                         };
 
                         // Wait for the element to load
@@ -108,14 +129,15 @@ namespace Utils.Prism
         }
 
         /// <summary>
-        /// Locate the first real focusable child.  We keep going down
+        /// Locate the first real focusable child. We keep going down
         /// the visual tree until we hit a leaf node.
         /// </summary>
-        /// <param name="fe"></param>
-        /// <returns></returns>
-        static IInputElement GetLeafFocusableChild(IInputElement fe)
+        /// <param name="fe">Focusable element that is used for finding</param>
+        /// <returns>First real focusable child</returns>
+        private static IInputElement GetLeafFocusableChild(IInputElement fe)
         {
             IInputElement ie = GetFirstFocusableChild(fe), final = ie;
+
             while (final != null)
             {
                 ie = final;
@@ -128,25 +150,27 @@ namespace Utils.Prism
         /// <summary>
         /// This searches the Visual Tree looking for a valid child which can have focus.
         /// </summary>
-        /// <param name="fe"></param>
-        /// <returns></returns>
-        static IInputElement GetFirstFocusableChild(IInputElement fe)
+        /// <param name="fe">Focusable element that is used for finding</param>
+        /// <returns>First real focusable child</returns>
+        private static IInputElement GetFirstFocusableChild(IInputElement fe)
         {
             var dpo = fe as DependencyObject;
             return dpo == null ? null : (from vc in EnumerateVisualTree(dpo, c => !FocusManager.GetIsFocusScope(c))
                                          let iic = vc as IInputElement
                                          where iic != null && iic.Focusable && iic.IsEnabled &&
-                                         (!(iic is FrameworkElement) || (((FrameworkElement)iic).IsVisible))
+                                         (!(iic is FrameworkElement) || ((FrameworkElement)iic).IsVisible)
                                          select iic).FirstOrDefault();
         }
 
         /// <summary>
         /// A simple iterator method to expose the visual tree to LINQ
         /// </summary>
-        /// <param name="start"></param>
-        /// <param name="eval"></param>
-        /// <returns></returns>
-        static IEnumerable<T> EnumerateVisualTree<T>(T start, Predicate<T> eval) where T : DependencyObject
+        /// <typeparam name="T">Type of the objects to use in iterator</typeparam>
+        /// <param name="start">Start element</param>
+        /// <param name="eval">Predicate to evaluate</param>
+        /// <returns>Iterator object</returns>
+        private static IEnumerable<T> EnumerateVisualTree<T>(T start, Predicate<T> eval) 
+            where T : DependencyObject
         {
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(start); i++)
             {
@@ -155,10 +179,11 @@ namespace Utils.Prism
                 {
                     yield return child;
                     foreach (var childOfChild in EnumerateVisualTree(child, eval))
+                    {
                         yield return childOfChild;
+                    }
                 }
             }
         }
-
     }
 }

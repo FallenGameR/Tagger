@@ -1,11 +1,19 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Windows.Data;
-using System.Windows.Media;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ColorStringConverter.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Utils.Prism
 {
+    using System;
+    using System.Globalization;
+    using System.Linq;
+    using System.Windows.Data;
+    using System.Windows.Media;
+
     /// <summary>
     /// Converter for colors that are rendered as text
     /// </summary>
@@ -14,6 +22,16 @@ namespace Utils.Prism
     /// </remarks>
     public class ColorStringConverter : IValueConverter
     {
+        /// <summary>
+        /// Convert from color to string
+        /// </summary>
+        /// <param name="value">Color value to convert.</param>
+        /// <param name="targetType">The parameter is not used.</param>
+        /// <param name="parameter">The parameter is not used.</param>
+        /// <param name="culture">The parameter is not used.</param>
+        /// <returns>
+        /// String representation for the color. Human readable name would be used if known.
+        /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var query =
@@ -25,6 +43,16 @@ namespace Utils.Prism
             return query.FirstOrDefault() ?? value.ToString();
         }
 
+        /// <summary>
+        /// Convert from string to color
+        /// </summary>
+        /// <param name="value">String value to convert.</param>
+        /// <param name="targetType">The parameter is not used.</param>
+        /// <param name="parameter">The parameter is not used.</param>
+        /// <param name="culture">The parameter is not used.</param>
+        /// <returns>
+        /// Color that is encoded in the string.
+        /// </returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
