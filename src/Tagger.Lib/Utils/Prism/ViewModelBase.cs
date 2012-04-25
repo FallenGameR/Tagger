@@ -15,7 +15,9 @@ namespace Utils.Prism
     using System.Linq;
     using System.Reflection;
     using System.Text;
+
     using Microsoft.Practices.Prism.Commands;
+    
     using Utils.Diagnostics;
     using Utils.Extensions;
 
@@ -32,14 +34,14 @@ namespace Utils.Prism
     ///     set
     ///     {
     ///         m_SomeProperty = value;
-    ///         OnPropertyChanged( this.Property( ( ) => SomeProperty ) );
+    ///         OnPropertyChanged( this.Property( ( ) =&gt; SomeProperty ) );
     ///     }
     /// }
     /// [Validation notification]
     /// private void Validate_SomeProperty()
     /// {
-    ///     Validate( SomeProperty >= MinValue, "Property must be greater or equal to min value" );
-    ///     Validate( MaxValue >= SomeProperty, "Property must be less or equal to max value" );
+    ///     Validate( SomeProperty &gt;= MinValue, "Property must be greater or equal to min value" );
+    ///     Validate( MaxValue &gt;= SomeProperty, "Property must be less or equal to max value" );
     /// }
     /// </example>
     /// <remarks>
@@ -47,7 +49,7 @@ namespace Utils.Prism
     /// </remarks>
     public abstract class ViewModelBase : INotifyPropertyChanged, IDisposable, IDataErrorInfo
     {
-        #region Constants
+        #region Constants and Fields
 
         /// <summary>
         /// Method prefix to use for validator methods.
@@ -55,9 +57,14 @@ namespace Utils.Prism
         /// </summary>
         private const string ValidateMethodPrefix = "Validate_";
 
+        /// <summary>
+        /// True if disposed method was already called
+        /// </summary>
+        private bool wasDisposed;
+
         #endregion
 
-        #region Constructor
+        #region Constructors and Destructors
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ViewModelBase"/> class.
@@ -67,102 +74,6 @@ namespace Utils.Prism
             this.Errors = new Dictionary<string, IList<string>>();
         }
 
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        /// Add an validation error to detected errors dictionary
-        /// </summary>
-        /// <param name="property">Validated property name</param>
-        /// <param name="info">Error details</param>
-        protected void AddValidationError(string property, string info)
-        {
-            if (!this.Errors.ContainsKey(property))
-            {
-                this.Errors[property] = new List<string>();
-            }
-            this.Errors[property].Add(info);
-            this.OnErrorCollectionChanged();
-        }
-
-        /// <summary>
-        /// Remove all validation errors for a particular property
-        /// </summary>
-        /// <param name="property">Property name</param>
-        protected void RemoveAllValidationErrors(string property)
-        {
-            if (this.Errors.ContainsKey(property))
-            {
-                this.Errors.Remove(property);
-                this.OnErrorCollectionChanged();
-            }
-        }
-
-        /// <summary>
-        /// Trigger for changed validation error collection event
-        /// </summary>
-        /// <remarks>
-        /// Usually children classes recalculate all known Command.CanExecute here
-        /// </remarks>
-        protected virtual void OnErrorCollectionChanged()
-        {
-            this.OnDelegateCommandsCanExecuteChanged();
-        }
-
-        /// <summary>
-        /// Trigger for property changed event
-        /// </summary>
-        /// <param name="propertyName">Name of the changed property</param>
-        protected void OnPropertyChanged(string propertyName)
-        {
-            this.CheckPropertyExist(propertyName);
-            this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Trigger for changed conditions of any hosted command
-        /// </summary>
-        protected void OnDelegateCommandsCanExecuteChanged()
-        {
-            var commands =
-                from info in GetType().GetProperties()
-                where info.PropertyType == typeof(DelegateCommand<object>)
-                select (DelegateCommand<object>)info.GetValue(this, null);
-
-            commands.Action(c => c.RaiseCanExecuteChanged());
-        }
-
-        /// <summary>
-        /// Making sure that property with such name exist
-        /// </summary>
-        /// <remarks>
-        /// Helpfull for detecting binding typos and property renamings in XAML
-        /// </remarks>
-        /// <param name="propertyName">Property name</param>
-        [DebuggerStepThrough]
-        protected void CheckPropertyExist(string propertyName)
-        {
-            var property = TypeDescriptor.GetProperties(this)[propertyName];
-
-            Check.Require(
-                property != null,
-                string.Format(
-                    "Current ViewModel doesn't have {0} property. " + 
-                    "Most likely you've renamed a property name and haven't updated corresponding binding. " +
-                    "Please specify correct property name in the binding.",
-                    propertyName));
-        }
-
-        #endregion
-
-        #region IDisposable Members
-
-        /// <summary>
-        /// True if disposed method was already called
-        /// </summary>
-        private bool wasDisposed = false;
-
         /// <summary>
         /// Finalizes an instance of the <see cref="ViewModelBase"/> class. 
         /// </summary>
@@ -171,8 +82,76 @@ namespace Utils.Prism
         /// </remarks>
         ~ViewModelBase()
         {
-            Dispose(false);
+            this.Dispose(false);
         }
+
+        #endregion
+
+        #region Public Events
+
+        /// <summary>
+        /// Event that fired when a property value is changed
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// Returns the user-friendly name of this object.
+        /// Child classes can set this property to a new value,
+        /// or override it to determine the value on-demand.
+        /// </summary>
+        public string DisplayName { get; protected set; }
+
+        /// <summary>
+        /// Error message used in BindingGroup
+        /// (not supported)
+        /// </summary>
+        public string Error
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Validation errors for each property.
+        /// Data structure: Property name -> Error List
+        /// </summary>
+        public IDictionary<string, IList<string>> Errors { get; private set; }
+
+        #endregion
+
+        #region Public Indexers
+
+        /// <summary>
+        /// Errors belonging to particular properties
+        /// </summary>
+        public string this[string name]
+        {
+            get
+            {
+                this.ValidateProperty(name);
+
+                var builder = new StringBuilder();
+                if (this.Errors.ContainsKey(name))
+                {
+                    foreach (string error in this.Errors[name])
+                    {
+                        builder.AppendLine(error);
+                    }
+                }
+
+                return builder.ToString();
+            }
+        }
+
+        #endregion
+
+        #region Public Methods and Operators
 
         /// <summary>
         /// Implementing MS recommended pattern for IDisposable
@@ -182,41 +161,67 @@ namespace Utils.Prism
         /// </remarks>
         public void Dispose()
         {
-            Dispose(true);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        #endregion
+
+        #region Methods
+
         /// <summary>
-        /// Cleanup resources
+        /// Add an validation error to detected errors dictionary
         /// </summary>
-        /// <param name="wasCalledFromDisposeMethod">true is was called from IDisposable.Dispose</param>
-        private void Dispose(bool wasCalledFromDisposeMethod)
+        /// <param name="property">
+        /// Validated property name
+        /// </param>
+        /// <param name="info">
+        /// Error details
+        /// </param>
+        protected void AddValidationError(string property, string info)
         {
-            // Cleanup must happen only once
-            if (this.wasDisposed)
+            if (!this.Errors.ContainsKey(property))
             {
-                return;
-            }
-            this.wasDisposed = true;
-
-            // We can dispose managed resources only if we were called from Dispose, not from the finilizer
-            if (wasCalledFromDisposeMethod)
-            {
-                this.OnDisposeManaged();
+                this.Errors[property] = new List<string>();
             }
 
-            // We can dispose unmanaged resources both from finilizer and Dispose
-            this.OnDisposeUnmanaged();
+            this.Errors[property].Add(info);
+            this.OnErrorCollectionChanged();
+        }
 
-#if DEBUG
-            // Log dispose call in debug output
-            Debug.WriteLine(string.Format(
-                "{0} ({1}, {2}) {3}",
-                DisplayName ?? "ViewModel",
-                GetType().Name,
-                GetHashCode(),
-                wasCalledFromDisposeMethod ? "Disposed" : "Finalized"));
-#endif
+        /// <summary>
+        /// Making sure that property with such name exist
+        /// </summary>
+        /// <remarks>
+        /// Helpfull for detecting binding typos and property renamings in XAML
+        /// </remarks>
+        /// <param name="propertyName">
+        /// Property name
+        /// </param>
+        [DebuggerStepThrough]
+        protected void CheckPropertyExist(string propertyName)
+        {
+            PropertyDescriptor property = TypeDescriptor.GetProperties(this)[propertyName];
+
+            var info =
+                "Current ViewModel doesn't have {0} property. " +
+                "Most likely you've renamed a property name and haven't updated corresponding binding. " +
+                "Please specify correct property name in the binding.";
+
+            Check.Require(property != null, string.Format(info, propertyName));
+        }
+
+        /// <summary>
+        /// Trigger for changed conditions of any hosted command
+        /// </summary>
+        protected void OnDelegateCommandsCanExecuteChanged()
+        {
+            var commands =
+                from info in this.GetType().GetProperties()
+                where info.PropertyType == typeof(DelegateCommand<object>)
+                select (DelegateCommand<object>)info.GetValue(this, null);
+
+            commands.Action(c => c.RaiseCanExecuteChanged());
         }
 
         /// <summary>
@@ -239,104 +244,128 @@ namespace Utils.Prism
         {
         }
 
-        #endregion
-
-        #region INotifyPropertyChanged Members
-
         /// <summary>
-        /// Event that fired when a property value is changed
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-        #endregion
-
-        #region IDataErrorInfo Members
-
-        /// <summary>
-        /// Error message used in BindingGroup
-        /// (not supported)
-        /// </summary>
-        public string Error
-        {
-            get { return null; }
-        }
-
-        /// <summary>
-        /// Errors belonging to particular properties
-        /// </summary>
-        public string this[string name]
-        {
-            get
-            {
-                ValidateProperty(name);
-
-                var builder = new StringBuilder();
-                if (Errors.ContainsKey(name))
-                {
-                    foreach (var error in Errors[name])
-                    {
-                        builder.AppendLine(error);
-                    }
-                }
-
-                return builder.ToString();
-            }
-        }
-
-        /// <summary>
-        /// Validate property with specified name
+        /// Trigger for changed validation error collection event
         /// </summary>
         /// <remarks>
-        /// Validation methods use {ValidateMethodPrefix}{PropertyName} convention.
+        /// Usually children classes recalculate all known Command.CanExecute here
         /// </remarks>
-        private void ValidateProperty(string propertyName)
+        protected virtual void OnErrorCollectionChanged()
         {
-            CheckPropertyExist(propertyName);
+            this.OnDelegateCommandsCanExecuteChanged();
+        }
 
-            var validator = GetType().GetMethod(ValidateMethodPrefix + propertyName, BindingFlags.NonPublic | BindingFlags.Instance);
-            if (validator != null)
+        /// <summary>
+        /// Trigger for property changed event
+        /// </summary>
+        /// <param name="propertyName">
+        /// Name of the changed property
+        /// </param>
+        protected void OnPropertyChanged(string propertyName)
+        {
+            this.CheckPropertyExist(propertyName);
+            this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <summary>
+        /// Remove all validation errors for a particular property
+        /// </summary>
+        /// <param name="property">
+        /// Property name
+        /// </param>
+        protected void RemoveAllValidationErrors(string property)
+        {
+            if (this.Errors.ContainsKey(property))
             {
-                RemoveAllValidationErrors(propertyName);
-                validator.Invoke(this, null);
+                this.Errors.Remove(property);
+                this.OnErrorCollectionChanged();
             }
         }
 
         /// <summary>
         /// Check validation statement for a property
         /// </summary>
-        /// <param name="assert">Validation statement</param>
-        /// <param name="errorInfo">Validation statement description</param>
+        /// <param name="assert">
+        /// Validation statement
+        /// </param>
+        /// <param name="errorInfo">
+        /// Validation statement description
+        /// </param>
         /// <remarks>
         /// This method could only be called from methods starting with {ValidateMethodPrefix}
         /// Checked property name is calculated from the caller method name.
         /// </remarks>
         protected void Validate(bool assert, string errorInfo)
         {
-            var callerName = new StackTrace().GetFrame(1).GetMethod().Name;
-            var property = callerName.Substring(ValidateMethodPrefix.Length);
+            string callerName = new StackTrace().GetFrame(1).GetMethod().Name;
+            string property = callerName.Substring(ValidateMethodPrefix.Length);
 
             if (!assert)
             {
-                AddValidationError(property, errorInfo);
+                this.AddValidationError(property, errorInfo);
             }
         }
 
-        #endregion
+        /// <summary>
+        /// Cleanup resources
+        /// </summary>
+        /// <param name="wasCalledFromDisposeMethod">
+        /// true is was called from IDisposable.Dispose
+        /// </param>
+        private void Dispose(bool wasCalledFromDisposeMethod)
+        {
+            // Cleanup must happen only once
+            if (this.wasDisposed)
+            {
+                return;
+            }
 
-        #region Properties
+            this.wasDisposed = true;
+
+            // We can dispose managed resources only if we were called from Dispose, not from the finilizer
+            if (wasCalledFromDisposeMethod)
+            {
+                this.OnDisposeManaged();
+            }
+
+            // We can dispose unmanaged resources both from finilizer and Dispose
+            this.OnDisposeUnmanaged();
+
+#if DEBUG
+    // Log dispose call in debug output
+            Debug.WriteLine(string.Format(
+                "{0} ({1}, {2}) {3}", 
+                DisplayName ?? "ViewModel", 
+                GetType().Name, 
+                GetHashCode(), 
+                wasCalledFromDisposeMethod ? "Disposed" : "Finalized"));
+#endif
+        }
 
         /// <summary>
-        /// Returns the user-friendly name of this object.
-        /// Child classes can set this property to a new value,
-        /// or override it to determine the value on-demand.
+        /// Validate property with specified name
         /// </summary>
-        public string DisplayName { get; protected set; }
+        /// <param name="propertyName">
+        /// The property Name.
+        /// </param>
+        /// <remarks>
+        /// Validation methods use {ValidateMethodPrefix}{PropertyName} convention.
+        /// </remarks>
+        private void ValidateProperty(string propertyName)
+        {
+            this.CheckPropertyExist(propertyName);
 
-        /// <summary>
-        /// Validation errors for each property.
-        /// Data structure: Property name -> Error List
-        /// </summary>
-        public IDictionary<string, IList<string>> Errors { get; private set; }
+            MethodInfo validator = this
+                .GetType()
+                .GetMethod(
+                    ValidateMethodPrefix + propertyName,
+                    BindingFlags.NonPublic | BindingFlags.Instance);
+            if (validator != null)
+            {
+                this.RemoveAllValidationErrors(propertyName);
+                validator.Invoke(this, null);
+            }
+        }
 
         #endregion
     }
