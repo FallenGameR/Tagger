@@ -1,9 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Media;
+﻿//-----------------------------------------------------------------------
+// <copyright file="Wpf.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Utils.Extensions
 {
+    using System.Collections.Generic;
+    using System.Windows;
+    using System.Windows.Media;
+
+    /// <summary>
+    /// Extension class for WPF operations on trees
+    /// </summary>
     public static class Wpf
     {
         /// <summary>
