@@ -1,9 +1,17 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using System.Text;
+﻿//-----------------------------------------------------------------------
+// <copyright file="Windows.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Tagger.WinAPI
 {
+    using System;
+    using System.Runtime.InteropServices;
+    using System.Text;
+
     /// <summary>
     /// Win32 API call for windows handles manipulation
     /// </summary>
@@ -20,10 +28,10 @@ namespace Tagger.WinAPI
         public const int NO_ERROR = 0;
 
         /// <summary>
-        /// Operation succeeded.
+        /// Operation succeeded
         /// </summary>
         /// <remarks>
-        /// HRESULT
+        /// This is an HRESULT
         /// </remarks>
         public const int S_OK = 0;
 
@@ -59,22 +67,17 @@ namespace Tagger.WinAPI
         /// <remarks>
         /// WindowProc function
         /// </remarks>
-        public static uint WM_NCCALCSIZE = 0x83;
+        public const uint WM_NCCALCSIZE = 0x83;
 
         #endregion
 
-        #region RECT struct
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct RECT
-        {
-            public int Left;        // x position of upper-left corner
-            public int Top;         // y position of upper-left corner
-            public int Right;       // x position of lower-right corner
-            public int Bottom;      // y position of lower-right corner
-        }
-
-        #endregion
+        /// <summary>
+        /// An application-defined callback function used with the EnumWindows or EnumDesktopWindows function.
+        /// </summary>
+        /// <param name="hwnd">A handle to a top-level window.</param>
+        /// <param name="lParam">The application-defined value given in EnumWindows or EnumDesktopWindows. </param>
+        /// <returns>To continue enumeration, the callback function must return TRUE; to stop enumeration, it must return FALSE. </returns>
+        public delegate bool EnumWindowsCallback(IntPtr hwnd, int lParam);
 
         /// <summary>
         /// Retrieves a handle to the foreground window (the window with which the user is currently working)
@@ -124,11 +127,11 @@ namespace Tagger.WinAPI
         /// </summary>
         /// <param name="hWnd">A handle to the window whose window procedure will receive the message</param>
         /// <param name="msg">The message to be sent</param>
-        /// <param name="wParam">Additional message-specific information</param>
-        /// <param name="lParam">Additional message-specific information</param>
+        /// <param name="wParam">Additional message-specific information 1</param>
+        /// <param name="lParam">Additional message-specific information 2</param>
         /// <returns>The return value specifies the result of the message processing; it depends on the message sent</returns>
         [DllImport("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, UInt32 msg, Int32 wParam, ref RECT lParam);
+        public static extern int SendMessage(IntPtr hWnd, uint msg, int wParam, ref RECT lParam);
 
         /// <summary>
         /// Retrieves information about the specified window.
@@ -167,12 +170,17 @@ namespace Tagger.WinAPI
         [DllImport("user32.dll", SetLastError = true)]
         public static extern int EnumWindows(EnumWindowsCallback lpEnumFunc, int lParam);
 
-        /// <summary>
-        /// An application-defined callback function used with the EnumWindows or EnumDesktopWindows function.
-        /// </summary>
-        /// <param name="hwnd">A handle to a top-level window.</param>
-        /// <param name="lParam">The application-defined value given in EnumWindows or EnumDesktopWindows. </param>
-        /// <returns>To continue enumeration, the callback function must return TRUE; to stop enumeration, it must return FALSE. </returns>
-        public delegate bool EnumWindowsCallback(IntPtr hwnd, int lParam);
+        #region RECT struct
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RECT
+        {
+            public int Left;        // x position of upper-left corner
+            public int Top;         // y position of upper-left corner
+            public int Right;       // x position of lower-right corner
+            public int Bottom;      // y position of lower-right corner
+        }
+
+        #endregion
     }
 }

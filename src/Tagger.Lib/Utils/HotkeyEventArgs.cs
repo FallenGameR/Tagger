@@ -20,16 +20,16 @@ namespace Tagger
         /// <summary>
         /// Initializes a new instance of the <see cref="HotkeyEventArgs"/> class. 
         /// </summary>
-        /// <param name="messageHotkeyParam">
+        /// <param name="wmHotkeyLParam">
         /// LParam value passed as argument to wm_Hotkey message
         /// </param>
         /// <remarks>
         /// Constructs readable arguments for global hotkey event
         /// </remarks>
-        public HotkeyEventArgs(int messageHotkeyParam)
+        public HotkeyEventArgs(int wmHotkeyLParam)
         {
-            this.Key = (Keys)((messageHotkeyParam >> 16) & 0xFFFF);
-            this.Modifier = (ModifierKeys)(messageHotkeyParam & 0xFFFF);
+            this.Key = (Keys)((wmHotkeyLParam >> 16) & 0xFFFF);
+            this.Modifier = (ModifierKeys)(wmHotkeyLParam & 0xFFFF);
         }
 
         /// <summary>
