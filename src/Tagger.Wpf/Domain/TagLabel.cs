@@ -1,9 +1,17 @@
-﻿using System;
-using System.Windows.Media;
-using Utils.Diagnostics;
+//-----------------------------------------------------------------------
+// <copyright file="TagLabel.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Tagger
 {
+    using System;
+    using System.Windows.Media;
+    using Utils.Diagnostics;
+
     /// <summary>
     /// Label taht is used to group similiar tags together
     /// </summary>
@@ -67,3 +75,4 @@ namespace Tagger
         public Color Color { get; private set; }
     }
 }
+

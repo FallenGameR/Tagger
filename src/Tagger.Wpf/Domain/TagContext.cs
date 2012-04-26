@@ -1,18 +1,26 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq;
-using System.Windows.Input;
-using System.Windows.Media;
-using Microsoft.Practices.Prism.Commands;
-using Tagger.Properties;
-using Tagger.WinAPI;
-using Tagger.Wpf;
-using Tagger.Wpf.Windows;
-using Utils.Diagnostics;
-using Utils.Extensions;
+//-----------------------------------------------------------------------
+// <copyright file="TagContext.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Tagger
 {
+    using System;
+    using System.ComponentModel;
+
+    using Microsoft.Practices.Prism.Commands;
+
+    using Tagger.Properties;
+    using Tagger.WinAPI;
+    using Tagger.Wpf;
+    using Tagger.Wpf.Windows;
+
+    using Utils.Diagnostics;
+    using Utils.Extensions;
+
     /// <summary>
     /// Context of a tag
     /// </summary>
@@ -212,3 +220,4 @@ namespace Tagger
         public WindowListner HostWindowListner { get; private set; }
     }
 }
+

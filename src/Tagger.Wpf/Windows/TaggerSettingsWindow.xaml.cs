@@ -1,11 +1,20 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Input;
-using Tagger.Properties;
-using Tagger.ViewModels;
+//-----------------------------------------------------------------------
+// <copyright file="TaggerSettingsWindow.xaml.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Tagger.Wpf
 {
+    using System;
+    using System.Windows;
+    using System.Windows.Input;
+
+    using Tagger.Properties;
+    using Tagger.ViewModels;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -69,3 +78,4 @@ namespace Tagger.Wpf
         }
     }
 }
+

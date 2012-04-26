@@ -1,14 +1,25 @@
-﻿using System;
-using System.ComponentModel;
-using System.Windows.Input;
-using Microsoft.Practices.Prism.Commands;
-using Tagger.Wpf.Views;
-using Utils.Diagnostics;
-using Utils.Extensions;
-using Utils.Prism;
+//-----------------------------------------------------------------------
+// <copyright file="HotkeyViewModel.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Tagger.ViewModels
 {
+    using System;
+    using System.ComponentModel;
+    using System.Windows.Input;
+
+    using Microsoft.Practices.Prism.Commands;
+
+    using Tagger.Wpf.Views;
+
+    using Utils.Diagnostics;
+    using Utils.Extensions;
+    using Utils.Prism;
+
     /// <summary>
     /// View model for global windows hotkey setting
     /// </summary>
@@ -231,3 +242,4 @@ namespace Tagger.ViewModels
         }
     }
 }
+

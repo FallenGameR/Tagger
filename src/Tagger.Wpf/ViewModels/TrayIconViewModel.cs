@@ -1,12 +1,23 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading;
-using Microsoft.Practices.Prism.Commands;
-using Tagger.Wpf;
-using Utils.Prism;
+//-----------------------------------------------------------------------
+// <copyright file="TrayIconViewModel.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Tagger.ViewModels
 {
+    using System;
+    using System.Diagnostics;
+    using System.Threading;
+
+    using Microsoft.Practices.Prism.Commands;
+
+    using Tagger.Wpf;
+
+    using Utils.Prism;
+
     /// <summary>
     /// View model for TrayIcon control
     /// </summary>
@@ -54,3 +65,4 @@ namespace Tagger.ViewModels
         public DelegateCommand<object> CloseProgramCommand { get; private set; }
     }
 }
+

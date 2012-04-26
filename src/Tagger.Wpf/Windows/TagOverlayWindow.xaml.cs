@@ -1,9 +1,17 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Input;
+//-----------------------------------------------------------------------
+// <copyright file="TagOverlayWindow.xaml.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Tagger.Wpf
 {
+    using System;
+    using System.Windows;
+    using System.Windows.Input;
+
     public sealed partial class TagOverlayWindow : Window, IDisposable
     {
         private Point? m_lastLocation;
@@ -86,3 +94,4 @@ namespace Tagger.Wpf
         private TagViewModel TagViewModel { get { return (TagViewModel)this.DataContext; } }
     }
 }
+

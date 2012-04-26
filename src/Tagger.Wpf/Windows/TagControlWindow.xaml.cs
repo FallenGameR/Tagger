@@ -1,10 +1,18 @@
-﻿using System.Linq;
-using System.Windows;
-using System.Windows.Data;
-using System.Windows.Media;
+//-----------------------------------------------------------------------
+// <copyright file="TagControlWindow.xaml.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Tagger.Wpf.Windows
 {
+    using System.Linq;
+    using System.Windows;
+    using System.Windows.Data;
+    using System.Windows.Media;
+
     /// <summary>
     /// Settings window that sets up how tag looks like
     /// </summary>
@@ -58,3 +66,4 @@ namespace Tagger.Wpf.Windows
         }
     }
 }
+

@@ -1,9 +1,17 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Controls;
+//-----------------------------------------------------------------------
+// <copyright file="HotkeyView.xaml.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Tagger.Wpf.Views
 {
+    using System;
+    using System.Windows;
+    using System.Windows.Controls;
+
     /// <summary>
     /// Interaction logic for HotkeyView.xaml
     /// </summary>
@@ -54,3 +62,4 @@ namespace Tagger.Wpf.Views
         }
     }
 }
+

@@ -1,11 +1,22 @@
-﻿using System.Windows.Media;
-using Microsoft.Practices.Prism.Commands;
-using Tagger.Properties;
-using Utils.Extensions;
-using Utils.Prism;
+//-----------------------------------------------------------------------
+// <copyright file="TagViewModel.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Tagger
 {
+    using System.Windows.Media;
+
+    using Microsoft.Practices.Prism.Commands;
+
+    using Tagger.Properties;
+
+    using Utils.Extensions;
+    using Utils.Prism;
+
     /// <summary>
     /// View model needed to render tag window
     /// </summary>
@@ -181,3 +192,4 @@ namespace Tagger
         public DelegateCommand<object> KillTagCommand { get; private set; }
     }
 }
+

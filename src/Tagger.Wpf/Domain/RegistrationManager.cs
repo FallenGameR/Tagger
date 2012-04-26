@@ -1,13 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using Tagger.WinAPI;
-using Utils.Diagnostics;
-using Utils.Extensions;
+//-----------------------------------------------------------------------
+// <copyright file="RegistrationManager.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Tagger
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Windows;
+
+    using Tagger.WinAPI;
+
+    using Utils.Diagnostics;
+    using Utils.Extensions;
+
     /// <summary>
     /// Handles registration of tags
     /// </summary>
@@ -216,3 +226,4 @@ namespace Tagger
         }
     }
 }
+

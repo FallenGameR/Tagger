@@ -1,9 +1,17 @@
-﻿using Utils.Prism;
-using Utils.Extensions;
-using Tagger.Properties;
+//-----------------------------------------------------------------------
+// <copyright file="GlobalSettingsViewModel.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Tagger.ViewModels
 {
+    using Tagger.Properties;
+    using Utils.Extensions;
+    using Utils.Prism;
+
     /// <summary>
     /// View model for global settings window
     /// </summary>
@@ -29,3 +37,4 @@ namespace Tagger.ViewModels
         }
     }
 }
+

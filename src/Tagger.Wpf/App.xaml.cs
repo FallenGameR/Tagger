@@ -1,11 +1,19 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
-using System.Windows;
-using System.IO.Compression;
+//-----------------------------------------------------------------------
+// <copyright file="App.xaml.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Tagger.Wpf
 {
+    using System;
+    using System.IO;
+    using System.IO.Compression;
+    using System.Reflection;
+    using System.Windows;
+
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
@@ -123,3 +131,4 @@ https://github.com/FallenGameR/Tagger
         }
     }
 }
+
