@@ -1,18 +1,29 @@
-﻿using System.Linq;
-using System.Windows.Controls;
-using System.Windows.Input;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ExistingTagsComboBox.xaml.cs" company="none">
+//   Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Tagger.Controls
 {
+    using System.Linq;
+    using System.Windows.Controls;
+    using System.Windows.Input;
+
     /// <summary>
     /// Interaction logic for ExistingTagsComboBox.xaml
     /// </summary>
     public partial class ExistingTagsComboBox : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExistingTagsComboBox"/> class.
+        /// </summary>
         public ExistingTagsComboBox()
         {
-            InitializeComponent();        
-            
+            this.InitializeComponent();
+
             // Setup existing tags combobox behaviour
             this.comboBox.DropDownOpened += delegate
             {
@@ -45,6 +56,9 @@ namespace Tagger.Controls
             };
         }
 
+        /// <summary>
+        /// Gets TagViewModel.
+        /// </summary>
         private TagViewModel TagViewModel
         {
             get { return (TagViewModel)this.DataContext; }
