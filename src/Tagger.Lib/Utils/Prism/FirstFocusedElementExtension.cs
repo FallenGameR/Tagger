@@ -111,7 +111,7 @@ namespace Utils.Prism
                             // Unhook the handler if we are supposed to.
                             if (this.OneTime)
                             {
-                                fe.Loaded -= hookup;
+                                fe.Loaded -= deferredFocusHookup;
                             }
                         };
 

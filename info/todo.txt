@@ -1,3 +1,4 @@
+Fix exit via icon when there is one tag present
 StyleCop
 FxCop
 Remove hardcoded buffer length from dll deflating
