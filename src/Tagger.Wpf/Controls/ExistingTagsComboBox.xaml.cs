@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ExistingTagsComboBox.xaml.cs" company="none">
-//   Distributed under the 3-clause BSD license
+//  Distributed under the 3-clause BSD license
 //  Copyright (c) Alexander Kostikov
 //  All rights reserved
 // </copyright>
