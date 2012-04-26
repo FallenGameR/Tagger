@@ -1,8 +1,16 @@
-using Microsoft.Win32.SafeHandles;
-using Tagger.WinAPI;
+//-----------------------------------------------------------------------
+// <copyright file="WctHandle.cs" company="none">
+//  Distributed under the 3-clause BSD license
+//  Copyright (c) Alexander Kostikov
+//  All rights reserved
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Tagger
 {
+    using Microsoft.Win32.SafeHandles;
+    using Tagger.WinAPI;
+
     /// <summary>
     /// Safe handle that is used in wait chain traversal API calls
     /// </summary>
@@ -13,9 +21,12 @@ namespace Tagger
     public class WctHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
         /// <summary>
-        /// Initializes handle class
+        /// Prevents a default instance of the <see cref="WctHandle"/> class from being created. 
         /// </summary>
-        private WctHandle() : base(true) { }
+        private WctHandle()
+            : base(true)
+        {
+        }
 
         /// <summary>
         /// Executes the code required to free the handle
