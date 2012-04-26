@@ -17,7 +17,7 @@ namespace Utils.Prism
     using System.Text;
 
     using Microsoft.Practices.Prism.Commands;
-    
+
     using Utils.Diagnostics;
     using Utils.Extensions;
 
@@ -30,18 +30,18 @@ namespace Utils.Prism
     /// [Property changed notification]
     /// public string SomeProperty
     /// { 
-    ///     get { return m_SomeProperty; }
-    ///     set
-    ///     {
-    ///         m_SomeProperty = value;
-    ///         OnPropertyChanged( this.Property( ( ) =&gt; SomeProperty ) );
-    ///     }
+    /// get { return m_SomeProperty; }
+    /// set
+    /// {
+    /// m_SomeProperty = value;
+    /// OnPropertyChanged( this.Property( ( ) =&gt; SomeProperty ) );
+    /// }
     /// }
     /// [Validation notification]
     /// private void Validate_SomeProperty()
     /// {
-    ///     Validate( SomeProperty &gt;= MinValue, "Property must be greater or equal to min value" );
-    ///     Validate( MaxValue &gt;= SomeProperty, "Property must be less or equal to max value" );
+    /// Validate( SomeProperty &gt;= MinValue, "Property must be greater or equal to min value" );
+    /// Validate( MaxValue &gt;= SomeProperty, "Property must be less or equal to max value" );
     /// }
     /// </example>
     /// <remarks>
@@ -49,8 +49,6 @@ namespace Utils.Prism
     /// </remarks>
     public abstract class ViewModelBase : INotifyPropertyChanged, IDisposable, IDataErrorInfo
     {
-        #region Constants and Fields
-
         /// <summary>
         /// Method prefix to use for validator methods.
         /// Convention used is: {ValidateMethodPrefix}{PropertyName}
@@ -62,12 +60,8 @@ namespace Utils.Prism
         /// </summary>
         private bool wasDisposed;
 
-        #endregion
-
-        #region Constructors and Destructors
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="ViewModelBase"/> class.
+        /// Initializes a new instance of the <see cref = "ViewModelBase" /> class.
         /// </summary>
         protected ViewModelBase()
         {
@@ -75,7 +69,7 @@ namespace Utils.Prism
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="ViewModelBase"/> class. 
+        /// Finalizes an instance of the <see cref="ViewModelBase"/> class.
         /// </summary>
         /// <remarks>
         /// Do not redifine in descendants
@@ -85,51 +79,44 @@ namespace Utils.Prism
             this.Dispose(false);
         }
 
-        #endregion
-
-        #region Public Events
-
         /// <summary>
         /// Event that fired when a property value is changed
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        #endregion
-
-        #region Public Properties
-
         /// <summary>
-        /// Returns the user-friendly name of this object.
+        /// Gets or sets user-friendly name for current view model object.
+        /// </summary>
+        /// <remarks>
         /// Child classes can set this property to a new value,
         /// or override it to determine the value on-demand.
-        /// </summary>
+        /// </remarks>
         public string DisplayName { get; protected set; }
 
         /// <summary>
-        /// Error message used in BindingGroup
-        /// (not supported)
+        /// Gets error message used in BindingGroup
         /// </summary>
+        /// <remarks>
+        /// (not supported)
+        /// </remarks>
         public string Error
         {
-            get
-            {
-                return null;
-            }
+            get { return null; }
         }
 
         /// <summary>
-        /// Validation errors for each property.
-        /// Data structure: Property name -> Error List
+        /// Gets validation errors for each property.
         /// </summary>
+        /// <remarks>
+        /// Data structure: Property name -> Error List
+        /// </remarks>
         public IDictionary<string, IList<string>> Errors { get; private set; }
-
-        #endregion
-
-        #region Public Indexers
 
         /// <summary>
         /// Errors belonging to particular properties
         /// </summary>
+        /// <param name="name">Name of the checked property</param>
+        /// <returns>Error corresponding to the property</returns>
         public string this[string name]
         {
             get
@@ -149,10 +136,6 @@ namespace Utils.Prism
             }
         }
 
-        #endregion
-
-        #region Public Methods and Operators
-
         /// <summary>
         /// Implementing MS recommended pattern for IDisposable
         /// </summary>
@@ -164,10 +147,6 @@ namespace Utils.Prism
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         /// Add an validation error to detected errors dictionary
@@ -203,10 +182,9 @@ namespace Utils.Prism
         {
             PropertyDescriptor property = TypeDescriptor.GetProperties(this)[propertyName];
 
-            var info =
-                "Current ViewModel doesn't have {0} property. " +
-                "Most likely you've renamed a property name and haven't updated corresponding binding. " +
-                "Please specify correct property name in the binding.";
+            var info = "Current ViewModel doesn't have {0} property. "
+                       + "Most likely you've renamed a property name and haven't updated corresponding binding. "
+                       + "Please specify correct property name in the binding.";
 
             Check.Require(property != null, string.Format(info, propertyName));
         }
@@ -216,7 +194,7 @@ namespace Utils.Prism
         /// </summary>
         protected void OnDelegateCommandsCanExecuteChanged()
         {
-            var commands =
+            var commands = 
                 from info in this.GetType().GetProperties()
                 where info.PropertyType == typeof(DelegateCommand<object>)
                 select (DelegateCommand<object>)info.GetValue(this, null);
@@ -332,6 +310,7 @@ namespace Utils.Prism
             this.OnDisposeUnmanaged();
 
 #if DEBUG
+    
     // Log dispose call in debug output
             Debug.WriteLine(string.Format(
                 "{0} ({1}, {2}) {3}", 
@@ -358,15 +337,14 @@ namespace Utils.Prism
             MethodInfo validator = this
                 .GetType()
                 .GetMethod(
-                    ValidateMethodPrefix + propertyName,
+                    ValidateMethodPrefix + propertyName, 
                     BindingFlags.NonPublic | BindingFlags.Instance);
+            
             if (validator != null)
             {
                 this.RemoveAllValidationErrors(propertyName);
                 validator.Invoke(this, null);
             }
         }
-
-        #endregion
     }
 }
