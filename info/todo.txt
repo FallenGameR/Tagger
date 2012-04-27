@@ -1,5 +1,6 @@
-Fix exit via icon when there is one tag present
 FxCop
-1.0
-Project readme on the main github page
+Fix exit via icon when there is one tag present
+StyleCop
 Binary for usage
+Project readme on the main github page
+1.0
