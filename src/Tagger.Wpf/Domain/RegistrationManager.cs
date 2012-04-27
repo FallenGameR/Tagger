@@ -166,6 +166,23 @@ namespace Tagger
         }
 
         /// <summary>
+        /// Unregisters existing tag and clean up associated resources
+        /// </summary>
+        /// <param name="tagViewModel">Tag view model that is used for tag lookup</param>
+        public static void UnregisterTag(TagViewModel tagViewModel)
+        {
+            lock (RegistrationManager.KnownTags)
+            {
+                var match = RegistrationManager.KnownTags.SingleOrDefault(c => c.TagViewModel == tagViewModel);
+                if (match != null)
+                {
+                    match.Dispose();
+                    RegistrationManager.KnownTags.Remove(match);
+                }
+            }
+        }
+
+        /// <summary>
         /// Find tag context based on host window handle
         /// </summary>
         /// <param name="host">Window handle of the tagged window (the host)</param>
