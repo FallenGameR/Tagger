@@ -14,7 +14,7 @@ namespace Tagger.WinAPI
     /// <summary>
     /// Structures that define PE header
     /// </summary>
-    public static partial class NativeAPI
+    public static partial class NativeMethods
     {
         /// <summary>
         /// Flag in FileHeader.Characteristics for computer that supports 32-bit words

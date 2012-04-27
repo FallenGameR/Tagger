@@ -31,7 +31,7 @@ namespace Tagger
             using (var reader = new BinaryReader(stream))
             {
                 // Read DOS header
-                this.DosHeader = ReadStructure<NativeAPI.IMAGE_DOS_HEADER>(reader);
+                this.DosHeader = ReadStructure<NativeMethods.IMAGE_DOS_HEADER>(reader);
 
                 // Add 4 bytes to the offset
                 stream.Seek(this.DosHeader.e_lfanew, SeekOrigin.Begin);
@@ -40,16 +40,16 @@ namespace Tagger
                 reader.ReadUInt32();
 
                 // Read file header
-                this.FileHeader = ReadStructure<NativeAPI.IMAGE_FILE_HEADER>(reader);
+                this.FileHeader = ReadStructure<NativeMethods.IMAGE_FILE_HEADER>(reader);
 
                 // Read optional header
                 if (this.IsOptionalHeader32)
                 {
-                    this.OptionalHeader32 = ReadStructure<NativeAPI.IMAGE_OPTIONAL_HEADER32>(reader);
+                    this.OptionalHeader32 = ReadStructure<NativeMethods.IMAGE_OPTIONAL_HEADER32>(reader);
                 }
                 else
                 {
-                    this.OptionalHeader64 = ReadStructure<NativeAPI.IMAGE_OPTIONAL_HEADER64>(reader);
+                    this.OptionalHeader64 = ReadStructure<NativeMethods.IMAGE_OPTIONAL_HEADER64>(reader);
                 }
             }
         }
@@ -57,29 +57,29 @@ namespace Tagger
         /// <summary>
         /// Gets DOS header
         /// </summary>
-        public NativeAPI.IMAGE_DOS_HEADER DosHeader { get; private set; }
+        public NativeMethods.IMAGE_DOS_HEADER DosHeader { get; private set; }
 
         /// <summary>
         /// Gets file header
         /// </summary>
-        public NativeAPI.IMAGE_FILE_HEADER FileHeader { get; private set; }
+        public NativeMethods.IMAGE_FILE_HEADER FileHeader { get; private set; }
 
         /// <summary>
         /// Gets optional 32 bit file header
         /// </summary>
-        public NativeAPI.IMAGE_OPTIONAL_HEADER32 OptionalHeader32 { get; private set; }
+        public NativeMethods.IMAGE_OPTIONAL_HEADER32 OptionalHeader32 { get; private set; }
 
         /// <summary>
         /// Gets optional 64 bit file header
         /// </summary>
-        public NativeAPI.IMAGE_OPTIONAL_HEADER64 OptionalHeader64 { get; private set; }
+        public NativeMethods.IMAGE_OPTIONAL_HEADER64 OptionalHeader64 { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether the file header is 32 bit or not
         /// </summary>
         public bool IsOptionalHeader32
         {
-            get { return (NativeAPI.IMAGE_FILE_32BIT_MACHINE & this.FileHeader.Characteristics) != 0; }
+            get { return (NativeMethods.IMAGE_FILE_32BIT_MACHINE & this.FileHeader.Characteristics) != 0; }
         }
 
         /// <summary>

@@ -162,7 +162,7 @@ namespace Tagger
         private static int GetPidFromWindow(IntPtr windowHandle)
         {
             int pid;
-            NativeAPI.GetWindowThreadProcessId(windowHandle, out pid);
+            NativeMethods.GetWindowThreadProcessId(windowHandle, out pid);
 
             bool isConsoleApp = IsConsoleApplication(pid);
             if (!isConsoleApp)
@@ -185,7 +185,7 @@ namespace Tagger
         {
             var process = Process.GetProcessById(pid);
             var parser = new PortableExecutableReader(process.MainModule.FileName);
-            return parser.OptionalHeader.Subsystem == (ushort)NativeAPI.IMAGE_SUBSYSTEM_WINDOWS.CUI;
+            return parser.OptionalHeader.Subsystem == (ushort)NativeMethods.IMAGE_SUBSYSTEM_WINDOWS.CUI;
         }
 
         /// <summary>

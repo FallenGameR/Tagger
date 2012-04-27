@@ -17,7 +17,7 @@ namespace Tagger.WinAPI
     /// <remarks>
     /// Original from http://msdn.microsoft.com/en-us/magazine/cc163395.aspx
     /// </remarks>
-    public static partial class NativeAPI
+    public static partial class NativeMethods
     {
         /// <summary>
         /// Max number of nodes in the wait chain 

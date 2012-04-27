@@ -15,7 +15,7 @@ namespace Tagger.WinAPI
     /// <summary>
     /// Win32 API call for windows handles manipulation
     /// </summary>
-    public static partial class NativeAPI
+    public static partial class NativeMethods
     {
         #region Constants
 

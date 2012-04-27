@@ -71,7 +71,7 @@ namespace Tagger
             else
             {
                 // Otherwise keep focus on host window
-                NativeAPI.SetForegroundWindow(context.HostWindow);
+                NativeMethods.SetForegroundWindow(context.HostWindow);
             }
         }
 
@@ -200,7 +200,7 @@ namespace Tagger
         /// </returns>
         private static IntPtr GetHostHandle()
         {
-            var foremostWindow = NativeAPI.GetForegroundWindow();
+            var foremostWindow = NativeMethods.GetForegroundWindow();
 
             // If window is in exceptions, ignore call
             var exceptionMatch = exceptions.Contains(foremostWindow);

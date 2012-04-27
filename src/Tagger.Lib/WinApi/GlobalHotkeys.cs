@@ -19,7 +19,7 @@ namespace Tagger.WinAPI
     /// Looks like the only way to figure out what process did install a hotkey
     /// is to write a driver - http://www.wasm.ru/article.php?article=gui_subsystem
     /// </remarks>
-    public static partial class NativeAPI
+    public static partial class NativeMethods
     {
         /// <summary>
         /// Changes the hotkey behavior so that the keyboard auto-repeat does not yield multiple hotkey notifications

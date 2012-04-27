@@ -36,7 +36,7 @@ namespace Tagger
         /// </returns>
         protected override bool ReleaseHandle()
         {
-            NativeAPI.CloseThreadWaitChainSession(this.handle);
+            NativeMethods.CloseThreadWaitChainSession(this.handle);
             return true;
         }
     }

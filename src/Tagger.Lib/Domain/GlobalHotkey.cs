@@ -33,8 +33,8 @@ namespace Tagger
             this.CreateHandle(new CreateParams());
 
             var virtualKey = KeyInterop.VirtualKeyFromKey(key);
-            var noRepeatModifier = (uint)modifier | NativeAPI.NoRepeat;
-            var success = NativeAPI.RegisterHotKey(this.Handle, 0, noRepeatModifier, (uint)virtualKey);
+            var noRepeatModifier = (uint)modifier | NativeMethods.NoRepeat;
+            var success = NativeMethods.RegisterHotKey(this.Handle, 0, noRepeatModifier, (uint)virtualKey);
 
             if (!success)
             {
@@ -52,7 +52,7 @@ namespace Tagger
         /// </summary>
         public void Dispose()
         {
-            NativeAPI.UnregisterHotKey(this.Handle, 0);            
+            NativeMethods.UnregisterHotKey(this.Handle, 0);            
             this.DestroyHandle();
         }
 
@@ -66,7 +66,7 @@ namespace Tagger
             base.WndProc(ref message);
 
             // Filtering out irrelevent events
-            if (message.Msg != NativeAPI.WM_HOTKEY)
+            if (message.Msg != NativeMethods.WM_HOTKEY)
             {
                 return;
             }

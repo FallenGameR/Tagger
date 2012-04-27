@@ -181,7 +181,7 @@ namespace Tagger
             }
 
             // Get client area with guard against lag in receiving windows destroy event
-            NativeAPI.RECT clientArea;
+            NativeMethods.RECT clientArea;
             try
             {
                 clientArea = WindowSizes.GetClientArea(this.HostWindow);
@@ -222,7 +222,7 @@ namespace Tagger
             }
 
             this.TagControlWindow.ToggleVisibility();
-            NativeAPI.SetForegroundWindow(this.HostWindow);
+            NativeMethods.SetForegroundWindow(this.HostWindow);
         }
     }
 }

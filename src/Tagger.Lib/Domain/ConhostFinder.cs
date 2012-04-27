@@ -36,7 +36,7 @@ namespace Tagger
         /// </summary>
         public ConhostFinder()
         {
-            this.wctSessionHandle = NativeAPI.OpenThreadWaitChainSession(0, IntPtr.Zero);
+            this.wctSessionHandle = NativeMethods.OpenThreadWaitChainSession(0, IntPtr.Zero);
 
             if (this.wctSessionHandle.IsInvalid)
             {
@@ -65,7 +65,7 @@ namespace Tagger
             var query =
                 from thread in Process.GetProcessById(consoleAppProcessId).Threads.Cast<ProcessThread>()
                 from node in this.GetThreadWaitChain(thread.Id)
-                where node.ObjectType == NativeAPI.WCT_OBJECT_TYPE.Thread
+                where node.ObjectType == NativeMethods.WCT_OBJECT_TYPE.Thread
                 where Process.GetProcessById(node.ProcessId).ProcessName == "conhost"
                 select node.ProcessId;
 
@@ -78,16 +78,16 @@ namespace Tagger
         /// </summary>
         /// <param name="threadId">Systemwide thread ID</param>
         /// <returns>WCT nodes for processes that this process is waits upon</returns>
-        private IEnumerable<NativeAPI.WAITCHAIN_NODE_INFO> GetThreadWaitChain(int threadId)
+        private IEnumerable<NativeMethods.WAITCHAIN_NODE_INFO> GetThreadWaitChain(int threadId)
         {
-            var nodes = new NativeAPI.WAITCHAIN_NODE_INFO[NativeAPI.WCT_MAX_NODE_COUNT];
-            var length = NativeAPI.WCT_MAX_NODE_COUNT;
+            var nodes = new NativeMethods.WAITCHAIN_NODE_INFO[NativeMethods.WCT_MAX_NODE_COUNT];
+            var length = NativeMethods.WCT_MAX_NODE_COUNT;
             int isCycle;
 
-            var success = NativeAPI.GetThreadWaitChain(
+            var success = NativeMethods.GetThreadWaitChain(
                 this.wctSessionHandle,
                 IntPtr.Zero,
-                NativeAPI.WCT_FLAGS.Process,
+                NativeMethods.WCT_FLAGS.Process,
                 threadId,
                 ref length,
                 nodes,
