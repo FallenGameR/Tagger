@@ -25,23 +25,23 @@ namespace Tagger
     /// Context of a tag
     /// </summary>
     /// <remarks>
-    /// Note regarding event unsubscription. I've investigated possibility of a memory leak
+    /// Thoughts regarding event unsubscription. I've investigated possibility of a memory leak
     /// here and it looks like there should be none. We have several tag-related classes that
     /// subscribe on each other and are referenced from RegistrsationManager as TagContext 
     /// instance. We have two external events we rely on that could possibly store another 
     /// reference on tag related classes:
     /// - AccessibleEventListener that wraps WinAPI Hook and 
     /// - AutomationEventHandler that wraps UI Automation callback. 
-    /// 
+    /// <para/>
     /// Both these events are gracefully unsubscribed from in WindowListner class. Plus there 
     /// is an implicit event reference from RegistrsationManager via WindowListner instance
     /// (host destruction subscription). To handle correct unreferencing WindowListner 
     /// unregisters all subscribers in Dispose. 
-    /// 
+    /// <para/>
     /// Thus for garbage collection to succeed on tag deletion we need:
     /// - call dispose on WindowListner instance
     /// - unreference tag context from KnownTags collection
-    /// 
+    /// <para/>
     /// Here is some additional reading regarding events:
     /// http://www.codeproject.com/Articles/29922/Weak-Events-in-C
     /// http://diditwith.net/PermaLink,guid,aacdb8ae-7baa-4423-a953-c18c1c7940ab.aspx
@@ -50,7 +50,7 @@ namespace Tagger
     public sealed class TagContext : IDisposable
     {
         /// <summary>
-        /// Initializes new instance of TagContext
+        /// Initializes a new instance of the <see cref="TagContext"/> class. 
         /// </summary>
         /// <remarks>
         /// Windows objects are created, initialized and ready to connect to a host window
@@ -72,6 +72,35 @@ namespace Tagger
         }
 
         /// <summary>
+        /// Gets tag render view model that is shared between settings and tag windows
+        /// </summary>
+        public TagViewModel TagViewModel { get; private set; }
+
+        /// <summary>
+        /// Gets tag overlay window - the displayed tag itself
+        /// </summary>
+        public TagOverlayWindow TagOverlayWindow { get; private set; }
+
+        /// <summary>
+        /// Gets tag control window - tag appearance settings and other control elements
+        /// </summary>
+        public TagControlWindow TagControlWindow { get; private set; }
+
+        /// <summary>
+        /// Gets window handle that is tagged
+        /// </summary>
+        public IntPtr HostWindow { get; private set; }
+
+        /// <summary>
+        /// Gets listner for events that happens in host process
+        /// </summary>
+        /// <remarks>
+        /// On dispose unregisters all handlers from all its events. That's an unusual 
+        /// behaviour but it allows to garbage collect tag context without additional clutter.
+        /// </remarks>
+        public WindowListner HostWindowListner { get; private set; }
+
+        /// <summary>
         /// Clean up all resources
         /// </summary>
         public void Dispose()
@@ -80,10 +109,10 @@ namespace Tagger
             this.TagControlWindow.Closing -= this.SettingsClosingHandler;
 
             // Hide and then close both views
-            this.TagControlWindow.Dispatcher.Invoke((Action)delegate { this.TagControlWindow.Hide(); });
-            this.TagOverlayWindow.Dispatcher.Invoke((Action)delegate { this.TagOverlayWindow.Hide(); });
-            this.TagOverlayWindow.Dispatcher.Invoke((Action)delegate { this.TagOverlayWindow.Close(); });
-            this.TagControlWindow.Dispatcher.Invoke((Action)delegate { this.TagControlWindow.Close(); });
+            this.TagControlWindow.Dispatcher.Invoke((Action)(() => this.TagControlWindow.Hide()));
+            this.TagOverlayWindow.Dispatcher.Invoke((Action)(() => this.TagOverlayWindow.Hide()));
+            this.TagOverlayWindow.Dispatcher.Invoke((Action)(() => this.TagOverlayWindow.Close()));
+            this.TagControlWindow.Dispatcher.Invoke((Action)(() => this.TagControlWindow.Close()));
 
             // Dispose underlying view model
             this.TagViewModel.Dispose();
@@ -128,6 +157,8 @@ namespace Tagger
         /// <summary>
         /// Hide settings window instead of close
         /// </summary>
+        /// <param name="sender">The parameter is not used</param>
+        /// <param name="ea">Closing event args that allow to cancel closing</param>
         /// <remarks>
         /// To actually close the settings window we need to unsubscribe from such handler
         /// </remarks>
@@ -165,11 +196,14 @@ namespace Tagger
             var newLeft = clientArea.Right - tagWindowWidth - this.TagViewModel.OffsetRight;
 
             // Update position only if coordinates changed to speed up redraw process
-            // NOTE: Redraw would happen in WPF redraw step of prioritized queue in GUI process
+            // Redraw would actually happen in WPF redraw step in GUI process (WPF uses 
+            // prioritized message processing queue - modification of a data bound parameter 
+            // will eventually lead to redraw)
             if (this.TagOverlayWindow.Top != newTop)
             {
                 this.TagOverlayWindow.Top = newTop;
             }
+
             if (this.TagOverlayWindow.Left != newLeft)
             {
                 this.TagOverlayWindow.Left = newLeft;
@@ -179,6 +213,7 @@ namespace Tagger
         /// <summary>
         /// Hide settings window and make host window focused
         /// </summary>
+        /// <param name="sender">The parameter is not used.</param>
         private void HideSettingsAndRefocus(object sender)
         {
             if (this.HostWindow == IntPtr.Zero)
@@ -189,35 +224,5 @@ namespace Tagger
             this.TagControlWindow.ToggleVisibility();
             NativeAPI.SetForegroundWindow(this.HostWindow);
         }
-
-        /// <summary>
-        /// Tag render view model that is shared between settings and tag windows
-        /// </summary>
-        public TagViewModel TagViewModel { get; private set; }
-
-        /// <summary>
-        /// Tag overlay window - the displayed tag itself
-        /// </summary>
-        public TagOverlayWindow TagOverlayWindow { get; private set; }
-
-        /// <summary>
-        /// Tag control window - tag appearance settings and other control elements
-        /// </summary>
-        public TagControlWindow TagControlWindow { get; private set; }
-
-        /// <summary>
-        /// Window handle that is tagged
-        /// </summary>
-        public IntPtr HostWindow { get; private set; }
-
-        /// <summary>
-        /// Listner for events that happens in host process
-        /// </summary>
-        /// <remarks>
-        /// On dispose unregisters all handlers from all its events. That's an unusual 
-        /// behaviour but it allows to garbage collect tag context without additional clutter.
-        /// </remarks>
-        public WindowListner HostWindowListner { get; private set; }
     }
 }
-
