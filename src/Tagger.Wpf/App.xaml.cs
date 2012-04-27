@@ -133,16 +133,25 @@ https://github.com/FallenGameR/Tagger",
                 return null;
             }
 
-            // Loading of deflated dll from resources
+            // Load deflated dll from resources
             using (var resource = new MemoryStream(knownAssembly))
             using (var deflated = new DeflateStream(resource, CompressionMode.Decompress))
             using (var reader = new BinaryReader(deflated))
             {
-                // NOTE: 1Mb buffer should be OK for all referenced DLLs
-                // TODO: Do not use hardcoded buffer - http://stackoverflow.com/questions/1528508/uncompress-data-file-with-deflatestream
                 var one_megabyte = 1024 * 1024;
-                var buffer = reader.ReadBytes(one_megabyte);
-                return Assembly.Load(buffer);
+                var buffer = new byte[one_megabyte];
+
+                using (var writer = new MemoryStream())
+                {
+                    int length;
+
+                    while ((length = reader.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        writer.Write(buffer, 0, length);
+                    }
+
+                    return Assembly.Load(writer.ToArray());
+                }
             }
         }
     }
