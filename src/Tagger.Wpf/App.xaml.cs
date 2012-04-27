@@ -17,16 +17,17 @@ namespace Tagger.Wpf
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App: Application
+    public partial class App : Application
     {
         /// <summary>
-        /// Application settings window 
+        /// Gets application settings window 
         /// </summary>
         public static Window MainSettingsWindow { get; private set; }
 
         /// <summary>
         /// Initiailize application scale events
         /// </summary>
+        /// <param name="ea">Startup event arguments</param>
         protected override void OnStartup(StartupEventArgs ea)
         {
             base.OnStartup(ea);
@@ -35,7 +36,7 @@ namespace Tagger.Wpf
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
             // Register unhandled exception handler with logging
-            App.Current.DispatcherUnhandledException += (sender, args) =>
+            Application.Current.DispatcherUnhandledException += (sender, args) =>
             {
                 var filePath = Path.Combine(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
@@ -53,13 +54,13 @@ namespace Tagger.Wpf
             };
 
             // Check windows OS edition
-            var isWindows7orWin2008R2orHigher = 
-                Environment.OSVersion.Version.Major >= 6 && 
+            var isWindows7OrWin2008R2OrHigher =
+                Environment.OSVersion.Version.Major >= 6 &&
                 Environment.OSVersion.Version.Minor >= 1;
-            if ( !isWindows7orWin2008R2orHigher )
+            if (!isWindows7OrWin2008R2OrHigher)
             {
-                MessageBox.Show(@"
-This program was tested only on Windows 7 and Windows 
+                MessageBox.Show(
+@"This program was tested only on Windows 7 and Windows 
 2008 Server R2. To track console windows it uses conhost.exe
 process that was not used in previous editions of Windows. 
 To find mapping between conhost.exe and console application 
@@ -73,8 +74,7 @@ wouldn't work for console windows.
 exception on the first attempt to create a tag.
 
 If you want to add support for some old OS, fork Tagger  
-https://github.com/FallenGameR/Tagger
-",
+https://github.com/FallenGameR/Tagger",
                     "Windows Version Compatibility",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
@@ -85,6 +85,13 @@ https://github.com/FallenGameR/Tagger
             App.MainSettingsWindow.Show();
         }
 
+        /// <summary>
+        /// Get deflated assembly from resources by assembly full name
+        /// </summary>
+        /// <param name="assemblyName">Full name of the assembly</param>
+        /// <returns>
+        /// Byte representation of a deflated assembly from resources
+        /// </returns>
         private static byte[] GetDeflatedAssembly(string assemblyName)
         {
             switch (assemblyName)
@@ -112,10 +119,19 @@ https://github.com/FallenGameR/Tagger
         /// <summary>
         /// Custom assembly resolver to use deflated referenced assemblies from resources
         /// </summary>
-        private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        /// <param name="sender">The parameter is not used.</param>
+        /// <param name="args">Resolve event arguments</param>
+        /// <returns>
+        /// Loaded assembly object if the resolving assembly is stored deflated in resources,
+        /// otherwise null. Null would force .NET to use default resolution method.
+        /// </returns>
+        private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
             var knownAssembly = GetDeflatedAssembly(args.Name);
-            if (knownAssembly == null) { return null; }
+            if (knownAssembly == null)
+            {
+                return null;
+            }
 
             // Loading of deflated dll from resources
             using (var resource = new MemoryStream(knownAssembly))
@@ -131,4 +147,3 @@ https://github.com/FallenGameR/Tagger
         }
     }
 }
-
