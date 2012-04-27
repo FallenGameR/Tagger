@@ -133,26 +133,10 @@ namespace Tagger
         }
 
         /// <summary>
-        /// Registeres new tag
-        /// </summary>
-        /// <param name="hostWindow">Handle to the window host that is tagged</param>
-        private static void RegisterTag(IntPtr hostWindow)
-        {
-            var context = new TagContext();
-            context.AttachToHost(hostWindow);
-            context.HostWindowListner.WindowDestroyed += delegate { UnregisterTag(hostWindow); };
-
-            lock (knownTags)
-            {
-                knownTags.Add(context);
-            }
-        }
-
-        /// <summary>
         /// Unregisters existing tag and clean up associated resources
         /// </summary>
         /// <param name="hostWindow">Handle to the window host that is tagged</param>
-        internal static void UnregisterTag(IntPtr hostWindow)
+        public static void UnregisterTag(IntPtr hostWindow)
         {
             lock (knownTags)
             {
@@ -171,14 +155,30 @@ namespace Tagger
         /// <param name="tagViewModel">Tag view model that is used for tag lookup</param>
         public static void UnregisterTag(TagViewModel tagViewModel)
         {
-            lock (RegistrationManager.KnownTags)
+            lock (knownTags)
             {
-                var match = RegistrationManager.KnownTags.SingleOrDefault(c => c.TagViewModel == tagViewModel);
+                var match = knownTags.SingleOrDefault(c => c.TagViewModel == tagViewModel);
                 if (match != null)
                 {
                     match.Dispose();
-                    RegistrationManager.KnownTags.Remove(match);
+                    knownTags.Remove(match);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Registeres new tag
+        /// </summary>
+        /// <param name="hostWindow">Handle to the window host that is tagged</param>
+        private static void RegisterTag(IntPtr hostWindow)
+        {
+            var context = new TagContext();
+            context.AttachToHost(hostWindow);
+            context.HostWindowListner.WindowDestroyed += delegate { UnregisterTag(hostWindow); };
+
+            lock (knownTags)
+            {
+                knownTags.Add(context);
             }
         }
 
