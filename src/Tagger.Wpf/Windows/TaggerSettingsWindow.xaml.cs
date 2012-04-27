@@ -20,6 +20,9 @@ namespace Tagger.Wpf
     /// </summary>
     public partial class TaggerSettingsWindow : Window
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TaggerSettingsWindow"/> class.
+        /// </summary>
         public TaggerSettingsWindow()
         {
             InitializeComponent();
@@ -46,10 +49,10 @@ namespace Tagger.Wpf
             this.Loaded += delegate { RegistrationManager.RegisterException(this); };
 
             // Exit application on window close
-            this.Closed += delegate { App.Current.Shutdown(); };
+            this.Closed += delegate { Application.Current.Shutdown(); };
 
             // Save settings on program deactivation (app exit included)
-            App.Current.Deactivated += delegate
+            Application.Current.Deactivated += delegate
             {
                 Settings.Default.TagHotkey_Modifiers = (int)tagViewModel.ModifierKeys;
                 Settings.Default.TagHotkey_Keys = (int)tagViewModel.Key;
@@ -58,8 +61,8 @@ namespace Tagger.Wpf
                 Settings.Default.Save();
             };
 
-            // Dispose on exit
-            App.Current.Exit += delegate
+            // Dispose all on exit
+            Application.Current.Exit += delegate
             {
                 tagViewModel.Dispose();
                 appearanceViewModel.Dispose();
@@ -68,6 +71,11 @@ namespace Tagger.Wpf
             };
         }
 
+        /// <summary>
+        /// Handler for window state changed event
+        /// </summary>
+        /// <param name="sender">The parameter is not used.</param>
+        /// <param name="e">The parameter is not used.</param>
         private void Window_StateChanged(object sender, EventArgs e)
         {
             if (this.WindowState == WindowState.Minimized)
@@ -78,4 +86,3 @@ namespace Tagger.Wpf
         }
     }
 }
-
