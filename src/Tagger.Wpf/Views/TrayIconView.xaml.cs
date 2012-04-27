@@ -15,10 +15,12 @@ namespace Tagger.Wpf.Views
     /// </summary>
     public partial class TrayIconView : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TrayIconView"/> class.
+        /// </summary>
         public TrayIconView()
         {
             InitializeComponent();
         }
     }
 }
-

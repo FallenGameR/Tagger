@@ -36,7 +36,7 @@ namespace Tagger.Wpf.Views
             new UIPropertyMetadata(null));
 
         /// <summary>
-        /// Initializes a new instance of the HotkeyControl class
+        /// Initializes a new instance of the <see cref="HotkeyView"/> class. 
         /// </summary>
         public HotkeyView()
         {
@@ -62,4 +62,3 @@ namespace Tagger.Wpf.Views
         }
     }
 }
-
