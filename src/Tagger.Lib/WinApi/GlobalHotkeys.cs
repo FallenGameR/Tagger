@@ -53,7 +53,7 @@ namespace Tagger.WinAPI
         /// true if the function succeeds
         /// </returns>
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+        internal static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
 
         /// <summary>
         /// Frees a hot key previously registered by the calling thread
@@ -68,6 +68,6 @@ namespace Tagger.WinAPI
         /// true if the function succeeds
         /// </returns>
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+        internal static extern bool UnregisterHotKey(IntPtr hWnd, int id);
     }
 }

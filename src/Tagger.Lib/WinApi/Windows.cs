@@ -111,7 +111,7 @@ namespace Tagger.WinAPI
         /// <param name="lpdwProcessId">A pointer to a variable that receives the process identifier</param>
         /// <returns>The return value is the identifier of the thread that created the window</returns>
         [DllImport("user32.dll")]
-        public static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
+        internal static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
         /// <summary>
         /// Retrieves the dimensions of the bounding rectangle of the specified window
@@ -120,7 +120,7 @@ namespace Tagger.WinAPI
         /// <param name="lpRect">A pointer to a RECT structure that receives the screen coordinates of the upper-left and lower-right corners of the window</param>
         /// <returns>If the function succeeds, the return value is nonzero</returns>
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
+        internal static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
 
         /// <summary>
         /// Sends the specified message to a window 
@@ -131,7 +131,7 @@ namespace Tagger.WinAPI
         /// <param name="lParam">Additional message-specific information 2</param>
         /// <returns>The return value specifies the result of the message processing; it depends on the message sent</returns>
         [DllImport("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, uint msg, int wParam, ref RECT lParam);
+        internal static extern int SendMessage(IntPtr hWnd, uint msg, int wParam, ref RECT lParam);
 
         /// <summary>
         /// Retrieves information about the specified window.
@@ -143,7 +143,7 @@ namespace Tagger.WinAPI
         /// If the function fails, the return value is zero. To get extended error information, call GetLastError.
         /// </returns>
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern ulong GetWindowLong(IntPtr hWnd, int nIndex);
+        internal static extern ulong GetWindowLong(IntPtr hWnd, int nIndex);
 
         /// <summary>
         /// Copies the text of the specified window's title bar (if it has one) into a buffer.
@@ -156,7 +156,7 @@ namespace Tagger.WinAPI
         /// the terminating null character. If the window has no title bar or text, if the title bar is empty, or if the 
         /// window or control handle is invalid, the return value is zero. To get extended error information, call GetLastError.</returns>
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+        internal static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
 
         /// <summary>
         /// Enumerates all top-level windows on the screen by passing the handle to each window, in turn, to an application-defined callback function.
@@ -168,7 +168,7 @@ namespace Tagger.WinAPI
         /// If the function fails, the return value is zero. To get extended error information, call GetLastError.
         /// </returns>
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern int EnumWindows(EnumWindowsCallback lpEnumFunc, int lParam);
+        internal static extern int EnumWindows(EnumWindowsCallback lpEnumFunc, int lParam);
 
         #region RECT struct
 

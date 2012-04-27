@@ -102,7 +102,7 @@ namespace Tagger.WinAPI
         /// If the function fails, the return value is NULL. To get extended error information, call GetLastError.
         /// </returns>
         [DllImport("advapi32.dll", SetLastError = true)]
-        public static extern WctHandle OpenThreadWaitChainSession(int flags, IntPtr callback);
+        internal static extern WctHandle OpenThreadWaitChainSession(int flags, IntPtr callback);
 
         /// <summary>
         /// Retrieves the wait chain for the specified thread.
@@ -124,14 +124,14 @@ namespace Tagger.WinAPI
         /// If the function fails, the return value is zero. To retrieve extended error information, call GetLastError.
         /// </returns>
         [DllImport("advapi32.dll", SetLastError = true)]
-        public static extern bool GetThreadWaitChain(WctHandle wctHandle, IntPtr context, WCT_FLAGS flags, int threadId, ref int nodeCount, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)] [In, Out] WAITCHAIN_NODE_INFO[] nodeInfoArray, out int isCycle);
+        internal static extern bool GetThreadWaitChain(WctHandle wctHandle, IntPtr context, WCT_FLAGS flags, int threadId, ref int nodeCount, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)] [In, Out] WAITCHAIN_NODE_INFO[] nodeInfoArray, out int isCycle);
 
         /// <summary>
         /// Closes the specified WCT session and cancels any outstanding asynchronous operations.
         /// </summary>
         /// <param name="wctHandle">A handle to the WCT session created by the OpenThreadWaitChainSession function.</param>
         [DllImport("advapi32.dll", SetLastError = true)]
-        public static extern void CloseThreadWaitChainSession(IntPtr wctHandle);
+        internal static extern void CloseThreadWaitChainSession(IntPtr wctHandle);
 
         #region WAITCHAIN_NODE_INFO struct
 
