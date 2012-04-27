@@ -1,10 +1,10 @@
-//-----------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="TagViewModel.cs" company="none">
 //  Distributed under the 3-clause BSD license
 //  Copyright (c) Alexander Kostikov
 //  All rights reserved
 // </copyright>
-//-----------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Tagger
 {
@@ -24,18 +24,47 @@ namespace Tagger
     {
         #region Fields
 
-        private string m_Text;
-        private Color m_Color;
-        private FontFamily m_FontFamily;
-        private double m_FontSize;
-        private Color m_FontColor;
-        private int m_OffsetTop;
-        private int m_OffsetRight;
+        /// <summary>
+        /// The tag text.
+        /// </summary>
+        private string text;
+
+        /// <summary>
+        /// The tag color.
+        /// </summary>
+        private Color color;
+
+        /// <summary>
+        /// The tag font color.
+        /// </summary>
+        private Color fontColor;
+
+        /// <summary>
+        /// The tag font family.
+        /// </summary>
+        private FontFamily fontFamily;
+
+        /// <summary>
+        /// The tag font size.
+        /// </summary>
+        private double fontSize;
+
+        /// <summary>
+        /// The tag offset right.
+        /// </summary>
+        private int offsetRight;
+
+        /// <summary>
+        /// The tag offset top.
+        /// </summary>
+        private int offsetTop;
 
         #endregion
 
+        #region Constructors
+
         /// <summary>
-        /// Initializes new instance of TagRender
+        /// Initializes a new instance of the <see cref="TagViewModel"/> class. 
         /// </summary>
         public TagViewModel()
         {
@@ -50,98 +79,178 @@ namespace Tagger
             this.LoadFromDefaultCommand.Execute(null);
         }
 
+        #endregion
+
         #region Properties
 
         /// <summary>
-        /// Tag text
+        /// Gets or sets tag text
         /// </summary>
         /// <remarks>
         /// Defines width and height of tag window
         /// </remarks>
         public string Text
         {
-            get { return m_Text; }
-            set { m_Text = value; OnPropertyChanged(this.Property(() => Text)); }
+            get
+            {
+                return this.text;
+            }
+
+            set
+            {
+                this.text = value;
+                this.OnPropertyChanged(this.Property(() => this.Text));
+            }
         }
 
         /// <summary>
-        /// Color used for tag
+        /// Gets or sets color used for tag
         /// </summary>
         public Color Color
         {
-            get { return m_Color; }
-            set { m_Color = value; OnPropertyChanged(this.Property(() => Color)); }
+            get
+            {
+                return this.color;
+            }
+
+            set
+            {
+                this.color = value;
+                this.OnPropertyChanged(this.Property(() => this.Color));
+            }
         }
 
         /// <summary>
-        /// Font family used for rendering tag text
-        /// </summary>
-        public FontFamily FontFamily
-        {
-            get { return m_FontFamily; }
-            set { m_FontFamily = value; OnPropertyChanged(this.Property(() => FontFamily)); }
-        }
-
-        /// <summary>
-        /// Size of the font used to render tag text
-        /// </summary>
-        public double FontSize
-        {
-            get { return m_FontSize; }
-            set { m_FontSize = value; OnPropertyChanged(this.Property(() => FontSize)); }
-        }
-
-        /// <summary>
-        /// Color of the font used to render text
+        /// Gets or sets color of the font used to render text
         /// </summary>
         public Color FontColor
         {
-            get { return m_FontColor; }
-            set { m_FontColor = value; OnPropertyChanged(this.Property(() => FontColor)); }
+            get
+            {
+                return this.fontColor;
+            }
+
+            set
+            {
+                this.fontColor = value;
+                this.OnPropertyChanged(this.Property(() => this.FontColor));
+            }
         }
 
         /// <summary>
-        /// Top offset coordinate of tag window
+        /// Gets or sets font family used for rendering tag text
         /// </summary>
-        public int OffsetTop
+        public FontFamily FontFamily
         {
-            get { return m_OffsetTop; }
-            set { m_OffsetTop = value; OnPropertyChanged(this.Property(() => OffsetTop)); }
+            get
+            {
+                return this.fontFamily;
+            }
+
+            set
+            {
+                this.fontFamily = value;
+                this.OnPropertyChanged(this.Property(() => this.FontFamily));
+            }
         }
 
         /// <summary>
-        /// Right offset coordinate of tag window
+        /// Gets or sets size of the font used to render tag text
+        /// </summary>
+        public double FontSize
+        {
+            get
+            {
+                return this.fontSize;
+            }
+
+            set
+            {
+                this.fontSize = value;
+                this.OnPropertyChanged(this.Property(() => this.FontSize));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets right offset coordinate of tag window
         /// </summary>
         public int OffsetRight
         {
-            get { return m_OffsetRight; }
-            set { m_OffsetRight = value; OnPropertyChanged(this.Property(() => OffsetRight)); }
+            get
+            {
+                return this.offsetRight;
+            }
+
+            set
+            {
+                this.offsetRight = value;
+                this.OnPropertyChanged(this.Property(() => this.OffsetRight));
+            }
         }
 
+        /// <summary>
+        /// Gets or sets top offset coordinate of tag window
+        /// </summary>
+        public int OffsetTop
+        {
+            get
+            {
+                return this.offsetTop;
+            }
+
+            set
+            {
+                this.offsetTop = value;
+                this.OnPropertyChanged(this.Property(() => this.OffsetTop));
+            }
+        }
+
+        /// <summary>
+        /// Gets hide settings window command
+        /// </summary>
+        public DelegateCommand<object> HideSettingsCommand { get; internal set; }
+
+        /// <summary>
+        /// Gets command to kill current tag
+        /// </summary>
+        public DelegateCommand<object> KillTagCommand { get; private set; }
+
+        /// <summary>
+        /// Gets command to load current settings from default values
+        /// </summary>
+        public DelegateCommand<object> LoadFromDefaultCommand { get; private set; }
+
+        /// <summary>
+        /// Gets command to save current settings as default for all new tags
+        /// </summary>
+        public DelegateCommand<object> SaveAsDefaultCommand { get; private set; }
+
+        /// <summary>
+        /// Gets command that shows or hides settings window that is associated with the tag
+        /// </summary>
+        public DelegateCommand<object> ToggleSettingsCommand { get; internal set; }
+
         #endregion
+
+        #region Methods
 
         /// <summary>
         /// Get grouping label for the tag
         /// </summary>
-        /// <returns>Tag label that is used to make tag groups</returns>
+        /// <returns>
+        /// Tag label that is used to make tag groups
+        /// </returns>
         public TagLabel GetLabel()
         {
             return new TagLabel(this);
         }
 
         /// <summary>
-        /// Save all render settings as default that would be used for every new tag
+        /// Kill current tag
         /// </summary>
-        private void SaveAsDefault()
+        private void KillTag()
         {
-            Settings.Default.Tag_Text = this.Text;
-            Settings.Default.Tag_Color = this.Color.ToString();
-            Settings.Default.Tag_FontFamily = this.FontFamily.Source;
-            Settings.Default.Tag_FontSize = this.FontSize;
-            Settings.Default.Tag_FontColor = this.FontColor.ToString();
-            Settings.Default.Tag_OffsetTop = this.OffsetTop;
-            Settings.Default.Tag_OffsetRight = this.OffsetRight;
-            Settings.Default.Save();
+            RegistrationManager.UnregisterTag(this);
         }
 
         /// <summary>
@@ -159,37 +268,20 @@ namespace Tagger
         }
 
         /// <summary>
-        /// Kill current tag
+        /// Save all render settings as default that would be used for every new tag
         /// </summary>
-        private void KillTag()
+        private void SaveAsDefault()
         {
-            RegistrationManager.UnregisterTag(this);
+            Settings.Default.Tag_Text = this.Text;
+            Settings.Default.Tag_Color = this.Color.ToString();
+            Settings.Default.Tag_FontFamily = this.FontFamily.Source;
+            Settings.Default.Tag_FontSize = this.FontSize;
+            Settings.Default.Tag_FontColor = this.FontColor.ToString();
+            Settings.Default.Tag_OffsetTop = this.OffsetTop;
+            Settings.Default.Tag_OffsetRight = this.OffsetRight;
+            Settings.Default.Save();
         }
 
-        /// <summary>
-        /// Shows or hides settings window that is associated with the tag
-        /// </summary>
-        public DelegateCommand<object> ToggleSettingsCommand { get; internal set; }
-
-        /// <summary>
-        /// Hide settings window command
-        /// </summary>
-        public DelegateCommand<object> HideSettingsCommand { get; internal set; }
-
-        /// <summary>
-        /// Command to save current settings as default for all new tags
-        /// </summary>
-        public DelegateCommand<object> SaveAsDefaultCommand { get; private set; }
-
-        /// <summary>
-        /// Command to load current settings from default values
-        /// </summary>
-        public DelegateCommand<object> LoadFromDefaultCommand { get; private set; }
-
-        /// <summary>
-        /// Command to kill current tag
-        /// </summary>
-        public DelegateCommand<object> KillTagCommand { get; private set; }
+        #endregion
     }
 }
-

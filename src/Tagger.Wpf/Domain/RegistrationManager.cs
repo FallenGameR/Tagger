@@ -152,7 +152,7 @@ namespace Tagger
         /// Unregisters existing tag and clean up associated resources
         /// </summary>
         /// <param name="hostWindow">Handle to the window host that is tagged</param>
-        private static void UnregisterTag(IntPtr hostWindow)
+        internal static void UnregisterTag(IntPtr hostWindow)
         {
             lock (knownTags)
             {
