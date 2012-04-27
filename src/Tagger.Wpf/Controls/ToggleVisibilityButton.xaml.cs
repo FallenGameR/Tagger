@@ -152,4 +152,3 @@ namespace Tagger.Controls
         }
     }
 }
-

@@ -26,48 +26,53 @@ namespace Tagger
         /// <summary>
         /// Windows that should not be tagged
         /// </summary>
-        private static List<IntPtr> Exceptions = new List<IntPtr>();
+        private static readonly List<IntPtr> exceptions = new List<IntPtr>();
 
         /// <summary>
         /// All known tag contexts
         /// </summary>
-        private static List<TagContext> KnownTags = new List<TagContext>();
+        private static readonly List<TagContext> knownTags = new List<TagContext>();
 
         /// <summary>
         /// Template method for tag and settings hotkeys
         /// </summary>
+        /// <remarks>
+        /// Registers new tag if there was none.
+        /// Maintains host window focus.
+        /// </remarks>
         /// <param name="tagExistsHandler">Fallback action if tag was already registered</param>
-        public static TagContext TagRegistrationHandler(Action<TagContext> tagExistsHandler)
+        public static void TagRegistrationHandler(Action<TagContext> tagExistsHandler)
         {
             // Get foremost host
-            var host = RegistrationManager.GetHostHandle();
-            if (host == IntPtr.Zero) { return null; }
+            var host = GetHostHandle();
+            if (host == IntPtr.Zero)
+            {
+                return;
+            }
 
             // Register new tag if there is no tag associated with host window
-            var context = RegistrationManager.GetKnownTagContext(host);
+            var context = GetKnownTagContext(host);
             if (context == null)
             {
-                return RegistrationManager.RegisterTag(host);
+                RegisterTag(host);
+                return;
             }
 
             // Otherwise use custom handler for already existing tag
             tagExistsHandler(context);
 
-            // Keep focus on settings text if setting are visible
             if (context.TagControlWindow.IsVisible)
             {
+                // Keep focus on settings text if tag control window is visible
                 context.TagControlWindow.Focus();
                 context.TagControlWindow.TextTxt.Focus();
                 context.TagControlWindow.TextTxt.SelectAll();
             }
-            // Otherwise keep focus on host window
             else
             {
+                // Otherwise keep focus on host window
                 NativeAPI.SetForegroundWindow(context.HostWindow);
             }
-
-            // Return existing context 
-            return context;
         }
 
         /// <summary>
@@ -75,7 +80,7 @@ namespace Tagger
         /// </summary>
         public static void TagHotkeyHandler()
         {
-            RegistrationManager.TagRegistrationHandler(context => { context.TagOverlayWindow.ToggleVisibility(); });
+            TagRegistrationHandler(context => context.TagOverlayWindow.ToggleVisibility());
         }
 
         /// <summary>
@@ -83,7 +88,7 @@ namespace Tagger
         /// </summary>
         public static void SettingsHotkeyHandler()
         {
-            RegistrationManager.TagRegistrationHandler(context => { context.TagControlWindow.ToggleVisibility(); });
+            TagRegistrationHandler(context => context.TagControlWindow.ToggleVisibility());
         }
 
         /// <summary>
@@ -94,7 +99,7 @@ namespace Tagger
         public static IEnumerable<TagLabel> GetExistingTags()
         {
             return (
-                from tag in KnownTags
+                from tag in knownTags
                 let label = tag.TagViewModel.GetLabel()
                 orderby label.Text
                 orderby label.Color.ToString()
@@ -111,7 +116,7 @@ namespace Tagger
             var handle = window.GetHandle();
 
             Check.Ensure(handle != IntPtr.Zero, "Do not call RegisterException from constructor");
-            RegistrationManager.Exceptions.Add(handle);
+            exceptions.Add(handle);
         }
 
         /// <summary>
@@ -124,26 +129,23 @@ namespace Tagger
             var handle = window.GetHandle();
 
             Check.Ensure(handle != IntPtr.Zero, "Do not call UnregisterException from constructor");
-            RegistrationManager.Exceptions.Remove(handle);
+            exceptions.Remove(handle);
         }
 
         /// <summary>
         /// Registeres new tag
         /// </summary>
         /// <param name="hostWindow">Handle to the window host that is tagged</param>
-        /// <returns>Tag context created for the tag</returns>
-        private static TagContext RegisterTag(IntPtr hostWindow)
+        private static void RegisterTag(IntPtr hostWindow)
         {
             var context = new TagContext();
             context.AttachToHost(hostWindow);
-            context.HostWindowListner.WindowDestroyed += delegate { RegistrationManager.UnregisterTag(hostWindow); };
+            context.HostWindowListner.WindowDestroyed += delegate { UnregisterTag(hostWindow); };
 
-            lock (RegistrationManager.KnownTags)
+            lock (knownTags)
             {
-                RegistrationManager.KnownTags.Add(context);
+                knownTags.Add(context);
             }
-
-            return context;
         }
 
         /// <summary>
@@ -152,30 +154,13 @@ namespace Tagger
         /// <param name="hostWindow">Handle to the window host that is tagged</param>
         private static void UnregisterTag(IntPtr hostWindow)
         {
-            lock (RegistrationManager.KnownTags)
+            lock (knownTags)
             {
-                var match = RegistrationManager.KnownTags.SingleOrDefault(c => c.HostWindow == hostWindow);
+                var match = knownTags.SingleOrDefault(c => c.HostWindow == hostWindow);
                 if (match != null)
                 {
                     match.Dispose();
-                    RegistrationManager.KnownTags.Remove(match);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Unregisters existing tag and clean up associated resources
-        /// </summary>
-        /// <param name="tagViewModel">Tag view model that is used for tag lookup</param>
-        public static void UnregisterTag(TagViewModel tagViewModel)
-        {
-            lock (RegistrationManager.KnownTags)
-            {
-                var match = RegistrationManager.KnownTags.SingleOrDefault(c => c.TagViewModel == tagViewModel);
-                if (match != null)
-                {
-                    match.Dispose();
-                    RegistrationManager.KnownTags.Remove(match);
+                    knownTags.Remove(match);
                 }
             }
         }
@@ -187,7 +172,7 @@ namespace Tagger
         /// <returns>Existing context or null</returns>
         private static TagContext GetKnownTagContext(IntPtr host)
         {
-            return RegistrationManager.KnownTags.SingleOrDefault(c => c.HostWindow == host);
+            return knownTags.SingleOrDefault(c => c.HostWindow == host);
         }
 
         /// <summary>
@@ -201,21 +186,21 @@ namespace Tagger
             var foremostWindow = NativeAPI.GetForegroundWindow();
 
             // If window is in exceptions, ignore call
-            var exceptionMatch = RegistrationManager.Exceptions.Contains(foremostWindow);
+            var exceptionMatch = exceptions.Contains(foremostWindow);
             if (exceptionMatch)
             {
                 return IntPtr.Zero;
             }
 
             // If tag window is foremost, return its owner
-            var tagMatch = RegistrationManager.KnownTags.SingleOrDefault(c => c.TagOverlayWindow.GetHandle() == foremostWindow);
+            var tagMatch = knownTags.SingleOrDefault(c => c.TagOverlayWindow.GetHandle() == foremostWindow);
             if (tagMatch != null)
             {
                 return tagMatch.TagOverlayWindow.GetOwner();
             }
 
             // If settings window is foremost, return corresponding tag owner
-            var settingsMatch = RegistrationManager.KnownTags.SingleOrDefault(c => c.TagControlWindow.GetHandle() == foremostWindow);
+            var settingsMatch = knownTags.SingleOrDefault(c => c.TagControlWindow.GetHandle() == foremostWindow);
             if (settingsMatch != null)
             {
                 return settingsMatch.TagOverlayWindow.GetOwner();
@@ -226,4 +211,3 @@ namespace Tagger
         }
     }
 }
-
