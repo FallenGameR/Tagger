@@ -21,9 +21,11 @@ namespace Tagger
     public class TagLabel : IEquatable<TagLabel>
     {
         /// <summary>
-        /// Initializes new instance of TagLabel
+        /// Initializes a new instance of the <see cref="TagLabel"/> class. 
         /// </summary>
-        /// <param name="viewModel">ViewModel that defines all tag visible properties</param>
+        /// <param name="viewModel">
+        /// ViewModel that defines all tag visible properties
+        /// </param>
         public TagLabel(TagViewModel viewModel)
         {
             Check.Require(viewModel != null, "View model must not be null");
@@ -31,7 +33,17 @@ namespace Tagger
             this.Text = viewModel.Text;
             this.Color = viewModel.Color;
         }
-        
+
+        /// <summary>
+        /// Gets text of the tag
+        /// </summary>
+        public string Text { get; private set; }
+
+        /// <summary>
+        /// Gets color of the tag (the background color, not font color)
+        /// </summary>
+        public Color Color { get; private set; }
+
         /// <summary>
         /// Gets hash code for the object
         /// </summary>
@@ -49,8 +61,7 @@ namespace Tagger
         public override bool Equals(object obj)
         {
             var other = obj as TagLabel;
-            if (other == null) { return false; }
-            return this.Equals(other);
+            return other != null && this.Equals(other);
         }
 
         /// <summary>
@@ -63,16 +74,5 @@ namespace Tagger
             return this.Text == other.Text
                 && this.Color == other.Color;
         }
-
-        /// <summary>
-        /// Text of the tag
-        /// </summary>
-        public string Text { get; private set; }
-
-        /// <summary>
-        /// Color of the tag (the background color, not font color)
-        /// </summary>
-        public Color Color { get; private set; }
     }
 }
-
