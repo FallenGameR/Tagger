@@ -18,7 +18,7 @@ namespace Tagger.ViewModels
     public class GlobalSettingsViewModel : ViewModelBase
     {
         /// <summary>
-        /// Flag that tells if color randomization is used
+        /// Gets or sets a value indicating whether color randomization is used
         /// </summary>
         /// <remarks>
         /// If set all new tag would be initialized with random tag color
@@ -29,12 +29,12 @@ namespace Tagger.ViewModels
             {
                 return Settings.Default.GlobalSettings_UseColorRandomization;
             }
+
             set
             {
                 Settings.Default.GlobalSettings_UseColorRandomization = value; 
-                OnPropertyChanged(this.Property(() => UseColorRandomization));
+                this.OnPropertyChanged(this.Property(() => this.UseColorRandomization));
             }
         }
     }
 }
-
