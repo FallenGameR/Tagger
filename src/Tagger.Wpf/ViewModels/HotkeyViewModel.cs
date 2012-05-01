@@ -10,12 +10,10 @@ namespace Tagger.ViewModels
 {
     using System;
     using System.ComponentModel;
+    using System.Security.Permissions;
     using System.Windows.Input;
-
     using Microsoft.Practices.Prism.Commands;
-
     using Tagger.Wpf.Views;
-
     using Utils.Diagnostics;
     using Utils.Extensions;
     using Utils.Prism;
@@ -171,6 +169,7 @@ namespace Tagger.ViewModels
         /// <summary>
         /// Cleanup resources
         /// </summary>
+        [SecurityPermission(SecurityAction.LinkDemand)]
         protected override void OnDisposeManaged()
         {
             base.OnDisposeManaged();

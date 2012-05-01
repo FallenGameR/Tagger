@@ -11,6 +11,7 @@ namespace Tagger
     using System;
     using System.ComponentModel;
     using System.Runtime.InteropServices;
+    using System.Security.Permissions;
     using System.Windows.Forms;
     using System.Windows.Input;
     using Tagger.WinAPI;
@@ -28,6 +29,7 @@ namespace Tagger
         /// </summary>
         /// <param name="modifier">Key modifier to use for global hotkey</param>
         /// <param name="key">Key valuse to use for global hotkey</param>
+        [SecurityPermission(SecurityAction.LinkDemand)]
         public GlobalHotkey(ModifierKeys modifier, Key key)
         {
             this.CreateHandle(new CreateParams());
@@ -50,6 +52,7 @@ namespace Tagger
         /// <summary>
         /// Cleaning up created handle
         /// </summary>
+        [SecurityPermission(SecurityAction.LinkDemand)]
         public void Dispose()
         {
             NativeMethods.UnregisterHotKey(this.Handle, 0);            

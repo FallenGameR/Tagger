@@ -71,13 +71,7 @@ namespace Tagger.WinAPI
 
         #endregion
 
-        /// <summary>
-        /// An application-defined callback function used with the EnumWindows or EnumDesktopWindows function.
-        /// </summary>
-        /// <param name="hwnd">A handle to a top-level window.</param>
-        /// <param name="lParam">The application-defined value given in EnumWindows or EnumDesktopWindows. </param>
-        /// <returns>To continue enumeration, the callback function must return TRUE; to stop enumeration, it must return FALSE. </returns>
-        public delegate bool EnumWindowsCallback(IntPtr hwnd, int lParam);
+        #region Methods
 
         /// <summary>
         /// Retrieves the identifier of the thread that created the specified window and, 
@@ -107,44 +101,9 @@ namespace Tagger.WinAPI
         /// <param name="lParam">Additional message-specific information 2</param>
         /// <returns>The return value specifies the result of the message processing; it depends on the message sent</returns>
         [DllImport("user32.dll")]
-        internal static extern int SendMessage(IntPtr hWnd, uint msg, int wParam, ref RECT lParam);
+        internal static extern IntPtr SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, ref RECT lParam);
 
-        /// <summary>
-        /// Retrieves information about the specified window.
-        /// </summary>
-        /// <param name="hWnd">A handle to the window and, indirectly, the class to which the window belongs.</param>
-        /// <param name="nIndex">The zero-based offset to the value to be retrieved.</param>
-        /// <returns>
-        /// If the function succeeds, the return value is the requested value.
-        /// If the function fails, the return value is zero. To get extended error information, call GetLastError.
-        /// </returns>
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern ulong GetWindowLong(IntPtr hWnd, int nIndex);
-
-        /// <summary>
-        /// Copies the text of the specified window's title bar (if it has one) into a buffer.
-        /// </summary>
-        /// <param name="hWnd">A handle to the window or control containing the text. </param>
-        /// <param name="lpString">The buffer that will receive the text. If the string is as long or longer than the buffer, the string is truncated and terminated with a null character.</param>
-        /// <param name="nMaxCount">The maximum number of characters to copy to the buffer, including the null character. If the text exceeds this limit, it is truncated.</param>
-        /// <returns>
-        /// If the function succeeds, the return value is the length, in characters, of the copied string, not including 
-        /// the terminating null character. If the window has no title bar or text, if the title bar is empty, or if the 
-        /// window or control handle is invalid, the return value is zero. To get extended error information, call GetLastError.</returns>
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
-
-        /// <summary>
-        /// Enumerates all top-level windows on the screen by passing the handle to each window, in turn, to an application-defined callback function.
-        /// </summary>
-        /// <param name="lpEnumFunc">A pointer to an application-defined callback function. For more information, see EnumWindowsProc. </param>
-        /// <param name="lParam">An application-defined value to be passed to the callback function. </param>
-        /// <returns>
-        /// If the function succeeds, the return value is nonzero.
-        /// If the function fails, the return value is zero. To get extended error information, call GetLastError.
-        /// </returns>
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern int EnumWindows(EnumWindowsCallback lpEnumFunc, IntPtr lParam);
+        #endregion
 
         #region RECT struct
 

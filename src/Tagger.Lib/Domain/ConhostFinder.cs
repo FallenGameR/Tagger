@@ -14,6 +14,7 @@ namespace Tagger
     using System.Diagnostics;
     using System.Linq;
     using System.Runtime.InteropServices;
+    using System.Security.Permissions;
     using Tagger.WinAPI;
 
     /// <summary>
@@ -60,6 +61,7 @@ namespace Tagger
         /// Process ID of conhost process that hosts the console application.
         /// ConsoleAppProcessId is returned if no conhost process if found.
         /// </returns>
+        [SecurityPermission(SecurityAction.LinkDemand)]
         public int GetConhostProcessId(int consoleAppProcessId)
         {
             var query =

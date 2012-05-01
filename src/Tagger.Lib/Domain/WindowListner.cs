@@ -10,6 +10,8 @@ namespace Tagger
 {
     using System;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Security.Permissions;
     using System.Windows.Automation;
     using System.Windows.Threading;
     using ManagedWinapi.Accessibility;
@@ -59,6 +61,9 @@ namespace Tagger
         /// Initializes a new instance of the <see cref="WindowListner"/> class. 
         /// </summary>
         /// <param name="windowHandle">Window that we need to track</param>
+        /// <remarks>Dispose method handles cleanup</remarks>
+        [SecurityPermission(SecurityAction.LinkDemand)]
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public WindowListner(IntPtr windowHandle)
         {
             Check.Require(windowHandle != IntPtr.Zero, "Window handle must not be zero");
@@ -159,6 +164,7 @@ namespace Tagger
         /// CUI application support is only for Windows 7, Windows Server 2008 R2.
         /// Previous versions of Windows didn't have conhost.exe process to host CUI app.
         /// </remarks>
+        [SecurityPermission(SecurityAction.LinkDemand)]
         private static int GetPidFromWindow(IntPtr windowHandle)
         {
             int pid;
@@ -181,6 +187,7 @@ namespace Tagger
         /// </summary>
         /// <param name="pid">Process ID for the checked application</param>
         /// <returns>true is application is build as console application</returns>
+        [SecurityPermission(SecurityAction.LinkDemand)]        
         private static bool IsConsoleApplication(int pid)
         {
             var process = Process.GetProcessById(pid);
