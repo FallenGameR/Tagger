@@ -20,6 +20,7 @@ namespace Tagger
 
     using Utils.Diagnostics;
     using Utils.Extensions;
+    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// Context of a tag
@@ -51,10 +52,11 @@ namespace Tagger
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TagContext"/> class. 
+        /// At the end of method window objects are created, initialized and 
+        /// ready to connect to a host window.
         /// </summary>
-        /// <remarks>
-        /// Windows objects are created, initialized and ready to connect to a host window
-        /// </remarks>
+        /// <remarks>Dispose method handles cleanup.</remarks>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public TagContext()
         {
             this.TagViewModel = new TagViewModel();

@@ -1,4 +1,3 @@
-FxCop
 Fix exit via icon when there is one tag present
 StyleCop
 First tag creation speed up
