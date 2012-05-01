@@ -222,7 +222,7 @@ namespace Tagger
             }
 
             this.TagControlWindow.ToggleVisibility();
-            NativeMethods.SetForegroundWindow(this.HostWindow);
+            SafeNativeMethods.SetForegroundWindow(this.HostWindow);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Tagger.WinAPI
     using System.Text;
 
     /// <summary>
-    /// Win32 API call for windows handles manipulation
+    /// Win32 API call for windows manipulation
     /// </summary>
     public static partial class NativeMethods
     {
@@ -80,30 +80,6 @@ namespace Tagger.WinAPI
         public delegate bool EnumWindowsCallback(IntPtr hwnd, int lParam);
 
         /// <summary>
-        /// Retrieves a handle to the foreground window (the window with which the user is currently working)
-        /// </summary>
-        /// <returns>
-        /// The return value is a handle to the foreground window. The foreground window can 
-        /// be NULL in certain circumstances, such as when a window is losing activation.
-        /// </returns>
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetForegroundWindow();
-
-        /// <summary>
-        /// Brings the thread that created the specified window into the foreground and activates the window. 
-        /// Keyboard input is directed to the window, and various visual cues are changed for the user. The 
-        /// system assigns a slightly higher priority to the thread that created the foreground window than 
-        /// it does to other threads. 
-        /// </summary>
-        /// <param name="hWnd">A handle to the window that should be activated and brought to the foreground. </param>
-        /// <returns>
-        /// If the window was brought to the foreground, the return value is nonzero.
-        /// If the window was not brought to the foreground, the return value is zero.
-        /// </returns>
-        [DllImport("user32.dll")]
-        public static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        /// <summary>
         /// Retrieves the identifier of the thread that created the specified window and, 
         /// optionally, the identifier of the process that created the window. 
         /// </summary>
@@ -168,7 +144,7 @@ namespace Tagger.WinAPI
         /// If the function fails, the return value is zero. To get extended error information, call GetLastError.
         /// </returns>
         [DllImport("user32.dll", SetLastError = true)]
-        internal static extern int EnumWindows(EnumWindowsCallback lpEnumFunc, int lParam);
+        internal static extern int EnumWindows(EnumWindowsCallback lpEnumFunc, IntPtr lParam);
 
         #region RECT struct
 

@@ -92,6 +92,7 @@
       <DependentUpon>ToggleVisibilityButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="Domain\ColorRandom.cs" />
+    <Compile Include="Domain\SafeNativeMethods.cs" />
     <Compile Include="Domain\RegistrationManager.cs" />
     <Compile Include="Domain\TagContext.cs" />
     <Compile Include="Domain\TagLabel.cs" />

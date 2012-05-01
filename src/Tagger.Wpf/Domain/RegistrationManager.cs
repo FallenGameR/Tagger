@@ -10,11 +10,9 @@ namespace Tagger
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Windows;
-
-    using Tagger.WinAPI;
-
     using Utils.Diagnostics;
     using Utils.Extensions;
 
@@ -71,7 +69,7 @@ namespace Tagger
             else
             {
                 // Otherwise keep focus on host window
-                NativeMethods.SetForegroundWindow(context.HostWindow);
+                SafeNativeMethods.SetForegroundWindow(context.HostWindow);
             }
         }
 
@@ -170,6 +168,7 @@ namespace Tagger
         /// Registeres new tag
         /// </summary>
         /// <param name="hostWindow">Handle to the window host that is tagged</param>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         private static void RegisterTag(IntPtr hostWindow)
         {
             var context = new TagContext();
@@ -200,7 +199,7 @@ namespace Tagger
         /// </returns>
         private static IntPtr GetHostHandle()
         {
-            var foremostWindow = NativeMethods.GetForegroundWindow();
+            var foremostWindow = SafeNativeMethods.GetForegroundWindow();
 
             // If window is in exceptions, ignore call
             var exceptionMatch = exceptions.Contains(foremostWindow);
