@@ -10,17 +10,14 @@ namespace Tagger
 {
     using System;
     using System.ComponentModel;
-
+    using System.Diagnostics.CodeAnalysis;
     using Microsoft.Practices.Prism.Commands;
-
     using Tagger.Properties;
     using Tagger.WinAPI;
     using Tagger.Wpf;
     using Tagger.Wpf.Windows;
-
     using Utils.Diagnostics;
     using Utils.Extensions;
-    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// Context of a tag
@@ -55,8 +52,7 @@ namespace Tagger
         /// At the end of method window objects are created, initialized and 
         /// ready to connect to a host window.
         /// </summary>
-        /// <remarks>Dispose method handles cleanup.</remarks>
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Dispose method handles cleanup")]
         public TagContext()
         {
             this.TagViewModel = new TagViewModel();

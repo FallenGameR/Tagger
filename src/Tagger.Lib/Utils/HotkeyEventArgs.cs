@@ -9,6 +9,7 @@
 namespace Tagger
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Windows.Forms;
     using System.Windows.Input;
 
@@ -26,6 +27,8 @@ namespace Tagger
         /// <remarks>
         /// Constructs readable arguments for global hotkey event
         /// </remarks>
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation",
+            Justification = "Reviewed. Suppression is OK here.")]
         public HotkeyEventArgs(int wmHotkeyLParam)
         {
             this.Key = (Keys)((wmHotkeyLParam >> 16) & 0xFFFF);

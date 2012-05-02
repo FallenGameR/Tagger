@@ -61,9 +61,8 @@ namespace Tagger
         /// Initializes a new instance of the <see cref="WindowListner"/> class. 
         /// </summary>
         /// <param name="windowHandle">Window that we need to track</param>
-        /// <remarks>Dispose method handles cleanup</remarks>
         [SecurityPermission(SecurityAction.LinkDemand)]
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Dispose method handles cleanup")]
         public WindowListner(IntPtr windowHandle)
         {
             Check.Require(windowHandle != IntPtr.Zero, "Window handle must not be zero");

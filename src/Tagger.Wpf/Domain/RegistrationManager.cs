@@ -168,8 +168,7 @@ namespace Tagger
         /// Registeres new tag
         /// </summary>
         /// <param name="hostWindow">Handle to the window host that is tagged</param>
-        /// <remarks>Unregister method is responsible for cleanup</remarks>
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Unregister method is responsible for cleanup")]
         private static void RegisterTag(IntPtr hostWindow)
         {
             var context = new TagContext();

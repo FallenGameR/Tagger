@@ -8,7 +8,7 @@
 
 namespace Tagger
 {
-    using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Runtime.InteropServices;
     using Tagger.WinAPI;
@@ -25,6 +25,8 @@ namespace Tagger
         /// Initializes a new instance of the <see cref="PortableExecutableReader"/> class. 
         /// </summary>
         /// <param name="filePath">Path to the file to read</param>
+        [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times",
+            Justification = "FileStream can handle double dispose.")]
         public PortableExecutableReader(string filePath)
         {
             // Read in the DLL or EXE and get the timestamp

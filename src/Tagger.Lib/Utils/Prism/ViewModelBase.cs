@@ -310,11 +310,10 @@ namespace Utils.Prism
             this.OnDisposeUnmanaged();
 
 #if DEBUG
-    
-    // Log dispose call in debug output
+            // Log dispose call in debug output
             Debug.WriteLine(string.Format(
                 "{0} ({1}, {2}) {3}", 
-                DisplayName ?? "ViewModel", 
+                this.DisplayName ?? "ViewModel", 
                 GetType().Name, 
                 GetHashCode(), 
                 wasCalledFromDisposeMethod ? "Disposed" : "Finalized"));
