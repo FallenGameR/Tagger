@@ -13,6 +13,7 @@ namespace Tagger.Wpf
     using System.IO.Compression;
     using System.Reflection;
     using System.Windows;
+    using Utils.Extensions;
 
     /// <summary>
     /// Interaction logic for App.xaml

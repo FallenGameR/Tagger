@@ -69,6 +69,10 @@ namespace Tagger.Wpf
                 trayIconViewModel.Dispose();
                 globalSettingsViewModel.Dispose();
             };
+
+            // Pre-compiling JIT code to speadup first tag appearance
+            var context = new TagContext();
+            context.Dispose();
         }
 
         /// <summary>
