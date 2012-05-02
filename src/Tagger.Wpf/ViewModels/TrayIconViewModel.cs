@@ -14,9 +14,7 @@ namespace Tagger.ViewModels
     using System.Windows;
 
     using Microsoft.Practices.Prism.Commands;
-
     using Tagger.Wpf;
-
     using Utils.Prism;
 
     /// <summary>
@@ -42,6 +40,7 @@ namespace Tagger.ViewModels
             this.CloseProgramCommand = new DelegateCommand<object>(delegate
             {
                 // http://stackoverflow.com/questions/1867380/application-current-shutdown-doesnt
+                // That wouldn't quit application under debugger if there is at least one tag registered
                 new Thread(() => App
                     .MainSettingsWindow
                     .Dispatcher

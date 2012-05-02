@@ -1,5 +1,3 @@
-Fix exit via icon when there is one tag present
-StyleCop
 First tag creation speed up
 Binary for usage
 Project readme on the main github page
