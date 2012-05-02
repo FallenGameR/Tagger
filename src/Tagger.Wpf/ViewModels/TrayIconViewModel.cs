@@ -39,12 +39,11 @@ namespace Tagger.ViewModels
             });
             this.CloseProgramCommand = new DelegateCommand<object>(delegate
             {
-                // http://stackoverflow.com/questions/1867380/application-current-shutdown-doesnt
-                // That wouldn't quit application under debugger if there is at least one tag registered
-                new Thread(() => App
-                    .MainSettingsWindow
-                    .Dispatcher
-                    .BeginInvoke((Action)(() => Application.Current.Shutdown()))).Start();
+                // Application.Current.Shutdown doesn't work here - application wouldn't exit.
+                // Solution with calling Shutdown from MainSettingsWindow Dispatcher also doesn't work.
+                // More details - http://stackoverflow.com/questions/1867380/application-current-shutdown-doesnt
+                // If you want to track this glitch try closing from tray with at least one tag registered.
+                Process.GetCurrentProcess().Kill();
             });
         }
 
