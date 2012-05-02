@@ -8,9 +8,7 @@
 
 namespace Tagger.ViewModels
 {
-    using System;
     using System.Diagnostics;
-    using System.Threading;
     using System.Windows;
 
     using Microsoft.Practices.Prism.Commands;
