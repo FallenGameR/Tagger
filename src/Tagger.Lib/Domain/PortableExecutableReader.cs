@@ -27,46 +27,30 @@ namespace Tagger
         /// <param name="filePath">Path to the file to read</param>
         public PortableExecutableReader(string filePath)
         {
-            Stream stream = null;
-            try
+            // Read in the DLL or EXE and get the timestamp
+            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            using (var reader = new BinaryReader(stream))
             {
-                // Read in the DLL or EXE and get the timestamp
-                stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-                using (var reader = new BinaryReader(stream))
+                // Read DOS header
+                this.DosHeader = ReadStructure<NativeMethods.IMAGE_DOS_HEADER>(reader);
+
+                // Add 4 bytes to the offset
+                stream.Seek(this.DosHeader.e_lfanew, SeekOrigin.Begin);
+
+                // Skip NT header signature 
+                reader.ReadUInt32();
+
+                // Read file header
+                this.FileHeader = ReadStructure<NativeMethods.IMAGE_FILE_HEADER>(reader);
+
+                // Read optional header
+                if (this.IsOptionalHeader32)
                 {
-                    // Null stream to not to dispose it twice
-                    stream = null;
-
-                    // Read DOS header
-                    this.DosHeader = ReadStructure<NativeMethods.IMAGE_DOS_HEADER>(reader);
-
-                    // Add 4 bytes to the offset
-                    stream.Seek(this.DosHeader.e_lfanew, SeekOrigin.Begin);
-
-                    // Skip NT header signature 
-                    reader.ReadUInt32();
-
-                    // Read file header
-                    this.FileHeader = ReadStructure<NativeMethods.IMAGE_FILE_HEADER>(reader);
-
-                    // Read optional header
-                    if (this.IsOptionalHeader32)
-                    {
-                        this.OptionalHeader32 = ReadStructure<NativeMethods.IMAGE_OPTIONAL_HEADER32>(reader);
-                    }
-                    else
-                    {
-                        this.OptionalHeader64 = ReadStructure<NativeMethods.IMAGE_OPTIONAL_HEADER64>(reader);
-                    }
+                    this.OptionalHeader32 = ReadStructure<NativeMethods.IMAGE_OPTIONAL_HEADER32>(reader);
                 }
-            }
-            finally
-            {
-                // This workaround is suggested by msdn
-                // http://msdn.microsoft.com/en-us/library/ms182334%28v=vs.100%29.aspx
-                if (stream != null)
+                else
                 {
-                    stream.Dispose();
+                    this.OptionalHeader64 = ReadStructure<NativeMethods.IMAGE_OPTIONAL_HEADER64>(reader);
                 }
             }
         }
