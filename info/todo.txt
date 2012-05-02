@@ -1,4 +1,5 @@
-First tag creation speed up
 Binary for usage
 Project readme on the main github page
 1.0
+Update binary to be 1.0
+
