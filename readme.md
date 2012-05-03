@@ -1,4 +1,4 @@
-<img src="https://github.com/FallenGameR/Tagger/raw/master/info/Logo.png" alt="Tagger logo" height="120" width="300">
+<img src="https://github.com/FallenGameR/Tagger/raw/master/info/Logo.png" alt="Tagger logo" height="120" width="300" align="middle">
 ================================
 
 What is Tagger?
