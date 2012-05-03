@@ -11,9 +11,9 @@ Screenshot
 Features
 --------
 
-`Single executable.`
-`Fully operational via keyboard.`
-`Minimalistic GUI.`
+\- Single executable.  
+\- Fully operational via keyboard.  
+\- Minimalistic GUI.
 
 Requirements
 ------------
@@ -29,10 +29,10 @@ How to install
 --------------
 Download [binary](https://github.com/FallenGameR/Tagger/raw/master/bins/Tagger.exe) and run it.
 
-You can also create shortcut that would start Tagger in minimized to tray mode on Windows startup:
-create shortcut for tagger  
-select 'Run Minimized' in shortcut properties on 'shortcut' tab  
-place shortcut to Windows Startup folder "C:\Users\%USERNAME%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup"  
+You can also create shortcut that would start Tagger in minimized to tray mode on Windows startup:  
+\- create shortcut for tagger  
+\- select 'Run Minimized' in shortcut properties on 'shortcut' tab  
+\- place shortcut to Windows Startup folder "C:\Users\%USERNAME%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup"
 
 Donations
 ---------
