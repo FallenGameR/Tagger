@@ -26,7 +26,7 @@ Move tag with mouse drag and drop or via tag settings.
 
 Donations
 ---------
-If you want to donate, buy me something from [my wish list](http://www.amazon.com/gp/registry/wishlist/J8ORBQBR43HG).
+If you want to donate, buy me something from my [wish list](http://www.amazon.com/gp/registry/wishlist/J8ORBQBR43HG).
 
 --------------------------------
 
