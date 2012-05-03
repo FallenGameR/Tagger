@@ -10,10 +10,8 @@ Screenshot
 
 Features
 --------
-
-\- Single executable.  
-\- Fully operational via keyboard.  
-\- Minimalistic GUI.
+Single executable.  
+Fully operational via keyboard.
 
 Requirements
 ------------
@@ -21,8 +19,8 @@ Windows 7 or Windows 2008 Server R2 or higher.
 
 Manual
 ------
-Create tag for current active window with tag hotkey (Ctrl+Alt+S by default). The same hotkey hides tag.
-Change tag for current active window with settings hotkey (Ctrl+Alt+D by default). Or you can right click on tag.
+Create tag for current active window with tag hotkey (Ctrl+Alt+S by default). The same hotkey hides tag.  
+Change tag for current active window with settings hotkey (Ctrl+Alt+D by default). Or you can right click on tag.  
 Move tag with drag and drop or via tag settings.
 
 How to install
@@ -30,9 +28,8 @@ How to install
 Download [binary](https://github.com/FallenGameR/Tagger/raw/master/bins/Tagger.exe) and run it.
 
 You can also create shortcut that would start Tagger in minimized to tray mode on Windows startup:  
-\- create shortcut for tagger  
-\- select 'Run Minimized' in shortcut properties on 'shortcut' tab  
-\- place shortcut to Windows Startup folder "C:\Users\%USERNAME%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup"
+\- Create shortcut for tagger with 'Run Minimized' setting in properties.  
+\- Place shortcut to "C:\Users\\*%USERNAME%*\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup"
 
 Donations
 ---------
