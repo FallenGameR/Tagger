@@ -12,11 +12,11 @@ Windows 7 or Windows 2008 Server R2 or higher.
 
 Installation
 --------------
-Download [single executable](https://github.com/FallenGameR/Tagger/raw/master/bins/Tagger.exe) and run it. That's all =)
+Download [single executable](https://github.com/FallenGameR/Tagger/raw/master/bins/Tagger.exe) and run it. That's it =)
 
 You can also create shortcut that would start Tagger in minimized to tray mode on Windows startup:  
 \- Create shortcut for tagger with 'Run Minimized' setting in properties.  
-\- Place shortcut to "C:\Users\\*%USERNAME%*\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup"
+\- Place shortcut to "C:\Users\\*%USERNAME%*\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup".
 
 Manual
 ------
