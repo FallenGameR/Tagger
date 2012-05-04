@@ -1,2 +1,2 @@
-Kill tag command from settings should focus previous host after tag removal.
+Review github
 1.0 + Update binary to be 1.0

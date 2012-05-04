@@ -131,36 +131,48 @@ namespace Tagger
         }
 
         /// <summary>
-        /// Unregisters existing tag and clean up associated resources
+        /// Unregisters existing tag and cleans up associated resources
         /// </summary>
         /// <param name="hostWindow">Handle to the window host that is tagged</param>
         public static void UnregisterTag(IntPtr hostWindow)
         {
-            lock (knownTags)
-            {
-                var match = knownTags.SingleOrDefault(c => c.HostWindow == hostWindow);
-                if (match != null)
-                {
-                    match.Dispose();
-                    knownTags.Remove(match);
-                }
-            }
+            UnregisterTag(c => c.HostWindow == hostWindow);
         }
 
         /// <summary>
-        /// Unregisters existing tag and clean up associated resources
+        /// Unregisters existing tag and cleans up associated resources
         /// </summary>
         /// <param name="tagViewModel">Tag view model that is used for tag lookup</param>
         public static void UnregisterTag(TagViewModel tagViewModel)
         {
+            UnregisterTag(c => c.TagViewModel == tagViewModel);
+        }
+
+        /// <summary>
+        /// Unregisters existing tag and cleans up associated resources
+        /// </summary>
+        /// <param name="finder">Functor used to find matching tag context</param>
+        private static void UnregisterTag(Func<TagContext, bool> finder)
+        {
             lock (knownTags)
             {
-                var match = knownTags.SingleOrDefault(c => c.TagViewModel == tagViewModel);
-                if (match != null)
+                // Find matching tag
+                var match = knownTags.SingleOrDefault(finder);
+                if (match == null)
                 {
-                    match.Dispose();
-                    knownTags.Remove(match);
+                    return;
                 }
+
+                var host = match.HostWindow;
+
+                // Cleanup all alocated resources
+                match.Dispose();
+
+                // Unreference context object to make it garbage collectable
+                knownTags.Remove(match);
+
+                // Give focus to host window if it still exists
+                SafeNativeMethods.SetForegroundWindow(host);
             }
         }
 
