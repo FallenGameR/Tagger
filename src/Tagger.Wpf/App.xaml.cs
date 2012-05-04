@@ -106,7 +106,7 @@ https://github.com/FallenGameR/Tagger",
                 case "Microsoft.Practices.Prism, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35":
                     return Tagger.Properties.Resources.Microsoft_Practices_Prism_dll;
 
-                case "Tagger.Lib, Version=0.9.5.0, Culture=neutral, PublicKeyToken=null":
+                case "Tagger.Lib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null":
                     return Tagger.Properties.Resources.Tagger_Lib_dll;
 
                 case "WPFToolkit.Extended, Version=1.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4":
