@@ -2,7 +2,7 @@
 
 What is Tagger?
 ---------------
-Tagger is a Windows application that can annotate any window with a colored tag with text. Tag is displayed on top of annotated window and follows it. This allows to quickly remember why do you need this particular window that was opened a while ago among multitude of other windows. This is especially useful for windows that are nearly indistinguishable like console windows or text editors.
+Tagger is an application that annotates other windows with text and color tags. Tag is displayed on top of the window and follows it. This allows to quickly remember why do you need this particular window opened. This comes in handy when you have lots of opened windows that are nearly indistinguishable from each other - like console windows or text editors.
 
 ![Tagger screenshot](https://github.com/FallenGameR/Tagger/raw/master/info/Screenshot.png)
 
@@ -20,8 +20,8 @@ You can also create shortcut that would start Tagger in minimized to tray mode o
 
 Manual
 ------
-Create tag for current active window with tag hotkey (Ctrl+Alt+S by default). The same hotkey hides tag.  
-Change tag for current active window with settings hotkey (Ctrl+Alt+D by default). Or you can right click on tag.  
+Create tag for active window - tag hotkey (Ctrl+Alt+S by default). The same hotkey hides tag.  
+Change tag for active window - settings hotkey (Ctrl+Alt+D by default). Or you can right click on tag.  
 Move tag with mouse drag and drop or via tag settings.
 
 Donations
