@@ -2,7 +2,7 @@
 
 What is Tagger?
 ---------------
-Tagger is an application that annotates other windows with text-and-color tags. Tag is displayed on top of the window and follows it. This allows to quickly remember why do you need this particular window opened. This comes in handy when you have lots of opened windows that are nearly indistinguishable from each other - like console windows or text editors.
+Tagger is an application that annotates other windows with text-and-color tags. Tag is displayed on top of the window and follows it. This allows to quickly remember why do you need this particular window opened. That comes in handy when you have lots of opened windows that are nearly indistinguishable from each other - like console windows or text editors.
 
 ![Tagger screenshot](https://github.com/FallenGameR/Tagger/raw/master/info/Screenshot.png)
 
