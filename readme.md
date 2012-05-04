@@ -30,5 +30,5 @@ If you want to donate, buy me something from my [wish list](http://www.amazon.co
 
 --------------------------------
 
-Tagger is Copyright &copy; 2011-2012 [Alexander Kostikov](http://fallengamer.livejournal.com/) under the [3-clause BSD license](https://github.com/AutoMapper/AutoMapper/blob/master/LICENSE.txt).
+Tagger is Copyright &copy; 2011-2012 [Alexander Kostikov](http://fallengamer.livejournal.com/) under the [3-clause BSD license](https://github.com/FallenGameR/Tagger/blob/master/license.txt).
 
