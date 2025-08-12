@@ -28,6 +28,13 @@ Donations
 ---------
 If you want to donate, buy me something from my [wish list](http://www.amazon.com/gp/registry/wishlist/J8ORBQBR43HG).
 
+Potential features
+------------------
+
+- Remember tags for programs + paths
+- Show most recently used colors for quicker selection
+
+
 --------------------------------
 
 Tagger is Copyright &copy; 2011-2012 [Alexander Kostikov](http://fallengamer.livejournal.com/) under the [3-clause BSD license](https://github.com/FallenGameR/Tagger/blob/master/license.txt).
